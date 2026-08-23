@@ -1,0 +1,73 @@
+[2026-08-16 20:28:58] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:28:58] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-16 20:28:58] [INFO] [fetcher:494] Downloading segment [1.00s -> 3.00s] for https://youtu.be/VID00000001 to /home/user/yt_shorts_bot/temp_clips/raw_clip_VID00000001_1_3.mp4...
+[2026-08-16 20:28:59] [WARNING] [fetcher:518] Fast stream slicing failed. Falling back to full download + local slice...
+[2026-08-16 20:28:59] [ERROR] [scheduler:301] [ClipAcc] Clip section download failed for https://youtu.be/VID00000001: ERROR: [youtube] VID00000001: Video unavailable
+[2026-08-16 20:29:30] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:30] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-16 20:29:30] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of source_test.mp4 -> key: shorts/ClipAcc/VID00000001_short.mp4
+[2026-08-16 20:29:30] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'ClipAcc' (10 slots remaining today).
+[2026-08-16 20:29:30] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/c.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:29:30] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Clip Title
+  File : source_test.mp4
+[2026-08-16 20:29:30] [INFO] [scheduler:373] [ClipAcc] SUCCESS! Created YouTube Short mock_short_VID00000001 from VID00000001
+[2026-08-16 20:29:30] [INFO] [scheduler:450] Saved local copy of finished Short: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.mp4
+[2026-08-16 20:29:30] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.txt
+[2026-08-16 20:29:42] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:42] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-16 20:29:42] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of source_test.mp4 -> key: shorts/ClipAcc/VID00000001_short.mp4
+[2026-08-16 20:29:42] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'ClipAcc' (10 slots remaining today).
+[2026-08-16 20:29:42] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/c.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:29:42] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Clip Title
+  File : source_test.mp4
+[2026-08-16 20:29:42] [INFO] [scheduler:373] [ClipAcc] SUCCESS! Created YouTube Short mock_short_VID00000001 from VID00000001
+[2026-08-16 20:29:42] [INFO] [scheduler:450] Saved local copy of finished Short: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.mp4
+[2026-08-16 20:29:42] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.txt
+[2026-08-16 20:31:07] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:07] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-16 20:31:07] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of source_test.mp4 -> key: shorts/ClipAcc/VID00000001_short.mp4
+[2026-08-16 20:31:07] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'ClipAcc' (10 slots remaining today).
+[2026-08-16 20:31:07] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/c.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:31:07] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Clip Title
+  File : source_test.mp4
+[2026-08-16 20:31:07] [INFO] [scheduler:373] [ClipAcc] SUCCESS! Created YouTube Short mock_short_VID00000001 from VID00000001
+[2026-08-16 20:31:07] [INFO] [scheduler:450] Saved local copy of finished Short: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.mp4
+[2026-08-16 20:31:07] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.txt
+[2026-08-18 00:05:52] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:05:52] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-18 00:05:52] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of source_test.mp4 -> key: shorts/ClipAcc/VID00000001_short.mp4
+[2026-08-18 00:05:52] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'ClipAcc' (10 slots remaining today).
+[2026-08-18 00:05:52] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/c.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 00:05:52] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Clip Title
+  File : source_test.mp4
+[2026-08-18 00:05:52] [INFO] [scheduler:373] [ClipAcc] SUCCESS! Created YouTube Short mock_short_VID00000001 from VID00000001
+[2026-08-18 00:05:52] [INFO] [scheduler:450] Saved local copy of finished Short: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.mp4
+[2026-08-18 00:05:52] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.txt
+[2026-08-18 21:01:44] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:01:44] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-18 21:01:44] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of source_test.mp4 -> key: shorts/ClipAcc/VID00000001_short.mp4
+[2026-08-18 21:01:44] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'ClipAcc' (10 slots remaining today).
+[2026-08-18 21:01:44] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /nonexistent/t.json
+[2026-08-18 21:01:44] [WARNING] [uploader:142] YouTube OAuth client_secret file '/nonexistent/c.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:01:44] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Clip Title
+  File : source_test.mp4
+[2026-08-18 21:01:44] [INFO] [scheduler:373] [ClipAcc] SUCCESS! Created YouTube Short mock_short_VID00000001 from VID00000001
+[2026-08-18 21:01:44] [INFO] [scheduler:450] Saved local copy of finished Short: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.mp4
+[2026-08-18 21:01:44] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.txt
+[2026-08-18 21:04:00] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:04:00] [INFO] [scheduler:294] [ClipAcc] --- Short 1/1: segment [1.0s -> 3.0s] ---
+[2026-08-18 21:04:00] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of source_test.mp4 -> key: shorts/ClipAcc/VID00000001_short.mp4
+[2026-08-18 21:04:00] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'ClipAcc' (10 slots remaining today).
+[2026-08-18 21:04:00] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /nonexistent/t.json
+[2026-08-18 21:04:00] [WARNING] [uploader:142] YouTube OAuth client_secret file '/nonexistent/c.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:04:00] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Clip Title
+  File : source_test.mp4
+[2026-08-18 21:04:00] [INFO] [scheduler:373] [ClipAcc] SUCCESS! Created YouTube Short mock_short_VID00000001 from VID00000001
+[2026-08-18 21:04:00] [INFO] [scheduler:450] Saved local copy of finished Short: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.mp4
+[2026-08-18 21:04:00] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/finished_shorts/ClipAcc_short_VID00000001.txt

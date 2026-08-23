@@ -1,0 +1,17 @@
+=== SHORT METADATA (what would be uploaded to YouTube) ===
+
+Account       : TestAcc
+Source URL    : https://www.youtube.com/shorts/CCC333DDD44
+YouTube Short : mock_short_CCC333DDD44
+
+TITLE         : Fake Short Title
+
+DESCRIPTION:
+🎬 High-engagement highlight clip from: Short Two
+💡 Subscribe for daily curated shorts & insights!
+
+
+
+TAGS: FakeChannel
+
+HASHTAGS (in title+description): 

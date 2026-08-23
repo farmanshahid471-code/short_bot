@@ -1,0 +1,17 @@
+=== SHORT METADATA (what would be uploaded to YouTube) ===
+
+Account       : ClipAcc
+Source URL    : https://youtu.be/VID00000001
+YouTube Short : mock_short_VID00000001
+
+TITLE         : Clip Title
+
+DESCRIPTION:
+🎬 High-engagement highlight clip from: Clip Title
+💡 Subscribe for daily curated shorts & insights!
+
+
+
+TAGS: FakeChannel
+
+HASHTAGS (in title+description): 

@@ -1,0 +1,17 @@
+=== SHORT METADATA (what would be uploaded to YouTube) ===
+
+Account       : OnAcc
+Source URL    : https://www.youtube.com/shorts/AAA111BBB22
+YouTube Short : mock_short_AAA111BBB22
+
+TITLE         : Fake Short Title
+
+DESCRIPTION:
+🎬 High-engagement highlight clip from: Short One
+💡 Subscribe for daily curated shorts & insights!
+
+
+
+TAGS: FakeChannel
+
+HASHTAGS (in title+description): 

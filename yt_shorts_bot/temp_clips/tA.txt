@@ -1,0 +1,14 @@
+=== SHORT METADATA (what would be uploaded to YouTube) ===
+
+Account       : Gaming
+Source URL    : https://youtu.be/abc
+YouTube Short : mock_1
+
+TITLE         : TEST TITLE
+
+DESCRIPTION:
+TEST DESC
+
+TAGS: simpsons
+
+HASHTAGS (in title+description): 

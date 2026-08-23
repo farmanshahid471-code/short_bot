@@ -1,0 +1,1627 @@
+[2026-08-16 12:44:59] [INFO] [webui:448] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:44:59] [INFO] [webui:508] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 12:44:59] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:48:04] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 12:48:05] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 12:48:05] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:48:05] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 12:48:05] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 12:48:05] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 12:48:19] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 12:48:50] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 12:48:51] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 12:48:51] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:48:51] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 12:48:51] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 12:48:51] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 12:49:06] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 12:50:00] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:50:00] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:50:00] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 12:50:00] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 12:50:00] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 12:50:16] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 12:50:16] [INFO] [scheduler:259] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:50:16] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 12:50:16] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 12:50:16] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:50:16] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:50:16] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:50:16] [INFO] [scheduler:337] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:50:16] [INFO] [scheduler:346] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:50:16] [INFO] [scheduler:346] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 12:50:16] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:50:16] [INFO] [scheduler:105] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 12:50:16] [WARNING] [scheduler:114] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:50:16] [INFO] [scheduler:120] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:50:16] [INFO] [scheduler:133] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 12:50:16] [INFO] [scheduler:141] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:50:16] [INFO] [scheduler:158] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:50:16] [INFO] [scheduler:185] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 12:50:16] [INFO] [scheduler:259] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 12:50:16] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 12:50:16] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 12:50:16] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:50:16] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 12:50:16] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 12:50:16] [INFO] [scheduler:337] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 12:50:16] [INFO] [scheduler:217] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:50:16] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:50:16] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:50:16] [INFO] [scheduler:80] Skipping disabled account: OffAcc
+[2026-08-16 12:50:16] [INFO] [scheduler:105] [OnAcc] Watermarks: bottom='None' top='ONACC' (enabled bottom=default, top=default)
+[2026-08-16 12:50:16] [WARNING] [scheduler:114] [OnAcc] ⚠️ Watermarks are configured ('ONACC') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:50:16] [INFO] [scheduler:120] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:50:16] [INFO] [scheduler:133] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 12:50:16] [INFO] [scheduler:141] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:50:16] [INFO] [scheduler:158] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:50:16] [INFO] [scheduler:185] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 12:50:16] [INFO] [scheduler:259] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:50:16] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 12:50:16] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 12:50:16] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:50:16] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:50:16] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:50:16] [INFO] [scheduler:337] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:50:16] [INFO] [scheduler:185] [OnAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 12:50:16] [INFO] [scheduler:259] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_CCC333DDD44.mp4
+[2026-08-16 12:50:16] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/CCC333DDD44.mp4
+[2026-08-16 12:50:16] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (9 slots remaining today).
+[2026-08-16 12:50:16] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:50:16] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 12:50:16] [INFO] [models:253] Recorded YouTube upload for OnAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 12:50:16] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_CCC333DDD44.txt
+[2026-08-16 12:50:16] [INFO] [scheduler:337] [OnAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 12:50:16] [INFO] [scheduler:217] [OnAcc] Account cycle done: 2 Short(s).
+[2026-08-16 12:50:16] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 2 Short(s) across all accounts ===
+[2026-08-16 12:50:24] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:50:24] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:50:24] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 12:50:24] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 12:50:24] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 12:50:38] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 12:50:38] [INFO] [scheduler:259] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:50:38] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 12:50:38] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 12:50:38] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:50:38] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:50:38] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:50:38] [INFO] [scheduler:337] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:50:38] [INFO] [scheduler:346] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:50:38] [INFO] [scheduler:346] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 12:50:38] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:50:38] [INFO] [scheduler:105] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 12:50:38] [WARNING] [scheduler:114] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:50:38] [INFO] [scheduler:120] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:50:38] [INFO] [scheduler:133] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 12:50:38] [INFO] [scheduler:141] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:50:38] [INFO] [scheduler:158] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:50:38] [INFO] [scheduler:185] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 12:50:38] [INFO] [scheduler:259] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 12:50:38] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 12:50:38] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 12:50:38] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:50:38] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 12:50:38] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 12:50:38] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 12:50:38] [INFO] [scheduler:337] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 12:50:38] [INFO] [scheduler:217] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:50:38] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:50:38] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:50:38] [INFO] [scheduler:80] Skipping disabled account: OffAcc
+[2026-08-16 12:50:38] [INFO] [scheduler:105] [OnAcc] Watermarks: bottom='None' top='ONACC' (enabled bottom=default, top=default)
+[2026-08-16 12:50:38] [WARNING] [scheduler:114] [OnAcc] ⚠️ Watermarks are configured ('ONACC') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:50:38] [INFO] [scheduler:120] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:50:38] [INFO] [scheduler:133] [OnAcc] YouTube 24h upload quota: 8 slots remaining.
+[2026-08-16 12:50:38] [INFO] [scheduler:141] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:50:38] [INFO] [scheduler:158] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:50:38] [INFO] [scheduler:217] [OnAcc] Account cycle done: 0 Short(s).
+[2026-08-16 12:50:38] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 0 Short(s) across all accounts ===
+[2026-08-16 12:50:47] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:50:47] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:50:47] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 12:50:47] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 12:50:47] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 12:51:02] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 12:51:02] [INFO] [scheduler:259] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:51:02] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 12:51:02] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 12:51:02] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:51:02] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:51:02] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:51:02] [INFO] [scheduler:337] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:51:02] [INFO] [scheduler:346] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:51:02] [INFO] [scheduler:346] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 12:51:02] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:51:02] [INFO] [scheduler:105] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 12:51:02] [WARNING] [scheduler:114] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:51:02] [INFO] [scheduler:120] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:51:02] [INFO] [scheduler:133] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 12:51:02] [INFO] [scheduler:141] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:51:02] [INFO] [scheduler:158] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:51:02] [INFO] [scheduler:185] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 12:51:02] [INFO] [scheduler:259] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 12:51:02] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 12:51:02] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 12:51:02] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:51:02] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 12:51:02] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 12:51:02] [INFO] [scheduler:337] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 12:51:02] [INFO] [scheduler:217] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:51:02] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:51:02] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:51:02] [INFO] [scheduler:80] Skipping disabled account: OffAcc
+[2026-08-16 12:51:02] [INFO] [scheduler:105] [OnAcc] Watermarks: bottom='None' top='ONACC' (enabled bottom=default, top=default)
+[2026-08-16 12:51:02] [WARNING] [scheduler:114] [OnAcc] ⚠️ Watermarks are configured ('ONACC') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:51:02] [INFO] [scheduler:120] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:51:02] [INFO] [scheduler:133] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 12:51:02] [INFO] [scheduler:141] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:51:02] [INFO] [scheduler:158] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:51:02] [INFO] [scheduler:185] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 12:51:02] [INFO] [scheduler:259] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:51:02] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 12:51:02] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 12:51:02] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:51:02] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 12:51:02] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:51:02] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:51:02] [INFO] [scheduler:337] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:51:02] [INFO] [scheduler:217] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:51:02] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:51:41] [INFO] [webui:448] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:51:41] [INFO] [webui:508] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 12:51:41] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:52:08] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 12:52:10] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 12:52:10] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:52:10] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 12:52:10] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 12:52:10] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 12:52:24] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 12:52:25] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:52:25] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:52:25] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 12:52:25] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 12:52:25] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 12:52:40] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 12:52:40] [INFO] [scheduler:260] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:52:40] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 12:52:40] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 12:52:40] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:52:40] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:52:40] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:52:40] [INFO] [scheduler:338] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:52:40] [INFO] [scheduler:347] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:52:40] [INFO] [scheduler:347] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 12:52:40] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:52:40] [INFO] [scheduler:106] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 12:52:40] [WARNING] [scheduler:115] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:52:40] [INFO] [scheduler:121] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:52:40] [INFO] [scheduler:134] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 12:52:40] [INFO] [scheduler:142] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:52:40] [INFO] [scheduler:159] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:52:40] [INFO] [scheduler:186] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 12:52:40] [INFO] [scheduler:260] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 12:52:40] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 12:52:40] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 12:52:40] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:52:40] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 12:52:40] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 12:52:40] [INFO] [scheduler:338] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 12:52:40] [INFO] [scheduler:218] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:52:40] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:52:40] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:52:40] [INFO] [scheduler:80] Skipping disabled account: OffAcc
+[2026-08-16 12:52:40] [INFO] [scheduler:121] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:52:40] [INFO] [scheduler:134] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 12:52:40] [INFO] [scheduler:142] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:52:40] [INFO] [scheduler:159] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:52:40] [INFO] [scheduler:186] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 12:52:40] [INFO] [scheduler:260] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:52:40] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 12:52:40] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 12:52:40] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:52:40] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 12:52:40] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:52:40] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:52:40] [INFO] [scheduler:338] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:52:40] [INFO] [scheduler:218] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:52:40] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:52:45] [INFO] [webui:953] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 12:52:45] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:54:26] [INFO] [webui:953] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 12:54:34] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:54:44] [INFO] [webui:448] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:54:44] [INFO] [webui:508] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 12:54:44] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:55:12] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 12:55:13] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 12:55:13] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:55:13] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 12:55:13] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 12:55:13] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 12:55:28] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 12:55:29] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:55:29] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 12:55:29] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 12:55:29] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 12:55:29] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 12:55:43] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 12:55:43] [INFO] [scheduler:260] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:55:43] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 12:55:43] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 12:55:43] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:55:43] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:55:43] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:55:43] [INFO] [scheduler:338] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:55:43] [INFO] [scheduler:347] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:55:43] [INFO] [scheduler:347] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 12:55:43] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:55:43] [INFO] [scheduler:106] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 12:55:43] [WARNING] [scheduler:115] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 12:55:43] [INFO] [scheduler:121] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:55:43] [INFO] [scheduler:134] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 12:55:43] [INFO] [scheduler:142] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:55:43] [INFO] [scheduler:159] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:55:43] [INFO] [scheduler:186] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 12:55:43] [INFO] [scheduler:260] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 12:55:43] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 12:55:43] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 12:55:43] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:55:43] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 12:55:43] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 12:55:43] [INFO] [scheduler:338] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 12:55:43] [INFO] [scheduler:218] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:55:43] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 12:55:43] [INFO] [scheduler:75] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 12:55:43] [INFO] [scheduler:80] Skipping disabled account: OffAcc
+[2026-08-16 12:55:43] [INFO] [scheduler:121] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 12:55:43] [INFO] [scheduler:134] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 12:55:43] [INFO] [scheduler:142] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 12:55:43] [INFO] [scheduler:159] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 12:55:43] [INFO] [scheduler:186] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 12:55:43] [INFO] [scheduler:260] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 12:55:43] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 12:55:43] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 12:55:43] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 12:55:43] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 12:55:43] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 12:55:43] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 12:55:43] [INFO] [scheduler:338] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 12:55:43] [INFO] [scheduler:218] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 12:55:43] [INFO] [scheduler:87] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 13:25:21] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:25:38] [INFO] [webui:466] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:26:15] [INFO] [webui:481] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:26:19] [INFO] [webui:481] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:26:19] [INFO] [webui:541] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 13:26:19] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:26:47] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 13:26:49] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 13:26:49] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 13:26:49] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 13:26:49] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 13:26:49] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 13:27:04] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 13:27:05] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:27:05] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 13:27:05] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 13:27:05] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 13:27:05] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 13:27:19] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 13:27:19] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 13:27:19] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 13:27:19] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 13:27:19] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 13:27:19] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 13:27:19] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 13:27:19] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 13:27:19] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 13:27:19] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 13:27:19] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 13:27:19] [INFO] [scheduler:115] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 13:27:19] [WARNING] [scheduler:124] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 13:27:19] [INFO] [scheduler:130] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 13:27:19] [INFO] [scheduler:143] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 13:27:19] [INFO] [scheduler:151] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 13:27:19] [INFO] [scheduler:168] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 13:27:19] [INFO] [scheduler:195] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 13:27:19] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 13:27:19] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 13:27:19] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 13:27:19] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 13:27:19] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 13:27:19] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 13:27:19] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 13:27:19] [INFO] [scheduler:227] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 13:27:19] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 13:27:19] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 13:27:19] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-16 13:27:19] [INFO] [scheduler:130] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 13:27:19] [INFO] [scheduler:143] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 13:27:19] [INFO] [scheduler:151] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 13:27:19] [INFO] [scheduler:168] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 13:27:19] [INFO] [scheduler:195] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 13:27:19] [INFO] [scheduler:269] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 13:27:19] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 13:27:19] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 13:27:19] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 13:27:19] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 13:27:19] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 13:27:19] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 13:27:19] [INFO] [scheduler:347] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 13:27:19] [INFO] [scheduler:227] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 13:27:19] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 13:27:20] [INFO] [webui:481] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:27:44] [INFO] [webui:996] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 13:34:15] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:34:35] [INFO] [webui:513] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 13:34:55] [INFO] [webui:513] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 13:35:05] [INFO] [webui:513] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 13:35:11] [INFO] [webui:513] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:35:11] [INFO] [webui:573] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 13:35:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:35:39] [INFO] [config:338] Loaded 1 account(s) from accounts.json: simpson_pimp
+[2026-08-16 13:35:39] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 13:35:40] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 13:35:40] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 13:35:40] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 13:35:40] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 13:35:40] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 13:35:55] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 13:35:55] [INFO] [config:338] Loaded 1 account(s) from accounts.json: simpson_pimp
+[2026-08-16 13:35:56] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:35:56] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 13:35:56] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 13:35:56] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 13:35:56] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 13:36:10] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 13:36:10] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 13:36:10] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 13:36:10] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 13:36:10] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 13:36:10] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 13:36:10] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 13:36:10] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 13:36:10] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 13:36:10] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 13:36:10] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 13:36:10] [INFO] [scheduler:115] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 13:36:10] [WARNING] [scheduler:124] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 13:36:10] [INFO] [scheduler:130] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 13:36:10] [INFO] [scheduler:143] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 13:36:10] [INFO] [scheduler:151] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 13:36:10] [INFO] [scheduler:168] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 13:36:10] [INFO] [scheduler:195] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 13:36:10] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 13:36:10] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 13:36:10] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 13:36:10] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 13:36:10] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 13:36:10] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 13:36:10] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 13:36:10] [INFO] [scheduler:227] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 13:36:10] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 13:36:10] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 13:36:10] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-16 13:36:10] [INFO] [scheduler:130] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 13:36:10] [INFO] [scheduler:143] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 13:36:10] [INFO] [scheduler:151] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 13:36:10] [INFO] [scheduler:168] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 13:36:10] [INFO] [scheduler:195] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 13:36:10] [INFO] [scheduler:269] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 13:36:10] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 13:36:10] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 13:36:10] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 13:36:10] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 13:36:10] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 13:36:10] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 13:36:10] [INFO] [scheduler:347] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 13:36:10] [INFO] [scheduler:227] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 13:36:10] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 13:36:11] [INFO] [webui:513] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:36:12] [INFO] [webui:513] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 13:36:42] [INFO] [config:338] Loaded 1 account(s) from accounts.json: simpson_pimp
+[2026-08-16 13:36:42] [INFO] [webui:1041] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 13:36:49] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:08:11] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:08:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:08:34] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 14:08:34] [INFO] [webui:564] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 14:08:34] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:09:02] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:09:02] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 14:09:04] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 14:09:04] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 14:09:04] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 14:09:04] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 14:09:04] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 14:09:19] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 14:09:19] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:09:19] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:09:19] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 14:09:19] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 14:09:19] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 14:09:19] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 14:09:34] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 14:09:34] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 14:09:34] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 14:09:34] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 14:09:34] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 14:09:34] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 14:09:34] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 14:09:34] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 14:09:34] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 14:09:34] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 14:09:34] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 14:09:34] [INFO] [scheduler:115] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 14:09:34] [WARNING] [scheduler:124] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 14:09:34] [INFO] [scheduler:130] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 14:09:34] [INFO] [scheduler:143] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 14:09:34] [INFO] [scheduler:151] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 14:09:34] [INFO] [scheduler:168] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 14:09:34] [INFO] [scheduler:195] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 14:09:34] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 14:09:34] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 14:09:34] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 14:09:34] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 14:09:34] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 14:09:34] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 14:09:34] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 14:09:34] [INFO] [scheduler:227] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 14:09:34] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 14:09:34] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 14:09:34] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-16 14:09:34] [INFO] [scheduler:130] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 14:09:34] [INFO] [scheduler:143] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 14:09:34] [INFO] [scheduler:151] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 14:09:34] [INFO] [scheduler:168] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 14:09:34] [INFO] [scheduler:195] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 14:09:34] [INFO] [scheduler:269] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 14:09:34] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 14:09:34] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 14:09:34] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 14:09:34] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 14:09:34] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 14:09:34] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 14:09:34] [INFO] [scheduler:347] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 14:09:34] [INFO] [scheduler:227] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 14:09:34] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 14:09:35] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 14:09:36] [INFO] [webui:504] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 14:09:47] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:09:47] [INFO] [webui:1027] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 14:09:48] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:19:07] [INFO] [webui:504] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 14:19:37] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:19:47] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:20:03] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:20:24] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:20:45] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:20:54] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 14:20:54] [INFO] [webui:564] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 14:20:54] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:21:22] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:21:22] [INFO] [reprocessor:64] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 14:21:24] [INFO] [reprocessor:77] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 14:21:24] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 14:21:24] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 14:21:24] [INFO] [processor:388] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 14:21:24] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 14:21:39] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 14:21:39] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:21:39] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:21:39] [INFO] [reprocessor:51] Render mode: transcribing + burning subtitles + mixing BGM...
+[2026-08-16 14:21:39] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 14:21:39] [INFO] [processor:388] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 14:21:39] [INFO] [processor:417] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 14:21:54] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-16 14:21:54] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 14:21:54] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 14:21:54] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 14:21:54] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 14:21:54] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 14:21:54] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 14:21:54] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 14:21:54] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 14:21:54] [INFO] [scheduler:356] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 14:21:54] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 14:21:54] [INFO] [scheduler:115] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 14:21:54] [WARNING] [scheduler:124] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 14:21:54] [INFO] [scheduler:130] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 14:21:54] [INFO] [scheduler:143] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 14:21:54] [INFO] [scheduler:151] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 14:21:54] [INFO] [scheduler:168] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 14:21:54] [INFO] [scheduler:195] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 14:21:54] [INFO] [scheduler:269] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 14:21:54] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 14:21:54] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 14:21:54] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 14:21:54] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 14:21:54] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 14:21:54] [INFO] [scheduler:347] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 14:21:54] [INFO] [scheduler:227] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 14:21:54] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 14:21:54] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 14:21:54] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-16 14:21:54] [INFO] [scheduler:130] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 14:21:54] [INFO] [scheduler:143] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 14:21:54] [INFO] [scheduler:151] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 14:21:54] [INFO] [scheduler:168] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 14:21:54] [INFO] [scheduler:195] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 14:21:54] [INFO] [scheduler:269] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 14:21:54] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 14:21:54] [INFO] [uploader:283] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 14:21:54] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 14:21:54] [INFO] [uploader:300] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 14:21:54] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 14:21:54] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 14:21:54] [INFO] [scheduler:347] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 14:21:54] [INFO] [scheduler:227] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 14:21:54] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 14:21:55] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 14:21:55] [INFO] [webui:504] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 14:22:08] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:22:22] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 14:22:22] [INFO] [webui:1027] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 14:22:22] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:08:07] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 19:08:07] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:08:27] [INFO] [config:338] Loaded 2 account(s) from accounts.json: PeterAKing, simpson_pimp
+[2026-08-16 19:08:27] [INFO] [reprocessor:52] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 19:08:27] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-16 19:08:27] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-16 19:08:27] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-16 19:08:34] [INFO] [processor:476] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.09 MB)
+[2026-08-16 19:08:35] [INFO] [reprocessor:52] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-16 19:08:35] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-16 19:08:35] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-16 19:08:35] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-16 19:08:42] [INFO] [processor:476] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.11 MB)
+[2026-08-16 19:08:42] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:08:42] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:08:42] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (10 slots remaining today).
+[2026-08-16 19:08:42] [ERROR] [uploader:320] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-16 19:08:46] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:08:46] [INFO] [reprocessor:52] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 19:08:46] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-16 19:08:46] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-16 19:08:46] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-16 19:08:53] [INFO] [processor:476] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.09 MB)
+[2026-08-16 19:08:54] [INFO] [reprocessor:52] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-16 19:08:54] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-16 19:08:54] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-16 19:08:54] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-16 19:09:01] [INFO] [processor:476] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.11 MB)
+[2026-08-16 19:09:01] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:09:01] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:09:01] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (10 slots remaining today).
+[2026-08-16 19:09:01] [ERROR] [uploader:320] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-16 19:09:01] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (10 slots remaining today).
+[2026-08-16 19:09:01] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 19:09:01] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: T
+  File : source_test.mp4
+[2026-08-16 19:09:01] [INFO] [models:253] Recorded YouTube upload for PeterAKing/vid2 -> Short ID: mock_short_vid2
+[2026-08-16 19:09:06] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:09:06] [INFO] [webui:584] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 19:09:06] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:09:33] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:09:33] [INFO] [reprocessor:70] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 19:09:34] [INFO] [reprocessor:83] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 19:09:35] [INFO] [reprocessor:52] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-16 19:09:35] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 19:09:35] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 19:09:35] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 19:09:49] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 19:09:49] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:09:50] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:09:51] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:09:51] [INFO] [webui:523] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 19:09:52] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:09:52] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:09:52] [INFO] [reprocessor:52] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 19:09:52] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-16 19:09:52] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-16 19:09:52] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-16 19:10:07] [INFO] [processor:476] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.19 MB)
+[2026-08-16 19:10:07] [INFO] [reprocessor:52] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-16 19:10:07] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-16 19:10:07] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-16 19:10:07] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-16 19:10:22] [INFO] [processor:476] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.22 MB)
+[2026-08-16 19:10:22] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:10:22] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:10:22] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (9 slots remaining today).
+[2026-08-16 19:10:22] [ERROR] [uploader:320] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-16 19:10:22] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (9 slots remaining today).
+[2026-08-16 19:10:22] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 19:10:22] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: T
+  File : source_test.mp4
+[2026-08-16 19:10:22] [INFO] [models:253] Recorded YouTube upload for PeterAKing/vid2 -> Short ID: mock_short_vid2
+[2026-08-16 19:10:26] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:10:27] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:10:33] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:10:33] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:10:35] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:10:36] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:10:40] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:10:40] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:10:40] [INFO] [reprocessor:52] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-16 19:10:40] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 19:10:40] [INFO] [processor:394] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 19:10:40] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 19:10:47] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.09 MB)
+[2026-08-16 19:10:47] [INFO] [scheduler:280] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 19:10:47] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 19:10:47] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 19:10:47] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 19:10:47] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 19:10:47] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 19:10:47] [INFO] [scheduler:359] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 19:10:47] [INFO] [scheduler:368] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 19:10:47] [INFO] [scheduler:368] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 19:10:47] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 19:10:47] [INFO] [scheduler:121] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 19:10:47] [WARNING] [scheduler:130] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 19:10:47] [INFO] [scheduler:136] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 19:10:47] [INFO] [scheduler:149] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 19:10:47] [INFO] [scheduler:157] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 19:10:47] [INFO] [scheduler:174] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 19:10:47] [INFO] [scheduler:201] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 19:10:47] [INFO] [scheduler:280] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 19:10:47] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 19:10:47] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 19:10:47] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 19:10:47] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 19:10:47] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 19:10:47] [INFO] [scheduler:359] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 19:10:47] [INFO] [scheduler:235] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 19:10:47] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 19:10:47] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 19:10:47] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-16 19:10:47] [INFO] [scheduler:136] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 19:10:47] [INFO] [scheduler:149] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 19:10:47] [INFO] [scheduler:157] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 19:10:47] [INFO] [scheduler:174] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 19:10:47] [INFO] [scheduler:201] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 19:10:47] [INFO] [scheduler:280] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 19:10:47] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 19:10:47] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 19:10:47] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 19:10:47] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 19:10:47] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 19:10:47] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 19:10:47] [INFO] [scheduler:359] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 19:10:47] [INFO] [scheduler:235] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 19:10:47] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 19:11:19] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 19:11:19] [INFO] [webui:1053] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 19:11:20] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:27:44] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:27:44] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:27:44] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:27:44] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:27:44] [INFO] [reprocessor:55] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 20:27:44] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 20:27:44] [INFO] [processor:394] Adding '@PeterAKing' banner at bottom of final_fake_short.mp4
+[2026-08-16 20:27:44] [INFO] [processor:423] Adding top watermark 'PETER' (light) at top of final_fake_short.mp4
+[2026-08-16 20:27:49] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.06 MB)
+[2026-08-16 20:27:49] [INFO] [main:143] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.mp4
+[2026-08-16 20:27:49] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TEST12345678.mp4
+[2026-08-16 20:27:49] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.txt
+[2026-08-16 20:27:49] [INFO] [main:199] ✅ Reposted Short saved locally at: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4
+[2026-08-16 20:27:49] [INFO] [main:201] Uploaded to your channel -> Short ID: mock_uploaded
+[2026-08-16 20:27:58] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:27:58] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:27:58] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:27:58] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:27:58] [INFO] [main:117] [PeterAKing] Short TEST12345678 was already reposted - skipping.
+[2026-08-16 20:28:01] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:28:01] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:28:01] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:28:01] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:28:01] [INFO] [main:117] [PeterAKing] Short TEST12345678 was already reposted - skipping.
+[2026-08-16 20:28:09] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:28:09] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:28:09] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:28:09] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:28:10] [INFO] [reprocessor:55] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 20:28:10] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 20:28:10] [INFO] [processor:394] Adding '@PeterAKing' banner at bottom of final_fake_short.mp4
+[2026-08-16 20:28:10] [INFO] [processor:423] Adding top watermark 'PETER' (light) at top of final_fake_short.mp4
+[2026-08-16 20:28:14] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.06 MB)
+[2026-08-16 20:28:14] [INFO] [main:143] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.mp4
+[2026-08-16 20:28:14] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TEST12345678.mp4
+[2026-08-16 20:28:14] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.txt
+[2026-08-16 20:28:14] [INFO] [main:199] ✅ Reposted Short saved locally at: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4
+[2026-08-16 20:28:14] [INFO] [main:201] Uploaded to your channel -> Short ID: mock_uploaded
+[2026-08-16 20:28:37] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:28:58] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:28:58] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:28:58] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:28:58] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-16 20:28:58] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-16 20:28:58] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-16 20:28:58] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-16 20:28:58] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:28:58] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-16 20:28:58] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 20:28:58] [ERROR] [scheduler:227] [ChainAcc] Failed to repost https://www.youtube.com/shorts/AAA111BBB22: name 'aspect' is not defined
+[2026-08-16 20:28:58] [INFO] [scheduler:237] [ChainAcc] Account cycle done: 0 Short(s).
+[2026-08-16 20:28:58] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 0 Short(s) across all accounts ===
+[2026-08-16 20:29:10] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:29:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:11] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:29:11] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-16 20:29:11] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-16 20:29:11] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-16 20:29:11] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-16 20:29:11] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:29:11] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-16 20:29:11] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 20:29:11] [ERROR] [scheduler:227] [ChainAcc] Failed to repost https://www.youtube.com/shorts/AAA111BBB22: name 'aspect' is not defined
+[2026-08-16 20:29:11] [INFO] [scheduler:237] [ChainAcc] Account cycle done: 0 Short(s).
+[2026-08-16 20:29:11] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 0 Short(s) across all accounts ===
+[2026-08-16 20:29:30] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:29:30] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:30] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:29:30] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-16 20:29:30] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-16 20:29:30] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-16 20:29:30] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-16 20:29:30] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:29:30] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-16 20:29:30] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 20:29:30] [INFO] [scheduler:286] [ChainAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:29:30] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/ChainAcc/AAA111BBB22.mp4
+[2026-08-16 20:29:30] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:29:30] [INFO] [scheduler:365] [ChainAcc] SUCCESS! Reposted 'Short One' -> mock_short
+[2026-08-16 20:29:30] [INFO] [scheduler:374] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:29:30] [INFO] [scheduler:374] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:29:30] [INFO] [scheduler:237] [ChainAcc] Account cycle done: 1 Short(s).
+[2026-08-16 20:29:30] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 20:29:30] [INFO] [models:253] Recorded YouTube upload for ClipAcc/VID00000001 -> Short ID: mock_short_VID00000001
+[2026-08-16 20:29:42] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:29:42] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:42] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:29:42] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-16 20:29:42] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-16 20:29:42] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-16 20:29:42] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-16 20:29:42] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:29:42] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-16 20:29:42] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 20:29:42] [INFO] [scheduler:288] [ChainAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:29:42] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/ChainAcc/AAA111BBB22.mp4
+[2026-08-16 20:29:42] [INFO] [models:253] Recorded YouTube upload for ChainAcc/AAA111BBB22 -> Short ID: mock_short
+[2026-08-16 20:29:42] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:29:42] [INFO] [scheduler:367] [ChainAcc] SUCCESS! Reposted 'Short One' -> mock_short
+[2026-08-16 20:29:42] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:29:42] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:29:42] [INFO] [scheduler:239] [ChainAcc] Account cycle done: 1 Short(s).
+[2026-08-16 20:29:42] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 20:29:42] [INFO] [models:253] Recorded YouTube upload for ClipAcc/VID00000001 -> Short ID: mock_short_VID00000001
+[2026-08-16 20:29:47] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 20:29:47] [INFO] [webui:584] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 20:29:47] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:30:16] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:30:16] [INFO] [reprocessor:77] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-16 20:30:17] [INFO] [reprocessor:90] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-16 20:30:18] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 20:30:18] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-16 20:30:18] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-16 20:30:18] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-16 20:30:32] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-16 20:30:33] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:30:33] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:30:34] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 20:30:35] [INFO] [webui:523] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-16 20:30:35] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:30:36] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-16 20:30:36] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 20:30:36] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-16 20:30:36] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-16 20:30:36] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-16 20:30:50] [INFO] [processor:476] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.19 MB)
+[2026-08-16 20:30:50] [INFO] [reprocessor:57] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-16 20:30:50] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-16 20:30:50] [INFO] [processor:394] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-16 20:30:50] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-16 20:31:05] [INFO] [processor:476] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.22 MB)
+[2026-08-16 20:31:06] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 20:31:06] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 20:31:06] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (8 slots remaining today).
+[2026-08-16 20:31:06] [ERROR] [uploader:320] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-16 20:31:06] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (8 slots remaining today).
+[2026-08-16 20:31:06] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:31:06] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: T
+  File : source_test.mp4
+[2026-08-16 20:31:06] [INFO] [models:253] Recorded YouTube upload for PeterAKing/vid2 -> Short ID: mock_short_vid2
+[2026-08-16 20:31:06] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:06] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:31:06] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:31:06] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:31:07] [INFO] [config:338] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-16 20:31:07] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:07] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:31:07] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-16 20:31:07] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-16 20:31:07] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-16 20:31:07] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-16 20:31:07] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:31:07] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-16 20:31:07] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 20:31:07] [INFO] [scheduler:288] [ChainAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:31:07] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/ChainAcc/AAA111BBB22.mp4
+[2026-08-16 20:31:07] [INFO] [models:253] Recorded YouTube upload for ChainAcc/AAA111BBB22 -> Short ID: mock_short
+[2026-08-16 20:31:07] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:31:07] [INFO] [scheduler:367] [ChainAcc] SUCCESS! Reposted 'Short One' -> mock_short
+[2026-08-16 20:31:07] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:31:07] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:31:07] [INFO] [scheduler:239] [ChainAcc] Account cycle done: 1 Short(s).
+[2026-08-16 20:31:07] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 20:31:07] [INFO] [models:253] Recorded YouTube upload for ClipAcc/VID00000001 -> Short ID: mock_short_VID00000001
+[2026-08-16 20:31:11] [INFO] [config:338] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-16 20:31:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:14] [INFO] [config:338] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-16 20:31:14] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:15] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:15] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:31:15] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:31:15] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:31:21] [INFO] [config:338] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-16 20:31:22] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:22] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 20:31:22] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 20:31:22] [INFO] [processor:394] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-16 20:31:22] [INFO] [processor:423] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-16 20:31:29] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.09 MB)
+[2026-08-16 20:31:29] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:31:29] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-16 20:31:29] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-16 20:31:29] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:31:29] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 20:31:29] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:31:29] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 20:31:29] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:31:29] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-16 20:31:29] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:31:29] [INFO] [scheduler:123] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-16 20:31:29] [WARNING] [scheduler:132] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-16 20:31:29] [INFO] [scheduler:138] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 20:31:29] [INFO] [scheduler:151] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-16 20:31:29] [INFO] [scheduler:159] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:31:29] [INFO] [scheduler:176] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-16 20:31:29] [INFO] [scheduler:203] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-16 20:31:29] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-16 20:31:29] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-16 20:31:29] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-16 20:31:29] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:31:29] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-16 20:31:29] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-16 20:31:29] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-16 20:31:29] [INFO] [scheduler:239] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-16 20:31:29] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 20:31:29] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-16 20:31:29] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-16 20:31:29] [INFO] [scheduler:138] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-16 20:31:29] [INFO] [scheduler:151] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-16 20:31:29] [INFO] [scheduler:159] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-16 20:31:29] [INFO] [scheduler:176] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-16 20:31:29] [INFO] [scheduler:203] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-16 20:31:29] [INFO] [scheduler:288] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-16 20:31:29] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-16 20:31:29] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-16 20:31:29] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-16 20:31:29] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-16 20:31:29] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-16 20:31:29] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-16 20:31:29] [INFO] [scheduler:367] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-16 20:31:29] [INFO] [scheduler:239] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-16 20:31:29] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-16 20:31:30] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:31:30] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-16 20:31:30] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-16 20:31:30] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-16 20:31:30] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-16 20:31:30] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-16 20:31:30] [INFO] [processor:394] Adding '@PeterAKing' banner at bottom of final_fake_short.mp4
+[2026-08-16 20:31:30] [INFO] [processor:423] Adding top watermark 'PETER' (light) at top of final_fake_short.mp4
+[2026-08-16 20:31:35] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.06 MB)
+[2026-08-16 20:31:35] [INFO] [main:145] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.mp4
+[2026-08-16 20:31:35] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TEST12345678.mp4
+[2026-08-16 20:31:35] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.txt
+[2026-08-16 20:31:35] [INFO] [main:201] ✅ Reposted Short saved locally at: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4
+[2026-08-16 20:31:35] [INFO] [main:203] Uploaded to your channel -> Short ID: mock_uploaded
+[2026-08-16 20:31:50] [INFO] [config:338] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-16 20:31:50] [INFO] [webui:1067] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-16 20:31:51] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:02:05] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:02:06] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:02:56] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:02:56] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:04:01] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:04:02] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:04:11] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 00:04:11] [INFO] [webui:584] [webui] Saved 1 account(s) to accounts.json
+[2026-08-18 00:04:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:04:38] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:04:38] [INFO] [reprocessor:77] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-18 00:04:40] [INFO] [reprocessor:90] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-18 00:04:40] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 00:04:40] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-18 00:04:40] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-18 00:04:40] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-18 00:04:55] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-18 00:04:55] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:04:56] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:04:56] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 00:04:56] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-18 00:04:56] [INFO] [processor:431] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-18 00:04:56] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-18 00:05:12] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-18 00:05:12] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-18 00:05:12] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-18 00:05:12] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-18 00:05:12] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 00:05:12] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-18 00:05:12] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-18 00:05:12] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-18 00:05:12] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-18 00:05:12] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-18 00:05:12] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 00:05:12] [INFO] [scheduler:123] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-18 00:05:12] [WARNING] [scheduler:132] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-18 00:05:12] [INFO] [scheduler:138] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-18 00:05:12] [INFO] [scheduler:151] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-18 00:05:12] [INFO] [scheduler:159] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 00:05:12] [INFO] [scheduler:176] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-18 00:05:12] [INFO] [scheduler:203] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-18 00:05:12] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-18 00:05:12] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-18 00:05:12] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-18 00:05:12] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 00:05:12] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-18 00:05:12] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-18 00:05:12] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-18 00:05:12] [INFO] [scheduler:239] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-18 00:05:12] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 00:05:12] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 00:05:12] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-18 00:05:12] [INFO] [scheduler:138] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-18 00:05:12] [INFO] [scheduler:151] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-18 00:05:12] [INFO] [scheduler:159] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 00:05:12] [INFO] [scheduler:176] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-18 00:05:12] [INFO] [scheduler:203] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-18 00:05:12] [INFO] [scheduler:288] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-18 00:05:12] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-18 00:05:12] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-18 00:05:12] [WARNING] [uploader:141] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 00:05:12] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-18 00:05:12] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-18 00:05:12] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-18 00:05:12] [INFO] [scheduler:367] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-18 00:05:12] [INFO] [scheduler:239] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-18 00:05:12] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 00:05:12] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 00:05:13] [INFO] [webui:523] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-18 00:05:14] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:05:14] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:05:14] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 00:05:14] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-18 00:05:14] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-18 00:05:14] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-18 00:05:30] [INFO] [processor:513] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.19 MB)
+[2026-08-18 00:05:30] [INFO] [reprocessor:57] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-18 00:05:30] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-18 00:05:30] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-18 00:05:30] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-18 00:05:48] [INFO] [processor:513] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.22 MB)
+[2026-08-18 00:05:48] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 00:05:48] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 00:05:48] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (10 slots remaining today).
+[2026-08-18 00:05:48] [ERROR] [uploader:320] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-18 00:05:48] [INFO] [uploader:310] YouTube 24h upload quota check passed for 'PeterAKing' (10 slots remaining today).
+[2026-08-18 00:05:48] [WARNING] [uploader:141] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 00:05:48] [INFO] [uploader:342] [DRY-RUN] Simulated YouTube Short upload:
+  Title: T
+  File : source_test.mp4
+[2026-08-18 00:05:48] [INFO] [models:253] Recorded YouTube upload for PeterAKing/vid2 -> Short ID: mock_short_vid2
+[2026-08-18 00:05:49] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:05:49] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-18 00:05:49] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-18 00:05:49] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-18 00:05:49] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 00:05:50] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:05:50] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into final_fake_short.mp4...
+[2026-08-18 00:05:50] [INFO] [processor:431] Adding '@PeterAKing' banner at bottom of final_fake_short.mp4
+[2026-08-18 00:05:50] [INFO] [processor:460] Adding top watermark 'PETER' (light) at top of final_fake_short.mp4
+[2026-08-18 00:05:51] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.06 MB)
+[2026-08-18 00:05:51] [INFO] [main:145] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.mp4
+[2026-08-18 00:05:51] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TEST12345678.mp4
+[2026-08-18 00:05:51] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.txt
+[2026-08-18 00:05:51] [INFO] [main:201] ✅ Reposted Short saved locally at: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4
+[2026-08-18 00:05:51] [INFO] [main:203] Uploaded to your channel -> Short ID: mock_uploaded
+[2026-08-18 00:05:51] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:05:52] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:05:52] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 00:05:52] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-18 00:05:52] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-18 00:05:52] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-18 00:05:52] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-18 00:05:52] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 00:05:52] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-18 00:05:52] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-18 00:05:52] [INFO] [scheduler:288] [ChainAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-18 00:05:52] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/ChainAcc/AAA111BBB22.mp4
+[2026-08-18 00:05:52] [INFO] [models:253] Recorded YouTube upload for ChainAcc/AAA111BBB22 -> Short ID: mock_short
+[2026-08-18 00:05:52] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-18 00:05:52] [INFO] [scheduler:367] [ChainAcc] SUCCESS! Reposted 'Short One' -> mock_short
+[2026-08-18 00:05:52] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-18 00:05:52] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-18 00:05:52] [INFO] [scheduler:239] [ChainAcc] Account cycle done: 1 Short(s).
+[2026-08-18 00:05:52] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 00:05:52] [INFO] [models:253] Recorded YouTube upload for ClipAcc/VID00000001 -> Short ID: mock_short_VID00000001
+[2026-08-18 00:06:16] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:06:16] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:06:29] [INFO] [config:338] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-18 00:06:29] [INFO] [webui:1068] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-18 00:06:33] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 20:58:58] [INFO] [config:350] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 20:59:14] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 20:59:21] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 20:59:27] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 20:59:55] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 20:59:55] [INFO] [config:350] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 20:59:55] [INFO] [webui:405] [webui] Uploaded client_secret.json (173 bytes) -> /home/user/yt_shorts_repost_bot/accounts/new channel 1/client_secret.json
+[2026-08-18 21:00:05] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:00:05] [INFO] [config:350] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 21:00:05] [INFO] [webui:405] [webui] Uploaded client_secret.json (173 bytes) -> /home/user/yt_shorts_repost_bot/accounts/new channel 1/client_secret.json
+[2026-08-18 21:00:11] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:00:12] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:00:12] [INFO] [webui:590] [webui] Saved 1 account(s) to accounts.json
+[2026-08-18 21:00:12] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:00:39] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:00:39] [INFO] [reprocessor:77] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-18 21:00:41] [INFO] [reprocessor:90] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-18 21:00:41] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:00:41] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-18 21:00:41] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-18 21:00:41] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-18 21:00:55] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-18 21:00:56] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:00:56] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:00:56] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:00:56] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-18 21:00:56] [INFO] [processor:431] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-18 21:00:56] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-18 21:01:10] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-18 21:01:10] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:01:10] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-18 21:01:10] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-18 21:01:10] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /nonexistent/token.json
+[2026-08-18 21:01:10] [WARNING] [uploader:142] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:01:10] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-18 21:01:10] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:01:10] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-18 21:01:10] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:01:10] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-18 21:01:10] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 21:01:10] [INFO] [scheduler:123] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-18 21:01:10] [WARNING] [scheduler:132] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-18 21:01:10] [INFO] [scheduler:138] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-18 21:01:10] [INFO] [scheduler:151] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-18 21:01:10] [INFO] [scheduler:159] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 21:01:10] [INFO] [scheduler:176] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-18 21:01:10] [INFO] [scheduler:203] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-18 21:01:10] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-18 21:01:10] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-18 21:01:10] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-18 21:01:10] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /home/user/yt_shorts_repost_bot/accounts/testacc/token.json
+[2026-08-18 21:01:10] [WARNING] [uploader:142] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/accounts/testacc/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:01:10] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-18 21:01:10] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-18 21:01:10] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-18 21:01:10] [INFO] [scheduler:239] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-18 21:01:10] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 21:01:10] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 21:01:10] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-18 21:01:10] [INFO] [scheduler:138] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-18 21:01:10] [INFO] [scheduler:151] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-18 21:01:10] [INFO] [scheduler:159] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 21:01:10] [INFO] [scheduler:176] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-18 21:01:10] [INFO] [scheduler:203] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-18 21:01:10] [INFO] [scheduler:288] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:01:10] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-18 21:01:10] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-18 21:01:10] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /home/user/yt_shorts_repost_bot/accounts/onacc/token.json
+[2026-08-18 21:01:10] [WARNING] [uploader:142] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/accounts/onacc/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:01:10] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-18 21:01:10] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-18 21:01:10] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:01:10] [INFO] [scheduler:367] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-18 21:01:10] [INFO] [scheduler:239] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-18 21:01:10] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 21:01:11] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:01:12] [INFO] [webui:529] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-18 21:01:12] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:01:12] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:01:12] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-18 21:01:12] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-18 21:01:12] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-18 21:01:26] [INFO] [processor:513] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.19 MB)
+[2026-08-18 21:01:26] [INFO] [reprocessor:57] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-18 21:01:26] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-18 21:01:26] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-18 21:01:26] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-18 21:01:41] [INFO] [processor:513] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.22 MB)
+[2026-08-18 21:01:41] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:01:41] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:01:41] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'PeterAKing' (9 slots remaining today).
+[2026-08-18 21:01:41] [ERROR] [uploader:321] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-18 21:01:41] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'PeterAKing' (9 slots remaining today).
+[2026-08-18 21:01:41] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /nonexistent/token.json
+[2026-08-18 21:01:41] [WARNING] [uploader:142] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:01:41] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: T
+  File : source_test.mp4
+[2026-08-18 21:01:41] [INFO] [models:253] Recorded YouTube upload for PeterAKing/vid2 -> Short ID: mock_short_vid2
+[2026-08-18 21:01:42] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:01:42] [INFO] [webui:637] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-18 21:01:42] [INFO] [webui:637] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-18 21:01:42] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-18 21:01:42] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:01:42] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 21:01:42] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into final_fake_short.mp4...
+[2026-08-18 21:01:42] [INFO] [processor:431] Adding '@PeterAKing' banner at bottom of final_fake_short.mp4
+[2026-08-18 21:01:42] [INFO] [processor:460] Adding top watermark 'PETER' (light) at top of final_fake_short.mp4
+[2026-08-18 21:01:43] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.06 MB)
+[2026-08-18 21:01:43] [INFO] [main:145] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.mp4
+[2026-08-18 21:01:43] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TEST12345678.mp4
+[2026-08-18 21:01:43] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.txt
+[2026-08-18 21:01:43] [INFO] [main:201] ✅ Reposted Short saved locally at: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4
+[2026-08-18 21:01:43] [INFO] [main:203] Uploaded to your channel -> Short ID: mock_uploaded
+[2026-08-18 21:01:43] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:01:44] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:01:44] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 21:01:44] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-18 21:01:44] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-18 21:01:44] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-18 21:01:44] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-18 21:01:44] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 21:01:44] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-18 21:01:44] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-18 21:01:44] [INFO] [scheduler:288] [ChainAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:01:44] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/ChainAcc/AAA111BBB22.mp4
+[2026-08-18 21:01:44] [INFO] [models:253] Recorded YouTube upload for ChainAcc/AAA111BBB22 -> Short ID: mock_short
+[2026-08-18 21:01:44] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:01:44] [INFO] [scheduler:367] [ChainAcc] SUCCESS! Reposted 'Short One' -> mock_short
+[2026-08-18 21:01:44] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:01:44] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:01:44] [INFO] [scheduler:239] [ChainAcc] Account cycle done: 1 Short(s).
+[2026-08-18 21:01:44] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 21:01:44] [INFO] [models:253] Recorded YouTube upload for ClipAcc/VID00000001 -> Short ID: mock_short_VID00000001
+[2026-08-18 21:02:06] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:02:06] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:02:09] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:02:22] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:02:27] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:02:27] [INFO] [webui:590] [webui] Saved 1 account(s) to accounts.json
+[2026-08-18 21:02:27] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:02:54] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:02:54] [INFO] [reprocessor:77] Copy mode: re-encoding source_test.mp4 to a clean mp4...
+[2026-08-18 21:02:56] [INFO] [reprocessor:90] Re-encoded: /home/user/yt_shorts_bot/temp_clips/tD.mp4 (0.17 MB)
+[2026-08-18 21:02:56] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:02:56] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into tE.mp4...
+[2026-08-18 21:02:56] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of tE.mp4
+[2026-08-18 21:02:56] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of tE.mp4
+[2026-08-18 21:03:10] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tE.mp4 (0.19 MB)
+[2026-08-18 21:03:10] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:03:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:03:11] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:03:11] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into final_fake_short.mp4...
+[2026-08-18 21:03:11] [INFO] [processor:431] Adding 'SUBSCRIBE TEST' banner at bottom of final_fake_short.mp4
+[2026-08-18 21:03:11] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of final_fake_short.mp4
+[2026-08-18 21:03:25] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.20 MB)
+[2026-08-18 21:03:25] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:03:25] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TestAcc/AAA111BBB22.mp4
+[2026-08-18 21:03:25] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'TestAcc' (10 slots remaining today).
+[2026-08-18 21:03:25] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /nonexistent/token.json
+[2026-08-18 21:03:25] [WARNING] [uploader:142] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:03:25] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake_short.mp4
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for TestAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-18 21:03:25] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:03:25] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-18 21:03:25] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:03:25] [INFO] [scheduler:376] [TestAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid0 -> Short ID: mock0
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid1 -> Short ID: mock1
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid2 -> Short ID: mock2
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid3 -> Short ID: mock3
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid4 -> Short ID: mock4
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid5 -> Short ID: mock5
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid6 -> Short ID: mock6
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid7 -> Short ID: mock7
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid8 -> Short ID: mock8
+[2026-08-18 21:03:25] [INFO] [models:253] Recorded YouTube upload for QuotaAcc/vid9 -> Short ID: mock9
+[2026-08-18 21:03:25] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 21:03:25] [INFO] [scheduler:123] [TestAcc] Watermarks: bottom='SUBSCRIBE TEST' top='MY CHANNEL' (enabled bottom=True, top=True)
+[2026-08-18 21:03:25] [WARNING] [scheduler:132] [TestAcc] ⚠️ Watermarks are configured ('SUBSCRIBE TEST') but process_mode is 'copy' (copy = original as-is). Switch this account to 'render' mode in Settings -> Source to apply watermarks + subtitles.
+[2026-08-18 21:03:25] [INFO] [scheduler:138] --- Account: TestAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-18 21:03:25] [INFO] [scheduler:151] [TestAcc] YouTube 24h upload quota: 9 slots remaining.
+[2026-08-18 21:03:26] [INFO] [scheduler:159] [TestAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 21:03:26] [INFO] [scheduler:176] [TestAcc] Selection order: newest first (2 candidates)
+[2026-08-18 21:03:26] [INFO] [scheduler:203] [TestAcc] --> Reposting Short: 'Short Two' (https://www.youtube.com/shorts/CCC333DDD44)
+[2026-08-18 21:03:26] [INFO] [scheduler:288] [TestAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.mp4
+[2026-08-18 21:03:26] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/TestAcc/CCC333DDD44.mp4
+[2026-08-18 21:03:26] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'TestAcc' (9 slots remaining today).
+[2026-08-18 21:03:26] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /home/user/yt_shorts_repost_bot/accounts/testacc/token.json
+[2026-08-18 21:03:26] [WARNING] [uploader:142] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/accounts/testacc/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:03:26] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: TEST Fake Short Title #funny #clips
+  File : final_fake.mp4
+[2026-08-18 21:03:26] [INFO] [models:253] Recorded YouTube upload for TestAcc/CCC333DDD44 -> Short ID: mock_short_CCC333DDD44
+[2026-08-18 21:03:26] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/TestAcc_repost_CCC333DDD44.txt
+[2026-08-18 21:03:26] [INFO] [scheduler:367] [TestAcc] SUCCESS! Reposted 'Short Two' -> mock_short_CCC333DDD44
+[2026-08-18 21:03:26] [INFO] [scheduler:239] [TestAcc] Account cycle done: 1 Short(s).
+[2026-08-18 21:03:26] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 21:03:26] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 21:03:26] [INFO] [scheduler:89] Skipping disabled account: OffAcc
+[2026-08-18 21:03:26] [INFO] [scheduler:138] --- Account: OnAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 10 | mode: copy ---
+[2026-08-18 21:03:26] [INFO] [scheduler:151] [OnAcc] YouTube 24h upload quota: 10 slots remaining.
+[2026-08-18 21:03:26] [INFO] [scheduler:159] [OnAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 21:03:26] [INFO] [scheduler:176] [OnAcc] Selection order: newest first (2 candidates)
+[2026-08-18 21:03:26] [INFO] [scheduler:203] [OnAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-18 21:03:26] [INFO] [scheduler:288] [OnAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:03:26] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/OnAcc/AAA111BBB22.mp4
+[2026-08-18 21:03:26] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'OnAcc' (10 slots remaining today).
+[2026-08-18 21:03:26] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /home/user/yt_shorts_repost_bot/accounts/onacc/token.json
+[2026-08-18 21:03:26] [WARNING] [uploader:142] YouTube OAuth client_secret file '/home/user/yt_shorts_repost_bot/accounts/onacc/client_secret.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:03:26] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: Fake Short Title
+  File : final_fake.mp4
+[2026-08-18 21:03:26] [INFO] [models:253] Recorded YouTube upload for OnAcc/AAA111BBB22 -> Short ID: mock_short_AAA111BBB22
+[2026-08-18 21:03:26] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/OnAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:03:26] [INFO] [scheduler:367] [OnAcc] SUCCESS! Reposted 'Short One' -> mock_short_AAA111BBB22
+[2026-08-18 21:03:26] [INFO] [scheduler:239] [OnAcc] Account cycle done: 1 Short(s).
+[2026-08-18 21:03:26] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 21:03:26] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:03:27] [INFO] [webui:529] [webui] Saved settings for account 'simpson_pimp'
+[2026-08-18 21:03:27] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:03:28] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:03:28] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:03:28] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into no_subs.mp4...
+[2026-08-18 21:03:28] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of no_subs.mp4
+[2026-08-18 21:03:28] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of no_subs.mp4
+[2026-08-18 21:03:42] [INFO] [processor:513] Successfully rendered vertical short: /tmp/no_subs.mp4 (0.19 MB)
+[2026-08-18 21:03:42] [INFO] [reprocessor:57] Render mode: transcribing + burning subtitles + burning watermarks + mixing BGM...
+[2026-08-18 21:03:42] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=blur) and burning subtitles into with_subs.mp4...
+[2026-08-18 21:03:42] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of with_subs.mp4
+[2026-08-18 21:03:42] [INFO] [processor:460] Adding top watermark 'MY CHANNEL' (light) at top of with_subs.mp4
+[2026-08-18 21:03:57] [INFO] [processor:513] Successfully rendered vertical short: /tmp/with_subs.mp4 (0.22 MB)
+[2026-08-18 21:03:57] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:03:57] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:03:57] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'PeterAKing' (8 slots remaining today).
+[2026-08-18 21:03:57] [ERROR] [uploader:321] 🚫 CHANNEL SAFETY LOCK for account 'PeterAKing': this Google login belongs to channel(s) 'Simpson Pimp', but this tab expects 'PeterAKing'. Upload BLOCKED - connect this tab with the Google account that owns 'PeterAKing'.
+[2026-08-18 21:03:57] [INFO] [uploader:311] YouTube 24h upload quota check passed for 'PeterAKing' (8 slots remaining today).
+[2026-08-18 21:03:57] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: /nonexistent/token.json
+[2026-08-18 21:03:57] [WARNING] [uploader:142] YouTube OAuth client_secret file '/nonexistent/client.json' not found. YouTube uploads will run in DRY-RUN mode.
+[2026-08-18 21:03:57] [INFO] [uploader:343] [DRY-RUN] Simulated YouTube Short upload:
+  Title: T
+  File : source_test.mp4
+[2026-08-18 21:03:57] [INFO] [models:253] Recorded YouTube upload for PeterAKing/vid2 -> Short ID: mock_short_vid2
+[2026-08-18 21:03:58] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:03:58] [INFO] [webui:637] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1']
+[2026-08-18 21:03:58] [INFO] [webui:637] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 1']
+[2026-08-18 21:03:58] [INFO] [main:91] === REPOSTING SINGLE SHORT FOR ACCOUNT 'PeterAKing': https://www.youtube.com/shorts/TEST12345678 ===
+[2026-08-18 21:03:58] [INFO] [reprocessor:57] Render mode: burning watermarks + mixing BGM...
+[2026-08-18 21:03:58] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 21:03:58] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into final_fake_short.mp4...
+[2026-08-18 21:03:58] [INFO] [processor:431] Adding '@PeterAKing' banner at bottom of final_fake_short.mp4
+[2026-08-18 21:03:58] [INFO] [processor:460] Adding top watermark 'PETER' (light) at top of final_fake_short.mp4
+[2026-08-18 21:03:59] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4 (0.06 MB)
+[2026-08-18 21:03:59] [INFO] [main:145] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.mp4
+[2026-08-18 21:03:59] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake_short.mp4 -> key: reposts/TEST12345678.mp4
+[2026-08-18 21:03:59] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/PeterAKing_repost_TEST12345678.txt
+[2026-08-18 21:03:59] [INFO] [main:201] ✅ Reposted Short saved locally at: /home/user/yt_shorts_repost_bot/temp_clips/final_fake_short.mp4
+[2026-08-18 21:03:59] [INFO] [main:203] Uploaded to your channel -> Short ID: mock_uploaded
+[2026-08-18 21:03:59] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:04:00] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:04:00] [INFO] [scheduler:84] === STARTING SHORTS REPOST CYCLE ===
+[2026-08-18 21:04:00] [INFO] [scheduler:112] [ChainAcc] Channel safety lock: uploads verified against 'ChainAcc'.
+[2026-08-18 21:04:00] [INFO] [scheduler:123] [ChainAcc] Watermarks: bottom='@ChainAcc' top='CHAIN TOP' (enabled bottom=True, top=True)
+[2026-08-18 21:04:00] [INFO] [scheduler:138] --- Account: ChainAcc | channels: ['https://www.youtube.com/@FakeChannel'] | max uploads/day: 7 | mode: render ---
+[2026-08-18 21:04:00] [INFO] [scheduler:151] [ChainAcc] YouTube 24h upload quota: 7 slots remaining.
+[2026-08-18 21:04:00] [INFO] [scheduler:159] [ChainAcc] Checking channel: https://www.youtube.com/@FakeChannel
+[2026-08-18 21:04:00] [INFO] [scheduler:170] [ChainAcc] Selection order: oldest first (1 candidates)
+[2026-08-18 21:04:00] [INFO] [scheduler:203] [ChainAcc] --> Reposting Short: 'Short One' (https://www.youtube.com/shorts/AAA111BBB22)
+[2026-08-18 21:04:00] [INFO] [scheduler:288] [ChainAcc] 💾 Saved local copy: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:04:00] [INFO] [storage:180] [DRY-RUN] Simulated R2 upload of final_fake.mp4 -> key: reposts/ChainAcc/AAA111BBB22.mp4
+[2026-08-18 21:04:00] [INFO] [models:253] Recorded YouTube upload for ChainAcc/AAA111BBB22 -> Short ID: mock_short
+[2026-08-18 21:04:00] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:04:00] [INFO] [scheduler:367] [ChainAcc] SUCCESS! Reposted 'Short One' -> mock_short
+[2026-08-18 21:04:00] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.mp4
+[2026-08-18 21:04:00] [INFO] [scheduler:376] [ChainAcc] 🗑️ Deleted local copy after upload: /home/user/yt_shorts_repost_bot/finished_shorts/ChainAcc_repost_AAA111BBB22.txt
+[2026-08-18 21:04:00] [INFO] [scheduler:239] [ChainAcc] Account cycle done: 1 Short(s).
+[2026-08-18 21:04:00] [INFO] [scheduler:96] === CYCLE COMPLETE: uploaded 1 Short(s) across all accounts ===
+[2026-08-18 21:04:00] [INFO] [models:253] Recorded YouTube upload for ClipAcc/VID00000001 -> Short ID: mock_short_VID00000001
+[2026-08-18 21:04:22] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:04:22] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:04:23] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:04:23] [INFO] [config:350] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 21:04:23] [INFO] [webui:405] [webui] Uploaded client_secret.json (173 bytes) -> /home/user/yt_shorts_repost_bot/accounts/new channel 1/client_secret.json
+[2026-08-18 21:04:35] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-18 21:04:36] [INFO] [webui:1076] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-21 17:25:23] [INFO] [config:350] Loaded 1 account(s) from accounts.json: OldAcc
+[2026-08-21 17:25:39] [INFO] [webui:1076] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-21 17:25:46] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-21 17:26:09] [INFO] [webui:637] [webui] Deleted account 'OldAcc'. Remaining: ['New Channel 1']
+[2026-08-21 17:26:30] [INFO] [webui:405] [webui] Uploaded client_secret.json (406 bytes) -> F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 1\client_secret.json
+[2026-08-21 17:26:35] [INFO] [webui:438] [webui] Connect 'New Channel 1': secret=F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 1\client_secret.json token=F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 1\token.json
+[2026-08-21 17:26:35] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 1\token.json
+[2026-08-21 17:26:35] [INFO] [uploader:133] Refreshing expired YouTube OAuth token...
+[2026-08-21 17:26:35] [WARNING] [webui:42] [webui] Job 'test-youtube' already running - ignoring duplicate.
+[2026-08-21 17:26:36] [INFO] [uploader:161] Saved new OAuth token to F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 1\token.json
+[2026-08-21 17:26:36] [INFO] [uploader:172] Connected to YouTube Data API v3 successfully.
+[2026-08-21 17:26:36] [INFO] [webui:444] [webui] ✅ YouTube auth OK for 'New Channel 1'
+[2026-08-21 17:26:37] [INFO] [webui:450] [webui] 🎯 ACCOUNT 'New Channel 1' is connected to CHANNEL 'Simpson Pimp'
+[2026-08-21 17:27:40] [INFO] [config:350] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-21 17:27:41] [INFO] [webui:1076] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-21 17:27:42] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-21 17:28:11] [INFO] [webui:405] [webui] Uploaded client_secret.json (406 bytes) -> F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 2\client_secret.json
+[2026-08-21 17:28:12] [INFO] [webui:438] [webui] Connect 'New Channel 2': secret=F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 2\client_secret.json token=F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 2\token.json
+[2026-08-21 17:28:12] [INFO] [uploader:123] 🔑 Auth for this tab uses token file: F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 2\token.json
+[2026-08-21 17:28:12] [INFO] [uploader:147] Starting OAuth authorization flow...
+[2026-08-21 17:28:12] [INFO] [uploader:69] 🔐 Opening browser for Google login...
+[2026-08-21 17:28:12] [INFO] [uploader:70]    If a browser tab did NOT open, copy this URL into Chrome manually:
+[2026-08-21 17:28:12] [INFO] [uploader:71]    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=114847214584-26gjbr3oj4sptp5pciqojl8l9l8d3u7r.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A60017%2F&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.upload+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&state=TrzGYoDidf87uVR924crsipSa9j2tj&code_challenge=K408dnaLvvxIT4FJuV7kTWoU7cuStsOvxkxm_usdcJ0&code_challenge_method=S256&access_type=offline&include_granted_scopes=true&prompt=consent+select_account
+[2026-08-21 17:31:47] [WARNING] [webui:42] [webui] Job 'test-youtube' already running - ignoring duplicate.
+[2026-08-21 17:31:50] [WARNING] [webui:42] [webui] Job 'test-youtube' already running - ignoring duplicate.
+[2026-08-21 17:31:54] [INFO] [webui:405] [webui] Uploaded client_secret.json (406 bytes) -> F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 2\client_secret.json
+[2026-08-21 17:31:55] [WARNING] [webui:42] [webui] Job 'test-youtube' already running - ignoring duplicate.
+[2026-08-21 17:31:58] [WARNING] [webui:42] [webui] Job 'test-youtube' already running - ignoring duplicate.
+[2026-08-21 17:32:26] [INFO] [uploader:161] Saved new OAuth token to F:\youtube 2\yt_shorts_repost_bot\accounts\new channel 2\token.json
+[2026-08-21 17:32:26] [INFO] [uploader:172] Connected to YouTube Data API v3 successfully.
+[2026-08-21 17:32:26] [INFO] [webui:444] [webui] ✅ YouTube auth OK for 'New Channel 2'
+[2026-08-21 17:32:27] [INFO] [webui:450] [webui] 🎯 ACCOUNT 'New Channel 2' is connected to CHANNEL 'PeterAKing'
+[2026-08-23 07:07:55] [INFO] [config:350] Loaded 2 account(s) from accounts.json: New Channel 1, New Channel 2
+[2026-08-23 07:08:10] [INFO] [webui:1076] Web control panel starting on http://0.0.0.0:5100 ...
+[2026-08-23 07:08:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.

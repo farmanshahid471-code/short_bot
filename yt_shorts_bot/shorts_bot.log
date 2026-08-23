@@ -1,0 +1,559 @@
+[2026-08-14 22:19:58] [INFO] [webui:1053] Web control panel starting on http://0.0.0.0:5171 ...
+[2026-08-14 22:20:04] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-15 00:18:00] [INFO] [webui:895] Web control panel starting on http://0.0.0.0:5167 ...
+[2026-08-15 00:18:05] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-15 09:24:42] [INFO] [processor:255] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 09:24:42] [INFO] [processor:257] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into wm3_out.mp4...
+[2026-08-15 09:24:42] [INFO] [processor:350] Adding 'LIKE & SUBSCRIBE' banner at bottom of wm3_out.mp4
+[2026-08-15 09:24:42] [INFO] [processor:372] Adding top watermark 'Simpson Pimp' (light) at top of wm3_out.mp4
+[2026-08-15 09:24:42] [INFO] [processor:381] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 09:24:49] [INFO] [processor:425] Successfully rendered vertical short: /tmp/wm3_out.mp4 (1.62 MB)
+[2026-08-15 09:31:06] [INFO] [processor:256] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 09:31:06] [INFO] [processor:258] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w4_out.mp4...
+[2026-08-15 09:31:06] [INFO] [processor:351] Adding 'LIKE & SUBSCRIBE' banner at bottom of w4_out.mp4
+[2026-08-15 09:31:06] [INFO] [processor:385] Adding top watermark 'Simpson Pimp' (light) at top of w4_out.mp4
+[2026-08-15 09:31:06] [INFO] [processor:394] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 09:31:13] [INFO] [processor:438] Successfully rendered vertical short: /tmp/w4_out.mp4 (1.60 MB)
+[2026-08-15 09:43:43] [INFO] [processor:256] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 09:43:43] [INFO] [processor:258] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w5_out.mp4...
+[2026-08-15 09:43:43] [INFO] [processor:348] Adding 'LIKE & SUBSCRIBE' banner at bottom of w5_out.mp4
+[2026-08-15 09:43:43] [INFO] [processor:369] Adding top watermark 'Simpson Pimp' (light) at top of w5_out.mp4
+[2026-08-15 09:43:43] [INFO] [processor:378] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 09:43:49] [INFO] [processor:422] Successfully rendered vertical short: /tmp/w5_out.mp4 (1.62 MB)
+[2026-08-15 10:03:18] [INFO] [processor:258] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:03:18] [INFO] [processor:260] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w6_out.mp4...
+[2026-08-15 10:03:18] [INFO] [processor:351] Adding 'LIKE & SUBSCRIBE' banner at bottom of w6_out.mp4
+[2026-08-15 10:03:18] [INFO] [processor:373] Adding top watermark 'Simpson Pimp' (light) at top of w6_out.mp4
+[2026-08-15 10:03:18] [INFO] [processor:382] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:03:18] [ERROR] [processor:457] FFmpeg failed while processing short: Command '['/usr/bin/ffmpeg', '-y', '-hide_banner', '-loglevel', 'error', '-i', '/tmp/w6.mp4', '-stream_loop', '-1', '-i', '/home/user/yt_shorts_bot/bgm/demo_beat.mp3', '-filter_complex', "[0:v]split=2[bg][fg];[bg]scale=1080:1440:force_original_aspect_ratio=increase,crop=1080:1440,boxblur=20:5[bg];[fg]scale=1080:1440:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[vfit];[vfit]subtitles='/tmp/w6.srt':force_style='Fontname=Arial,Fontsize=28,Bold=1,PrimaryColour=&H0000FFFF,SecondaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=3,Shadow=2,Alignment=2,MarginV=85'[v_s1];[v_s1]drawtext=text='LIKE & SUBSCRIBE':font='Arial':fontsize=40:fontcolor=white@1.0:fontstyle=3:x=(w-text_w)/2:y=1364[v_s2];[v_s2]drawtext=text='Simpson Pimp':font='Arial':fontsize=40:fontcolor=white@0.5:fontstyle=3:x=(w-text_w)/2:y=28[vout];[0:a]volume=1.0[a0];[1:a]volume=0.18[a1];[a0][a1]amix=inputs=2:duration=first:dropout_transition=2[aout]", '-map', '[vout]', '-map', '[aout]', '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-threads', '0', '/tmp/w6_out.mp4']' returned non-zero exit status 8.
+[2026-08-15 10:03:35] [INFO] [processor:266] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:03:35] [INFO] [processor:268] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w6_out.mp4...
+[2026-08-15 10:03:35] [INFO] [processor:359] Adding 'LIKE & SUBSCRIBE' banner at bottom of w6_out.mp4
+[2026-08-15 10:03:35] [INFO] [processor:381] Adding top watermark 'Simpson Pimp' (light) at top of w6_out.mp4
+[2026-08-15 10:03:35] [INFO] [processor:390] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:03:35] [ERROR] [processor:465] FFmpeg failed while processing short: Command '['/usr/bin/ffmpeg', '-y', '-hide_banner', '-loglevel', 'error', '-i', '/tmp/w6.mp4', '-stream_loop', '-1', '-i', '/home/user/yt_shorts_bot/bgm/demo_beat.mp3', '-filter_complex', "[0:v]split=2[bg][fg];[bg]scale=1080:1440:force_original_aspect_ratio=increase,crop=1080:1440,boxblur=20:5[bg];[fg]scale=1080:1440:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[vfit];[vfit]subtitles='/tmp/w6.srt':force_style='Fontname=Arial,Fontsize=28,Bold=1,PrimaryColour=&H0000FFFF,SecondaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=3,Shadow=2,Alignment=2,MarginV=85'[v_s1];[v_s1]drawtext=text='LIKE & SUBSCRIBE':font='DejaVu Sans:style=Italic':fontsize=40:fontcolor=white@1.0:x=(w-text_w)/2:y=1364[v_s2];[v_s2]drawtext=text='Simpson Pimp':font='DejaVu Sans:style=Italic':fontsize=40:fontcolor=white@0.5:x=(w-text_w)/2:y=28[vout];[0:a]volume=1.0[a0];[1:a]volume=0.18[a1];[a0][a1]amix=inputs=2:duration=first:dropout_transition=2[aout]", '-map', '[vout]', '-map', '[aout]', '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-threads', '0', '/tmp/w6_out.mp4']' returned non-zero exit status 8.
+[2026-08-15 10:04:01] [INFO] [processor:284] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:04:01] [INFO] [processor:286] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w7_out.mp4...
+[2026-08-15 10:04:01] [INFO] [processor:384] Adding 'LIKE & SUBSCRIBE' banner at bottom of w7_out.mp4
+[2026-08-15 10:04:01] [INFO] [processor:413] Adding top watermark 'Simpson Pimp' (light) at top of w7_out.mp4
+[2026-08-15 10:04:01] [INFO] [processor:422] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:04:07] [INFO] [processor:466] Successfully rendered vertical short: /tmp/w7_out.mp4 (1.63 MB)
+[2026-08-15 10:06:22] [INFO] [processor:286] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:06:22] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w8_out.mp4...
+[2026-08-15 10:06:22] [INFO] [processor:386] Adding 'LIKE & SUBSCRIBE' banner at bottom of w8_out.mp4
+[2026-08-15 10:06:22] [INFO] [processor:415] Adding top watermark 'Simpson Pimp' (light) at top of w8_out.mp4
+[2026-08-15 10:06:22] [INFO] [processor:424] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:06:28] [INFO] [processor:468] Successfully rendered vertical short: /tmp/w8_out.mp4 (1.65 MB)
+[2026-08-15 10:06:42] [INFO] [processor:286] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:06:42] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w9_out.mp4...
+[2026-08-15 10:06:42] [INFO] [processor:386] Adding 'LIKE & SUBSCRIBE' banner at bottom of w9_out.mp4
+[2026-08-15 10:06:42] [INFO] [processor:415] Adding top watermark 'Simpson Pimp' (light) at top of w9_out.mp4
+[2026-08-15 10:06:42] [INFO] [processor:424] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:06:47] [INFO] [processor:468] Successfully rendered vertical short: /tmp/w9_out.mp4 (0.08 MB)
+[2026-08-15 10:07:59] [INFO] [processor:286] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:07:59] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w10_out.mp4...
+[2026-08-15 10:07:59] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of w10_out.mp4
+[2026-08-15 10:07:59] [INFO] [processor:417] Adding top watermark 'Simpson Pimp' (light) at top of w10_out.mp4
+[2026-08-15 10:07:59] [INFO] [processor:426] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:08:04] [INFO] [processor:470] Successfully rendered vertical short: /tmp/w10_out.mp4 (0.08 MB)
+[2026-08-15 10:12:30] [INFO] [processor:286] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:12:30] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w11_out.mp4...
+[2026-08-15 10:12:30] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of w11_out.mp4
+[2026-08-15 10:12:30] [INFO] [processor:417] Adding top watermark 'Simpson Pimp' (light) at top of w11_out.mp4
+[2026-08-15 10:12:30] [INFO] [processor:426] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:12:36] [INFO] [processor:470] Successfully rendered vertical short: /tmp/w11_out.mp4 (1.66 MB)
+[2026-08-15 10:12:47] [INFO] [processor:286] Selected background music track: 'demo_beat.mp3'
+[2026-08-15 10:12:47] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into w12_out.mp4...
+[2026-08-15 10:12:47] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of w12_out.mp4
+[2026-08-15 10:12:47] [INFO] [processor:417] Adding top watermark 'Simpson Pimp' (light) at top of w12_out.mp4
+[2026-08-15 10:12:47] [INFO] [processor:426] Mixing BGM 'demo_beat.mp3' at 18% volume with main speech at 100% volume...
+[2026-08-15 10:12:51] [INFO] [processor:470] Successfully rendered vertical short: /tmp/w12_out.mp4 (0.08 MB)
+[2026-08-16 12:41:37] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:42:00] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:42:48] [INFO] [webui:436] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:42:48] [INFO] [webui:436] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:42:48] [INFO] [webui:488] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 12:42:48] [INFO] [webui:488] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 12:42:48] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:44:16] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:44:16] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:44:16] [INFO] [webui:509] [webui] Saved 7 account(s) to accounts.json
+[2026-08-16 12:44:16] [INFO] [webui:509] [webui] Saved 7 account(s) to accounts.json
+[2026-08-16 12:44:16] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:44:32] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:44:32] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:44:32] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:44:32] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:44:32] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:44:40] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:44:40] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:44:40] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:44:40] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:44:40] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:44:59] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:44:59] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:44:59] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:44:59] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:44:59] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:47:18] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 12:47:18] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 12:47:18] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 12:47:29] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 12:47:38] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 12:47:38] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 12:47:38] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 12:47:49] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 12:47:49] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 12:47:49] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 12:47:49] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 12:47:52] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 12:47:53] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 12:48:03] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 12:48:20] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 12:48:24] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 12:48:24] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 12:48:24] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 12:48:35] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 12:48:35] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 12:48:35] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 12:48:35] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 12:48:38] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 12:48:39] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 12:48:50] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 12:49:06] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 12:51:41] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:51:41] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:51:41] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:51:41] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:51:41] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:51:43] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 12:51:43] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 12:51:43] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 12:51:53] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 12:51:54] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 12:51:54] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 12:51:54] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 12:51:57] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 12:51:57] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 12:52:08] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 12:52:25] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 12:52:45] [INFO] [webui:954] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 12:52:56] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:54:25] [INFO] [webui:954] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 12:54:25] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:54:44] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 12:54:44] [INFO] [webui:449] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 12:54:44] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:54:44] [INFO] [webui:509] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 12:54:44] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 12:54:46] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 12:54:46] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 12:54:46] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 12:54:56] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 12:54:57] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 12:54:57] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 12:54:57] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 12:55:00] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 12:55:00] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 12:55:12] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 12:55:28] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 13:25:21] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:25:38] [INFO] [webui:467] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 13:25:38] [WARNING] [webui:130] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 13:25:38] [INFO] [webui:467] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:25:38] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 13:25:38] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:26:15] [INFO] [webui:472] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 13:26:15] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 13:26:15] [INFO] [webui:472] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:26:15] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 13:26:15] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:26:19] [INFO] [webui:472] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:26:19] [INFO] [webui:472] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 13:26:19] [INFO] [webui:532] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 13:26:19] [INFO] [webui:532] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 13:26:19] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:26:21] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 13:26:21] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 13:26:21] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 13:26:32] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 13:26:33] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 13:26:33] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 13:26:33] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 13:26:36] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 13:26:36] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 13:26:47] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 13:27:04] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 13:27:20] [INFO] [webui:472] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 13:27:20] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 13:27:20] [INFO] [webui:472] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:27:20] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 13:27:20] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:27:44] [INFO] [webui:987] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 13:27:44] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:27:56] [INFO] [webui:472] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:34:15] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:34:35] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:34:35] [INFO] [webui:564] [webui] Saved 1 account(s) to accounts.json
+[2026-08-16 13:34:35] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 13:34:46] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:34:46] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 13:34:46] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 13:34:50] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:34:50] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 13:34:50] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 13:34:55] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:34:55] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 13:34:55] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 13:35:05] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:35:05] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 13:35:05] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 13:35:11] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 13:35:11] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 13:35:11] [INFO] [webui:564] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 13:35:11] [INFO] [webui:564] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 13:35:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:35:12] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 13:35:12] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 13:35:12] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 13:35:23] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 13:35:24] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 13:35:24] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 13:35:24] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 13:35:27] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 13:35:27] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 13:35:38] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 13:35:55] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 13:36:11] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 13:36:11] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 13:36:11] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:36:11] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 13:36:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 13:36:12] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 13:36:12] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 13:36:12] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 13:36:42] [INFO] [webui:1027] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 13:36:42] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:08:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:08:34] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 14:08:34] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 14:08:34] [INFO] [webui:564] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 14:08:34] [INFO] [webui:564] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 14:08:34] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:08:35] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 14:08:35] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 14:08:35] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 14:08:46] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 14:08:47] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 14:08:47] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 14:08:47] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 14:08:50] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 14:08:50] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 14:09:02] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 14:09:19] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 14:09:35] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 14:09:35] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 14:09:35] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 14:09:35] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 14:09:35] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:09:36] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 14:09:36] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 14:09:36] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 14:19:07] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 14:19:07] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 14:19:07] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 14:20:54] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 14:20:54] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 14:20:54] [INFO] [webui:564] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 14:20:54] [INFO] [webui:564] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 14:20:54] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:20:55] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 14:20:55] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 14:20:55] [INFO] [processor:417] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 14:21:06] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 14:21:07] [INFO] [processor:288] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 14:21:07] [INFO] [processor:388] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 14:21:07] [INFO] [processor:417] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 14:21:10] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 14:21:10] [INFO] [processor:288] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 14:21:22] [INFO] [processor:470] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 14:21:39] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 14:21:55] [INFO] [webui:504] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 14:21:55] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 14:21:55] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 14:21:55] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 14:21:55] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 14:21:55] [INFO] [webui:504] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 14:21:55] [INFO] [webui:564] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 14:21:55] [INFO] [webui:397] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 14:22:22] [INFO] [webui:1027] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 14:22:22] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:08:07] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:09:06] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 19:09:06] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 19:09:06] [INFO] [webui:584] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 19:09:06] [INFO] [webui:584] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 19:09:06] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:09:07] [INFO] [processor:293] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 19:09:07] [INFO] [processor:394] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 19:09:07] [INFO] [processor:423] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 19:09:18] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 19:09:18] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 19:09:18] [INFO] [processor:394] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 19:09:18] [INFO] [processor:423] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 19:09:21] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 19:09:22] [INFO] [processor:293] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 19:09:33] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 19:09:49] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 19:09:51] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 19:09:51] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 19:09:51] [INFO] [webui:523] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 19:09:51] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 19:09:51] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 19:09:51] [INFO] [webui:523] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 19:09:51] [INFO] [webui:584] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 19:09:51] [INFO] [webui:401] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 19:11:19] [INFO] [webui:1053] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 19:11:19] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:47] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-16 20:29:47] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 20:29:47] [INFO] [webui:584] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 20:29:47] [INFO] [webui:584] [webui] Saved 5 account(s) to accounts.json
+[2026-08-16 20:29:47] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1', 'New Channel 3', 'New Channel 4', 'New Channel 5']
+[2026-08-16 20:29:47] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:29:49] [INFO] [processor:293] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-16 20:29:49] [INFO] [processor:394] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-16 20:29:49] [INFO] [processor:423] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-16 20:30:00] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-16 20:30:01] [INFO] [processor:293] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-16 20:30:01] [INFO] [processor:394] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-16 20:30:01] [INFO] [processor:423] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-16 20:30:04] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-16 20:30:04] [INFO] [processor:293] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-16 20:30:16] [INFO] [processor:476] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-16 20:30:33] [INFO] [hashtags:244] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-16 20:30:34] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 2'
+[2026-08-16 20:30:34] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-16 20:30:34] [INFO] [webui:523] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 20:30:34] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 2']
+[2026-08-16 20:30:34] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-16 20:30:34] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-16 20:30:35] [INFO] [webui:523] [webui] Saved settings for account 'PeterAKing'
+[2026-08-16 20:30:35] [INFO] [webui:584] [webui] Saved 2 account(s) to accounts.json
+[2026-08-16 20:30:35] [INFO] [webui:401] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-16 20:31:50] [INFO] [webui:1067] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-16 20:31:50] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:01:18] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:01:18] [INFO] [processor:139] Transcribing audio from src_9x16.mp4 using CPU whisper (mode=viral)...
+[2026-08-18 00:01:18] [INFO] [processor:101] Loading faster-whisper model 'tiny.en' on CPU (int8)...
+[2026-08-18 00:01:20] [INFO] [processor:110] faster-whisper CPU model loaded successfully.
+[2026-08-18 00:01:20] [INFO] [processor:143] Detected language 'en' with probability 1.00
+[2026-08-18 00:01:24] [INFO] [processor:189] Generated SRT subtitles at /tmp/src_9x16.srt (0 lines)
+[2026-08-18 00:01:24] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into auto_aspect.mp4...
+[2026-08-18 00:01:24] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of auto_aspect.mp4
+[2026-08-18 00:01:24] [INFO] [processor:460] Adding top watermark 'TOP' (light) at top of auto_aspect.mp4
+[2026-08-18 00:01:29] [INFO] [processor:513] Successfully rendered vertical short: /tmp/auto_aspect.mp4 (3.49 MB)
+[2026-08-18 00:01:29] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 00:01:29] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into auto_aspect2.mp4...
+[2026-08-18 00:01:32] [INFO] [processor:513] Successfully rendered vertical short: /tmp/auto_aspect2.mp4 (1.98 MB)
+[2026-08-18 00:01:53] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:01:53] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto9.mp4...
+[2026-08-18 00:01:57] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto9.mp4 (2.56 MB)
+[2026-08-18 00:01:57] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 00:01:57] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into t_auto34.mp4...
+[2026-08-18 00:02:00] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto34.mp4 (1.98 MB)
+[2026-08-18 00:02:00] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into t_bars.mp4...
+[2026-08-18 00:02:05] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_bars.mp4 (1.89 MB)
+[2026-08-18 00:02:26] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:02:26] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto9.mp4...
+[2026-08-18 00:02:29] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto9.mp4 (2.56 MB)
+[2026-08-18 00:02:33] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:02:33] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto9.mp4...
+[2026-08-18 00:02:36] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto9.mp4 (2.56 MB)
+[2026-08-18 00:02:44] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:02:44] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto9.mp4...
+[2026-08-18 00:02:48] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto9.mp4 (2.56 MB)
+[2026-08-18 00:02:48] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 00:02:48] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into t_auto34.mp4...
+[2026-08-18 00:02:51] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto34.mp4 (1.98 MB)
+[2026-08-18 00:02:51] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into t_bars.mp4...
+[2026-08-18 00:02:55] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_bars.mp4 (1.89 MB)
+[2026-08-18 00:03:09] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:03:09] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into d_auto.mp4...
+[2026-08-18 00:03:12] [INFO] [processor:513] Successfully rendered vertical short: /tmp/d_auto.mp4 (2.56 MB)
+[2026-08-18 00:03:40] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:03:40] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto_9_16.mp4...
+[2026-08-18 00:03:43] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_9_16.mp4 (2.56 MB)
+[2026-08-18 00:03:43] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 00:03:43] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into t_auto_3_4.mp4...
+[2026-08-18 00:03:46] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_3_4.mp4 (1.98 MB)
+[2026-08-18 00:03:46] [INFO] [processor:288] Aspect 'auto': source is 800x1000 -> canvas 1080x1350 (like the original)
+[2026-08-18 00:03:46] [INFO] [processor:330] Rendering 1080x1350 (800:1000, fill=crop) and burning subtitles into t_auto_4_5.mp4...
+[2026-08-18 00:03:49] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_4_5.mp4 (2.04 MB)
+[2026-08-18 00:03:49] [INFO] [processor:288] Aspect 'auto': source is 720x720 -> canvas 1080x1080 (like the original)
+[2026-08-18 00:03:49] [INFO] [processor:330] Rendering 1080x1080 (720:720, fill=crop) and burning subtitles into t_auto_1_1.mp4...
+[2026-08-18 00:03:51] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_1_1.mp4 (1.53 MB)
+[2026-08-18 00:03:51] [INFO] [processor:288] Aspect 'auto': source is 1280x720 -> canvas 1080x608 (like the original)
+[2026-08-18 00:03:51] [INFO] [processor:330] Rendering 1080x608 (1280:720, fill=crop) and burning subtitles into t_auto_16_9.mp4...
+[2026-08-18 00:03:53] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_16_9.mp4 (1.06 MB)
+[2026-08-18 00:03:53] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into t_old.mp4...
+[2026-08-18 00:03:58] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_old.mp4 (1.89 MB)
+[2026-08-18 00:03:58] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:03:58] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_wm.mp4...
+[2026-08-18 00:03:58] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of t_wm.mp4
+[2026-08-18 00:03:58] [INFO] [processor:460] Adding top watermark 'TOP' (light) at top of t_wm.mp4
+[2026-08-18 00:04:01] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_wm.mp4 (2.59 MB)
+[2026-08-18 00:04:11] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 00:04:11] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 2'
+[2026-08-18 00:04:11] [INFO] [webui:584] [webui] Saved 5 account(s) to accounts.json
+[2026-08-18 00:04:11] [INFO] [webui:584] [webui] Saved 5 account(s) to accounts.json
+[2026-08-18 00:04:11] [INFO] [webui:629] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1', 'New Channel 3', 'New Channel 4', 'New Channel 5']
+[2026-08-18 00:04:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:04:12] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-18 00:04:12] [INFO] [processor:431] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-18 00:04:12] [INFO] [processor:460] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-18 00:04:23] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-18 00:04:23] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-18 00:04:23] [INFO] [processor:431] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-18 00:04:23] [INFO] [processor:460] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-18 00:04:27] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-18 00:04:27] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-18 00:04:38] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-18 00:04:55] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-18 00:05:12] [INFO] [webui:523] [webui] Saved settings for account 'New Channel 2'
+[2026-08-18 00:05:12] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-18 00:05:12] [INFO] [webui:523] [webui] Saved settings for account 'PeterAKing'
+[2026-08-18 00:05:12] [INFO] [webui:629] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 2']
+[2026-08-18 00:05:12] [INFO] [config:252] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-18 00:05:12] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 00:05:13] [INFO] [webui:523] [webui] Saved settings for account 'PeterAKing'
+[2026-08-18 00:05:13] [INFO] [webui:584] [webui] Saved 2 account(s) to accounts.json
+[2026-08-18 00:05:13] [INFO] [webui:401] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-18 00:05:53] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:05:53] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto_9_16.mp4...
+[2026-08-18 00:05:56] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_9_16.mp4 (2.56 MB)
+[2026-08-18 00:05:57] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 00:05:57] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into t_auto_3_4.mp4...
+[2026-08-18 00:06:00] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_3_4.mp4 (1.98 MB)
+[2026-08-18 00:06:00] [INFO] [processor:288] Aspect 'auto': source is 800x1000 -> canvas 1080x1350 (like the original)
+[2026-08-18 00:06:00] [INFO] [processor:330] Rendering 1080x1350 (800:1000, fill=crop) and burning subtitles into t_auto_4_5.mp4...
+[2026-08-18 00:06:03] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_4_5.mp4 (2.04 MB)
+[2026-08-18 00:06:03] [INFO] [processor:288] Aspect 'auto': source is 720x720 -> canvas 1080x1080 (like the original)
+[2026-08-18 00:06:03] [INFO] [processor:330] Rendering 1080x1080 (720:720, fill=crop) and burning subtitles into t_auto_1_1.mp4...
+[2026-08-18 00:06:05] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_1_1.mp4 (1.53 MB)
+[2026-08-18 00:06:05] [INFO] [processor:288] Aspect 'auto': source is 1280x720 -> canvas 1080x608 (like the original)
+[2026-08-18 00:06:05] [INFO] [processor:330] Rendering 1080x608 (1280:720, fill=crop) and burning subtitles into t_auto_16_9.mp4...
+[2026-08-18 00:06:07] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_16_9.mp4 (1.06 MB)
+[2026-08-18 00:06:07] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into t_old.mp4...
+[2026-08-18 00:06:12] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_old.mp4 (1.89 MB)
+[2026-08-18 00:06:12] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 00:06:12] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_wm.mp4...
+[2026-08-18 00:06:12] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of t_wm.mp4
+[2026-08-18 00:06:12] [INFO] [processor:460] Adding top watermark 'TOP' (light) at top of t_wm.mp4
+[2026-08-18 00:06:15] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_wm.mp4 (2.59 MB)
+[2026-08-18 00:06:29] [INFO] [webui:1068] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-18 00:06:29] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 20:59:54] [INFO] [config:264] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 20:59:55] [INFO] [webui:404] [webui] Uploaded client_secret.json (173 bytes) -> /home/user/yt_shorts_bot/accounts/new channel 1/client_secret.json
+[2026-08-18 21:00:05] [INFO] [config:264] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 21:00:05] [INFO] [webui:404] [webui] Uploaded client_secret.json (173 bytes) -> /home/user/yt_shorts_bot/accounts/new channel 1/client_secret.json
+[2026-08-18 21:00:12] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:00:12] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 2'
+[2026-08-18 21:00:12] [INFO] [webui:590] [webui] Saved 5 account(s) to accounts.json
+[2026-08-18 21:00:12] [INFO] [webui:590] [webui] Saved 5 account(s) to accounts.json
+[2026-08-18 21:00:12] [INFO] [webui:637] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1', 'New Channel 3', 'New Channel 4', 'New Channel 5']
+[2026-08-18 21:00:12] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:00:13] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-18 21:00:13] [INFO] [processor:431] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-18 21:00:13] [INFO] [processor:460] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-18 21:00:24] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-18 21:00:25] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-18 21:00:25] [INFO] [processor:431] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-18 21:00:25] [INFO] [processor:460] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-18 21:00:28] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-18 21:00:28] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-18 21:00:39] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-18 21:00:55] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-18 21:01:11] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 2'
+[2026-08-18 21:01:11] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-18 21:01:11] [INFO] [webui:529] [webui] Saved settings for account 'PeterAKing'
+[2026-08-18 21:01:11] [INFO] [webui:637] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 2']
+[2026-08-18 21:01:11] [INFO] [config:264] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-18 21:01:11] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:01:12] [INFO] [webui:529] [webui] Saved settings for account 'PeterAKing'
+[2026-08-18 21:01:12] [INFO] [webui:590] [webui] Saved 2 account(s) to accounts.json
+[2026-08-18 21:01:12] [INFO] [webui:404] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-18 21:01:45] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 21:01:45] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto_9_16.mp4...
+[2026-08-18 21:01:48] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_9_16.mp4 (2.56 MB)
+[2026-08-18 21:01:48] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 21:01:48] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into t_auto_3_4.mp4...
+[2026-08-18 21:01:51] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_3_4.mp4 (1.98 MB)
+[2026-08-18 21:01:51] [INFO] [processor:288] Aspect 'auto': source is 800x1000 -> canvas 1080x1350 (like the original)
+[2026-08-18 21:01:51] [INFO] [processor:330] Rendering 1080x1350 (800:1000, fill=crop) and burning subtitles into t_auto_4_5.mp4...
+[2026-08-18 21:01:54] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_4_5.mp4 (2.04 MB)
+[2026-08-18 21:01:54] [INFO] [processor:288] Aspect 'auto': source is 720x720 -> canvas 1080x1080 (like the original)
+[2026-08-18 21:01:54] [INFO] [processor:330] Rendering 1080x1080 (720:720, fill=crop) and burning subtitles into t_auto_1_1.mp4...
+[2026-08-18 21:01:56] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_1_1.mp4 (1.53 MB)
+[2026-08-18 21:01:56] [INFO] [processor:288] Aspect 'auto': source is 1280x720 -> canvas 1080x608 (like the original)
+[2026-08-18 21:01:56] [INFO] [processor:330] Rendering 1080x608 (1280:720, fill=crop) and burning subtitles into t_auto_16_9.mp4...
+[2026-08-18 21:01:58] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_16_9.mp4 (1.06 MB)
+[2026-08-18 21:01:58] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into t_old.mp4...
+[2026-08-18 21:02:02] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_old.mp4 (1.89 MB)
+[2026-08-18 21:02:02] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 21:02:02] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_wm.mp4...
+[2026-08-18 21:02:02] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of t_wm.mp4
+[2026-08-18 21:02:02] [INFO] [processor:460] Adding top watermark 'TOP' (light) at top of t_wm.mp4
+[2026-08-18 21:02:06] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_wm.mp4 (2.59 MB)
+[2026-08-18 21:02:27] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 1'
+[2026-08-18 21:02:27] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 2'
+[2026-08-18 21:02:27] [INFO] [webui:590] [webui] Saved 5 account(s) to accounts.json
+[2026-08-18 21:02:27] [INFO] [webui:590] [webui] Saved 5 account(s) to accounts.json
+[2026-08-18 21:02:27] [INFO] [webui:637] [webui] Deleted account 'New Channel 2'. Remaining: ['New Channel 1', 'New Channel 3', 'New Channel 4', 'New Channel 5']
+[2026-08-18 21:02:27] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:02:29] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tA.mp4...
+[2026-08-18 21:02:29] [INFO] [processor:431] Adding 'LIKE & SUBSCRIBE' banner at bottom of tA.mp4
+[2026-08-18 21:02:29] [INFO] [processor:460] Adding top watermark 'SIMPSON PIMP' (light) at top of tA.mp4
+[2026-08-18 21:02:39] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tA.mp4 (0.20 MB)
+[2026-08-18 21:02:40] [INFO] [processor:330] Rendering 1080x1920 (9:16, fill=crop) and burning subtitles into tB.mp4...
+[2026-08-18 21:02:40] [INFO] [processor:431] Adding 'LIKE & SUBSCRIBE' banner at bottom of tB.mp4
+[2026-08-18 21:02:40] [INFO] [processor:460] Adding top watermark 'TOP TEST' (light) at top of tB.mp4
+[2026-08-18 21:02:43] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tB.mp4 (0.20 MB)
+[2026-08-18 21:02:43] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into tC.mp4...
+[2026-08-18 21:02:54] [INFO] [processor:513] Successfully rendered vertical short: /home/user/yt_shorts_bot/temp_clips/tC.mp4 (0.17 MB)
+[2026-08-18 21:03:10] [INFO] [hashtags:256] 📝 Saved metadata sidecar: /home/user/yt_shorts_bot/temp_clips/tA.txt
+[2026-08-18 21:03:26] [INFO] [webui:529] [webui] Saved settings for account 'New Channel 2'
+[2026-08-18 21:03:26] [WARNING] [webui:135] [webui] accounts.json contained duplicate names - keeping the first of each.
+[2026-08-18 21:03:26] [INFO] [webui:529] [webui] Saved settings for account 'PeterAKing'
+[2026-08-18 21:03:26] [INFO] [webui:637] [webui] Deleted account 'New Channel 1'. Remaining: ['New Channel 2']
+[2026-08-18 21:03:26] [INFO] [config:264] Loaded 1 account(s) from accounts.json: FreshAcc
+[2026-08-18 21:03:26] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.
+[2026-08-18 21:03:27] [INFO] [webui:529] [webui] Saved settings for account 'PeterAKing'
+[2026-08-18 21:03:27] [INFO] [webui:590] [webui] Saved 2 account(s) to accounts.json
+[2026-08-18 21:03:27] [INFO] [webui:404] [webui] Uploaded client_secret.json (176 bytes) -> /home/user/yt_shorts_bot/accounts/peteraking/client_secret.json
+[2026-08-18 21:04:01] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 21:04:01] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_auto_9_16.mp4...
+[2026-08-18 21:04:04] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_9_16.mp4 (2.56 MB)
+[2026-08-18 21:04:04] [INFO] [processor:288] Aspect 'auto': source is 720x960 -> canvas 1080x1440 (like the original)
+[2026-08-18 21:04:04] [INFO] [processor:330] Rendering 1080x1440 (720:960, fill=crop) and burning subtitles into t_auto_3_4.mp4...
+[2026-08-18 21:04:07] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_3_4.mp4 (1.98 MB)
+[2026-08-18 21:04:07] [INFO] [processor:288] Aspect 'auto': source is 800x1000 -> canvas 1080x1350 (like the original)
+[2026-08-18 21:04:07] [INFO] [processor:330] Rendering 1080x1350 (800:1000, fill=crop) and burning subtitles into t_auto_4_5.mp4...
+[2026-08-18 21:04:10] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_4_5.mp4 (2.04 MB)
+[2026-08-18 21:04:10] [INFO] [processor:288] Aspect 'auto': source is 720x720 -> canvas 1080x1080 (like the original)
+[2026-08-18 21:04:10] [INFO] [processor:330] Rendering 1080x1080 (720:720, fill=crop) and burning subtitles into t_auto_1_1.mp4...
+[2026-08-18 21:04:12] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_1_1.mp4 (1.53 MB)
+[2026-08-18 21:04:12] [INFO] [processor:288] Aspect 'auto': source is 1280x720 -> canvas 1080x608 (like the original)
+[2026-08-18 21:04:12] [INFO] [processor:330] Rendering 1080x608 (1280:720, fill=crop) and burning subtitles into t_auto_16_9.mp4...
+[2026-08-18 21:04:14] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_auto_16_9.mp4 (1.06 MB)
+[2026-08-18 21:04:14] [INFO] [processor:330] Rendering 1080x1440 (3:4, fill=blur) and burning subtitles into t_old.mp4...
+[2026-08-18 21:04:18] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_old.mp4 (1.89 MB)
+[2026-08-18 21:04:18] [INFO] [processor:288] Aspect 'auto': source is 720x1280 -> canvas 1080x1920 (like the original)
+[2026-08-18 21:04:18] [INFO] [processor:330] Rendering 1080x1920 (720:1280, fill=crop) and burning subtitles into t_wm.mp4...
+[2026-08-18 21:04:18] [INFO] [processor:431] Adding 'SUBSCRIBE' banner at bottom of t_wm.mp4
+[2026-08-18 21:04:18] [INFO] [processor:460] Adding top watermark 'TOP' (light) at top of t_wm.mp4
+[2026-08-18 21:04:22] [INFO] [processor:513] Successfully rendered vertical short: /tmp/t_wm.mp4 (2.59 MB)
+[2026-08-18 21:04:23] [INFO] [config:264] Loaded 1 account(s) from accounts.json: New Channel 1
+[2026-08-18 21:04:23] [INFO] [webui:404] [webui] Uploaded client_secret.json (173 bytes) -> /home/user/yt_shorts_bot/accounts/new channel 1/client_secret.json
+[2026-08-18 21:04:35] [INFO] [webui:1076] Web control panel starting on http://0.0.0.0:5000 ...
+[2026-08-18 21:04:36] [WARNING] [storage:62] Cloudflare R2 credentials not fully configured (missing or still template placeholders). Storage operations will run in DRY-RUN mode.

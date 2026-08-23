@@ -1,0 +1,44 @@
+{
+  "_comment": "Copy this file to accounts.json and fill in your channels. Each account is one YouTube channel you own. OAuth credentials: after putting a client_secret.json into accounts/<name>/, the bot runs Google's auth flow on first upload and saves token.json there. Per-account watermark: set 'watermark' to the banner text for that channel and 'watermark_enabled' to true/false (omit both to use the global .env LIKE_AND_SUBSCRIBE_* settings).",
+  "accounts": [
+    {
+      "name": "Gaming",
+      "client_secret": "accounts/gaming/client_secret.json",
+      "token": "accounts/gaming/token.json",
+      "target_channels": [
+        "https://www.youtube.com/@SomeGamingChannel"
+      ],
+      "max_daily_uploads": 10,
+      "aspect": "9:16",
+      "fill": "blur",
+      "shorts_per_video": 1,
+      "watermark": "LIKE & SUBSCRIBE",
+      "watermark_enabled": true,
+      "top_watermark": "GAMING CLIPS",
+      "top_watermark_enabled": true,
+      "extra_hashtags": "gaming, minecraft",
+      "title_prefix": "🎮",
+      "title_hashtags": "gaming, minecraft",
+      "smart_titles": true,
+      "max_shorts_per_channel_cycle": 2,
+      "enabled": true
+    },
+    {
+      "name": "Finance",
+      "client_secret": "accounts/finance/client_secret.json",
+      "token": "accounts/finance/token.json",
+      "target_channels": [
+        "https://www.youtube.com/@SomeFinanceChannel"
+      ],
+      "max_daily_uploads": 8,
+      "aspect": "3:4",
+      "fill": "blur",
+      "shorts_per_video": 2,
+      "watermark": "SUBSCRIBE FOR MONEY TIPS",
+      "watermark_enabled": true,
+      "top_watermark": "FINANCE DAILY",
+      "top_watermark_enabled": true,
+      "enabled": true
+    }
+  ]
+}

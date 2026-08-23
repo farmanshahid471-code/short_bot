@@ -1,0 +1,19 @@
+=== SHORT METADATA (what would be uploaded to YouTube) ===
+
+Account       : default
+Source URL    : https://www.youtube.com/shorts/6saRdt2FnnU
+YouTube Short : mock_short_6saRdt2FnnU
+
+TITLE         : 🔥 Lisa left her project simpsons #simpsons #lisa #toptop #king
+
+DESCRIPTION:
+🎬 High-engagement highlight clip from: Lisa left her project #simpsons
+📺 Watch Original Video: https://www.youtube.com/shorts/6saRdt2FnnU
+
+💡 Subscribe for daily curated shorts & insights!
+
+#simpsons #lisa #toptop #king #left #project #shorts #viral #fyp #trending
+
+TAGS: simpsons, lisa, toptop, king, left, project, shorts, viral, fyp, trending, Toptop King
+
+HASHTAGS (in title+description): #simpsons #lisa #toptop #king #left #project #shorts #viral #fyp #trending

@@ -1,0 +1,10 @@
+{
+  "accounts": [
+    {
+      "name": "New Channel 1",
+      "target_channels": [],
+      "max_daily_uploads": 6,
+      "enabled": true
+    }
+  ]
+}

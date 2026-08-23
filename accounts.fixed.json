@@ -1,0 +1,61 @@
+{
+  "accounts": [
+    {
+      "name": "PeterAKing",
+      "client_secret": "accounts/peteraking/client_secret.json",
+      "token": "accounts/peteraking/token.json",
+      "target_channels": [
+        "https://www.youtube.com/@FamilyGuy-Fan/shorts",
+        "https://www.youtube.com/@Doughnutxex/shorts"
+      ],
+      "max_daily_uploads": 6,
+      "enabled": true,
+      "process_mode": "render",
+      "selection_order": "oldest",
+      "title_prefix": "",
+      "title_hashtags": "familyguy,peter,brian,stewie",
+      "smart_titles": true,
+      "top_watermark": "",
+      "top_watermark_enabled": true,
+      "watermark": "@PeterAKing",
+      "watermark_enabled": true,
+      "aspect": "auto",
+      "fill": "crop",
+      "max_shorts_per_channel_cycle": 3,
+      "min_minutes_between_uploads": 60,
+      "delete_after_upload": true,
+      "delete_r2_after_upload": false,
+      "expected_channel": "PeterAKing",
+      "subtitles_enabled": false
+    },
+    {
+      "name": "simpson_pimp",
+      "client_secret": "accounts/simpson_pimp/client_secret.json",
+      "token": "accounts/simpson_pimp/token.json",
+      "target_channels": [
+        "https://www.youtube.com/@FamilyGuy-Fan/shorts",
+        "https://www.youtube.com/@Doughnutxex/shorts"
+      ],
+      "max_daily_uploads": 6,
+      "enabled": true,
+      "process_mode": "render",
+      "selection_order": "oldest",
+      "title_prefix": "",
+      "title_hashtags": "simpsons,bart,homer,magie,lisa",
+      "smart_titles": true,
+      "top_watermark": "",
+      "top_watermark_enabled": false,
+      "watermark": "",
+      "watermark_enabled": true,
+      "aspect": "auto",
+      "fill": "crop",
+      "max_shorts_per_channel_cycle": 3,
+      "min_minutes_between_uploads": 60,
+      "delete_after_upload": true,
+      "delete_r2_after_upload": false,
+      "connected_channel": "Simpson Pimp",
+      "expected_channel": "Simpson Pimp",
+      "subtitles_enabled": false
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# Requirements for YouTube Shorts 24/7 Automation Bot
+# Video & Heatmap Fetching
+yt-dlp>=2024.03.01
+
+# Local Free CPU Transcription
+faster-whisper>=1.0.0
+numpy>=1.26.4
+
+# Cloud Storage (Cloudflare R2 / S3 Compatible)
+boto3>=1.34.0
+
+# YouTube Data API v3 Uploading & OAuth2
+google-api-python-client>=2.118.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
+# 24/7 Continuous Automation & Scheduling
+apscheduler>=3.10.4
+schedule>=1.2.1
+
+# Configuration, Utilities, & CLI Formatter
+python-dotenv>=1.0.1
+pillow>=10.2.0
+tqdm>=4.66.2
+requests>=2.31.0
+tabulate>=0.9.0
+
+# Web Control Panel (browser UI)
+flask>=3.0.0
