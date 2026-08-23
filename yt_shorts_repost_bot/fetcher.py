@@ -6,6 +6,7 @@ import subprocess
 import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional
+from uuid import uuid4
 
 import yt_dlp
 
@@ -87,6 +88,25 @@ class ShortsFetcher:
         m = re.search(r"(?:v=|shorts/|youtu\.be/)([\w-]{11})", video_url)
         return m.group(1) if m else video_url.split("v=")[-1].split("&")[0]
 
+    @staticmethod
+    def _probe_duration(path: Path) -> Optional[float]:
+        if not FFPROBE_PATH:
+            return None
+        try:
+            result = subprocess.run(
+                [
+                    FFPROBE_PATH, "-v", "error", "-show_entries", "format=duration",
+                    "-of", "csv=p=0", str(path),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            return float(result.stdout.strip()) if result.returncode == 0 else None
+        except (OSError, ValueError, subprocess.SubprocessError):
+            return None
+
     # ------------------------------------------------------------------
     def fetch_channel_recent_shorts(self, channel_url: str) -> List[Dict[str, Any]]:
         """
@@ -130,7 +150,11 @@ class ShortsFetcher:
                         seen.add(v_id)
                         shorts.append({
                             "video_id": v_id,
-                            "url": entry.get("url") or f"https://www.youtube.com/shorts/{v_id}",
+                            "url": (
+                                entry.get("webpage_url")
+                                if str(entry.get("webpage_url") or "").startswith(("http://", "https://"))
+                                else f"https://www.youtube.com/shorts/{v_id}"
+                            ),
                             "title": entry.get("title", f"Short {v_id}"),
                             "duration": duration,
                             "channel": channel_url,
@@ -158,7 +182,7 @@ class ShortsFetcher:
         """
         v_id = self._extract_video_id(video_url)
         if output_path is None:
-            output_path = TEMP_DIR / f"short_{v_id}.mp4"
+            output_path = TEMP_DIR / f"short_{v_id}_{uuid4().hex[:10]}.mp4"
 
         logger.info(f"Downloading Short {video_url} -> {output_path}")
         if output_path.exists():
@@ -166,14 +190,9 @@ class ShortsFetcher:
 
         # Try several player clients - YouTube serves streams differently per
         # client, and some (tv/android/ios) avoid HTTP 403 on Shorts.
-        client_attempts = [
-            {},                                  # default
-            {"player_client": "tv"},
-            {"player_client": "android"},
-            {"player_client": "ios"},
-        ]
+        client_attempts = [None, "tv", "android", "ios"]
         last_err = None
-        for extra in client_attempts:
+        for player_client in client_attempts:
             ydl_opts = {
                 "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/"
                           "bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
@@ -183,8 +202,11 @@ class ShortsFetcher:
                 "no_warnings": True,
                 **self._cookies_opts(),
                 **self._ffmpeg_opt(),
-                **extra,
             }
+            if player_client:
+                ydl_opts["extractor_args"] = {
+                    "youtube": {"player_client": [player_client]}
+                }
             try:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([video_url])
@@ -192,7 +214,13 @@ class ShortsFetcher:
                 break
             except Exception as e:
                 last_err = e
-                logger.warning(f"Download attempt (client={extra.get('player_client', 'default')}) failed: {e}")
+                logger.warning(
+                    "Download attempt (client=%s) failed: %s",
+                    player_client or "default",
+                    e,
+                )
+                for fragment in output_path.parent.glob(f"{output_path.stem}*.part*"):
+                    fragment.unlink(missing_ok=True)
                 if self._is_bot_check_error(e):
                     logger.error(
                         "YouTube blocked the download ('Sign in to confirm you're not a bot'). "
@@ -204,13 +232,23 @@ class ShortsFetcher:
 
         # yt-dlp may append extensions for merged files; find the real output
         if not output_path.exists():
-            matches = [p for p in TEMP_DIR.glob(f"short_{v_id}.*") if p.stat().st_size > 0]
+            matches = [
+                p for p in output_path.parent.glob(f"{output_path.stem}.*")
+                if p.is_file() and ".part" not in p.name and p.stat().st_size > 0
+            ]
             if not matches:
                 raise RuntimeError(f"Download produced no usable file for {video_url}")
             output_path = max(matches, key=lambda p: p.stat().st_size)
 
+        duration = self._probe_duration(output_path)
+        if duration is not None and duration > MAX_SHORT_DURATION_SEC + 1.0:
+            output_path.unlink(missing_ok=True)
+            raise RuntimeError(
+                f"Downloaded video is {duration:.1f}s, longer than the configured "
+                f"Short limit ({MAX_SHORT_DURATION_SEC}s)"
+            )
         size_mb = output_path.stat().st_size / (1024 * 1024)
-        logger.info(f"Downloaded Short ({size_mb:.2f} MB): {output_path}")
+        logger.info("Downloaded Short (%.2f MB): %s", size_mb, output_path)
         return output_path
 
     # ------------------------------------------------------------------
@@ -218,9 +256,12 @@ class ShortsFetcher:
     def get_short_info(video_url: str) -> Dict[str, Any]:
         """Small metadata fetch for a single Short URL."""
         ydl_opts = {
-            "skip_download": True, "quiet": True, "no_warnings": True,
-            "player_client": "tv",  # tv client is reliable for metadata
-            **ShortsFetcher._cookies_opts(), **ShortsFetcher._ffmpeg_opt(),
+            "skip_download": True,
+            "quiet": True,
+            "no_warnings": True,
+            "extractor_args": {"youtube": {"player_client": ["tv"]}},
+            **ShortsFetcher._cookies_opts(),
+            **ShortsFetcher._ffmpeg_opt(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             return ydl.extract_info(video_url, download=False)

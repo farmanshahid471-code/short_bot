@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
 
+from .pathutils import credential_path
+
 # Load .env file if present
 # IMPORTANT: load_dotenv() with no arguments only searches the current working
 # directory and its parents - it would MISS the .env that lives inside this
@@ -39,10 +41,7 @@ LOG_FILE = _resolve_path(os.getenv("LOG_FILE", BASE_DIR / "shorts_bot.log"))
 
 # --- TARGET SELECTION ---
 # Comma-separated channel URLs or Channel IDs in .env, e.g. "https://www.youtube.com/@channel1,https://www.youtube.com/@channel2"
-_channels_env = os.getenv(
-    "TARGET_CHANNELS",
-    "https://www.youtube.com/@TEDEd,https://www.youtube.com/@Kurzgesagt"
-)
+_channels_env = os.getenv("TARGET_CHANNELS", "")
 TARGET_CHANNELS: List[str] = [c.strip() for c in _channels_env.split(",") if c.strip()]
 
 # How many newest videos to inspect per channel per cycle
@@ -77,6 +76,7 @@ ASPECT_RATIO_EXPRESSION: str = SHORT_ASPECT
 VIDEO_CRF: int = int(os.getenv("VIDEO_CRF", "18"))          # lower = better quality (18 ~ visually lossless)
 VIDEO_PRESET: str = os.getenv("VIDEO_PRESET", "medium")     # medium = good quality/speed balance
 AUDIO_BITRATE: str = os.getenv("AUDIO_BITRATE", "192k")
+FFMPEG_TIMEOUT_SEC: int = max(60, int(os.getenv("FFMPEG_TIMEOUT_SEC", "900")))
 
 # --- LOGO / WATERMARK REMOVAL (beta) ---
 # Streamer VODs often have a logo/watermark burned into a corner. The bot can
@@ -107,6 +107,7 @@ TOP_WATERMARK_TEXT: str = os.getenv("TOP_WATERMARK_TEXT", "")
 
 # Faster-Whisper CPU Settings
 WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "tiny.en")  # tiny.en, base.en, small
+WHISPER_LANGUAGE: str = os.getenv("WHISPER_LANGUAGE", "auto").strip().lower()
 WHISPER_DEVICE: str = "cpu"
 WHISPER_COMPUTE_TYPE: str = "int8"
 MAX_WORDS_PER_SUBTITLE_LINE: int = int(os.getenv("MAX_WORDS_PER_SUBTITLE_LINE", "4"))
@@ -121,7 +122,7 @@ SUBTITLE_UPPERCASE: bool = os.getenv("SUBTITLE_UPPERCASE", "true").lower() == "t
 # Font is auto-chosen per OS: "Arial" on Windows (always present), "DejaVu Sans" elsewhere.
 # Override with SUBTITLE_FONT_NAME in .env if you want something else.
 _DEFAULT_FONT = "Arial" if sys.platform.startswith("win") else "DejaVu Sans"
-SUBTITLE_FONT_NAME: str = os.getenv("SUBTITLE_FONT_NAME", _DEFAULT_FONT)
+SUBTITLE_FONT_NAME: str = os.getenv("SUBTITLE_FONT_NAME", "").strip() or _DEFAULT_FONT
 # Guard: older .env files may still say "DejaVu Sans", which does NOT exist on
 # Windows and makes FFmpeg's subtitle renderer fail (exit 69). Force Arial there.
 if sys.platform.startswith("win") and SUBTITLE_FONT_NAME.strip().lower() == "dejavu sans":
@@ -163,8 +164,9 @@ YOUTUBE_SCOPES: List[str] = [
     "https://www.googleapis.com/auth/youtube.readonly"
 ]
 
-# Strict daily upload limit enforced by YouTube API v3 (~10,000 units quota; upload = ~1,600 units)
+# Local rolling upload cap; Google API project quota is enforced separately by YouTube
 MAX_DAILY_UPLOADS: int = int(os.getenv("MAX_DAILY_UPLOADS", "10"))
+DRY_RUN: bool = os.getenv("DRY_RUN", "false").lower() == "true"
 
 # --- MULTI-ACCOUNT SUPPORT ---
 # accounts.json (in this folder) lets you run several YouTube channels with
@@ -216,29 +218,24 @@ def _load_accounts() -> List[dict]:
                 merged = dict(defaults)
                 merged.update(acc)
                 merged["name"] = str(merged["name"]).strip()
-                # PER-ACCOUNT CREDENTIAL PATHS (v6.2): every named account gets
-                # its OWN accounts/<name>/client_secret.json + token.json.
-                # Never default a named account to the bot-ROOT token - the root
-                # token belongs to whichever channel was connected last and
-                # silently connected every new tab to the WRONG channel.
-                _acc_lower = merged["name"].lower()
-                if not str(merged.get("client_secret") or "").strip() \
-                   or str(merged.get("client_secret") or "").strip() == str(YOUTUBE_CLIENT_SECRET_FILE):
-                    merged["client_secret"] = str(BASE_DIR / "accounts" / _acc_lower / "client_secret.json")
-                if not str(merged.get("token") or "").strip() \
-                   or str(merged.get("token") or "").strip() == str(YOUTUBE_TOKEN_FILE):
-                    merged["token"] = str(BASE_DIR / "accounts" / _acc_lower / "token.json")
-                # resolve relative credential paths against BASE_DIR,
-                # but never let a FOLDER be used as a file path
-                for key in ("client_secret", "token"):
-                    v = merged.get(key)
-                    if v:
-                        p = Path(v)
-                        p = p if p.is_absolute() else BASE_DIR / p
-                        if p.is_dir():  # bad value (folder) - clear it so fallback works
-                            merged[key] = ""
-                        else:
-                            merged[key] = str(p)
+                # Every named account owns a separate credential folder. Persisted
+                # values may be relative, POSIX absolute, or stale Windows paths;
+                # credential_path converts them safely for the current machine.
+                for key, filename, root_default in (
+                    ("client_secret", "client_secret.json", YOUTUBE_CLIENT_SECRET_FILE),
+                    ("token", "token.json", YOUTUBE_TOKEN_FILE),
+                ):
+                    raw_value = str(merged.get(key) or "").strip()
+                    if raw_value == str(root_default):
+                        raw_value = ""
+                    path = credential_path(BASE_DIR, merged["name"], raw_value, filename)
+                    if path.is_dir():
+                        path = credential_path(BASE_DIR, merged["name"], None, filename)
+                    merged[key] = str(path)
+                # Once a channel has been connected, use it as the default
+                # destination safety lock until the user explicitly changes it.
+                if not str(merged.get("expected_channel") or "").strip() and merged.get("connected_channel"):
+                    merged["expected_channel"] = str(merged["connected_channel"]).strip()
                 # normalize channels to a list
                 ch = merged.get("target_channels")
                 if isinstance(ch, str):
@@ -336,12 +333,18 @@ YT_COOKIES_FILE: str = os.getenv("YT_COOKIES_FILE", "")
 YT_COOKIES_FROM_BROWSER: str = os.getenv("YT_COOKIES_FROM_BROWSER", "")
 
 # --- WEB CONTROL PANEL (webui) ---
-WEBUI_HOST: str = os.getenv("WEBUI_HOST", "0.0.0.0")
+# Local-only by default. Binding publicly requires WEBUI_PASSWORD (enforced by
+# run_webui) because the panel can upload credentials and start jobs.
+WEBUI_HOST: str = os.getenv("WEBUI_HOST", "127.0.0.1")
 WEBUI_PORT: int = int(os.getenv("WEBUI_PORT", "5000"))
+WEBUI_USERNAME: str = os.getenv("WEBUI_USERNAME", "admin")
+WEBUI_PASSWORD: str = os.getenv("WEBUI_PASSWORD", "")
+WEBUI_SECRET_KEY: str = os.getenv("WEBUI_SECRET_KEY", "")
+WEBUI_COOKIE_SECURE: bool = os.getenv("WEBUI_COOKIE_SECURE", "false").lower() == "true"
 
-# --- SMART TITLES & HASHTAGS (free, content-aware) ---
-# The bot generates the Short title + hashtags from the source video's
-# title/description/tags/channel and the CPU transcription - no paid AI.
+# --- USER-CONTROLLED TITLES & HASHTAGS ---
+# Compatibility names are retained, but hashtags are never inferred from source
+# content. Only each account's title_hashtags/extra_hashtags are published.
 ENABLE_SMART_TITLES: bool = os.getenv("ENABLE_SMART_TITLES", "true").lower() == "true"
 MAX_TITLE_HASHTAGS: int = int(os.getenv("MAX_TITLE_HASHTAGS", "4"))
 REACH_HASHTAGS: str = os.getenv("REACH_HASHTAGS", "shorts,viral,fyp,trending")

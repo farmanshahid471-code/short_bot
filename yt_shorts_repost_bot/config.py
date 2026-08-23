@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
 
+from .pathutils import credential_path
+
 # Load .env next to this file (works no matter which folder we are launched from)
 _ENV_FILE = Path(__file__).resolve().parent / ".env"
 if _ENV_FILE.exists():
@@ -34,10 +36,7 @@ DB_PATH = _resolve_path(os.getenv("DB_PATH", BASE_DIR / "bot_state.db"))
 LOG_FILE = _resolve_path(os.getenv("LOG_FILE", BASE_DIR / "shorts_repost.log"))
 
 # --- TARGET SELECTION (shorts-focused channels) ---
-_channels_env = os.getenv(
-    "TARGET_CHANNELS",
-    "https://www.youtube.com/@Speedzyshorts,https://www.youtube.com/@deagzzzshorts"
-)
+_channels_env = os.getenv("TARGET_CHANNELS", "")
 TARGET_CHANNELS: List[str] = [c.strip() for c in _channels_env.split(",") if c.strip()]
 
 # How many newest Shorts to inspect per channel per cycle
@@ -76,6 +75,7 @@ ASPECT_RATIO_EXPRESSION: str = SHORT_ASPECT
 VIDEO_CRF: int = int(os.getenv("VIDEO_CRF", "18"))
 VIDEO_PRESET: str = os.getenv("VIDEO_PRESET", "medium")
 AUDIO_BITRATE: str = os.getenv("AUDIO_BITRATE", "192k")
+FFMPEG_TIMEOUT_SEC: int = max(60, int(os.getenv("FFMPEG_TIMEOUT_SEC", "900")))
 
 # Copy-mode quality: Shorts are already compressed, so a lighter CRF keeps
 # files reasonable while staying visually identical (default 21).
@@ -83,6 +83,7 @@ VIDEO_CRF_COPY: int = int(os.getenv("VIDEO_CRF_COPY", "21"))
 
 # --- SUBTITLES (render mode) ---
 WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "tiny.en")
+WHISPER_LANGUAGE: str = os.getenv("WHISPER_LANGUAGE", "auto").strip().lower()
 WHISPER_DEVICE: str = "cpu"
 WHISPER_COMPUTE_TYPE: str = "int8"
 MAX_WORDS_PER_SUBTITLE_LINE: int = int(os.getenv("MAX_WORDS_PER_SUBTITLE_LINE", "4"))
@@ -93,7 +94,7 @@ VIRAL_WORDS_PER_LINE: int = int(os.getenv("VIRAL_WORDS_PER_LINE", "2"))
 SUBTITLE_UPPERCASE: bool = os.getenv("SUBTITLE_UPPERCASE", "true").lower() == "true"
 
 _DEFAULT_FONT = "Arial" if sys.platform.startswith("win") else "DejaVu Sans"
-SUBTITLE_FONT_NAME: str = os.getenv("SUBTITLE_FONT_NAME", _DEFAULT_FONT)
+SUBTITLE_FONT_NAME: str = os.getenv("SUBTITLE_FONT_NAME", "").strip() or _DEFAULT_FONT
 if sys.platform.startswith("win") and SUBTITLE_FONT_NAME.strip().lower() == "dejavu sans":
     SUBTITLE_FONT_NAME = "Arial"
 SUBTITLE_FONT_SIZE: int = int(os.getenv("SUBTITLE_FONT_SIZE", "28"))
@@ -157,8 +158,9 @@ YOUTUBE_SCOPES: List[str] = [
     "https://www.googleapis.com/auth/youtube.readonly"
 ]
 
-# Strict daily upload limit (10/day default; YouTube quota ~10k units/day, 1 upload ~1600)
+# Local rolling upload cap; Google API project quota is enforced separately by YouTube
 MAX_DAILY_UPLOADS: int = int(os.getenv("MAX_DAILY_UPLOADS", "10"))
+DRY_RUN: bool = os.getenv("DRY_RUN", "false").lower() == "true"
 
 # --- SCHEDULER SETTINGS ---
 CYCLE_INTERVAL_HOURS: int = int(os.getenv("CYCLE_INTERVAL_HOURS", "3"))
@@ -197,7 +199,7 @@ BOTTOM_BANNER_ITALIC: bool = os.getenv("BOTTOM_BANNER_ITALIC", "true").lower() =
 BOTTOM_BANNER_Y_PCT: float = float(os.getenv("BOTTOM_BANNER_Y_PCT", "90"))
 TOP_WATERMARK_BAND: bool = os.getenv("TOP_WATERMARK_BAND", "false").lower() == "true"
 
-# --- SMART TITLES & HASHTAGS (free, content-aware) ---
+# --- USER-CONTROLLED TITLES & HASHTAGS (legacy setting names retained) ---
 ENABLE_SMART_TITLES: bool = os.getenv("ENABLE_SMART_TITLES", "true").lower() == "true"
 MAX_TITLE_HASHTAGS: int = int(os.getenv("MAX_TITLE_HASHTAGS", "4"))
 REACH_HASHTAGS: str = os.getenv("REACH_HASHTAGS", "shorts,viral,fyp,trending")
@@ -205,8 +207,12 @@ EXTRA_HASHTAGS: str = os.getenv("EXTRA_HASHTAGS", "")
 TITLE_PREFIX: str = os.getenv("TITLE_PREFIX", "")
 
 # --- WEB CONTROL PANEL ---
-WEBUI_HOST: str = os.getenv("WEBUI_HOST", "0.0.0.0")
+WEBUI_HOST: str = os.getenv("WEBUI_HOST", "127.0.0.1")
 WEBUI_PORT: int = int(os.getenv("WEBUI_PORT", "5100"))
+WEBUI_USERNAME: str = os.getenv("WEBUI_USERNAME", "admin")
+WEBUI_PASSWORD: str = os.getenv("WEBUI_PASSWORD", "")
+WEBUI_SECRET_KEY: str = os.getenv("WEBUI_SECRET_KEY", "")
+WEBUI_COOKIE_SECURE: bool = os.getenv("WEBUI_COOKIE_SECURE", "false").lower() == "true"
 
 # --- FFMPEG RESOLUTION (system PATH or bundled yt_shorts_repost_bot/ffmpeg/bin) ---
 def _find_binary(name: str):
@@ -303,27 +309,19 @@ def _load_accounts() -> List[dict]:
                 merged = dict(defaults)
                 merged.update(acc)
                 merged["name"] = str(merged["name"]).strip()
-                # PER-ACCOUNT CREDENTIAL PATHS (v6.2): every named account gets
-                # its OWN accounts/<name>/client_secret.json + token.json.
-                # Never default a named account to the bot-ROOT token - the root
-                # token belongs to whichever channel was connected last and
-                # silently connected every new tab to the WRONG channel.
-                _acc_lower = merged["name"].lower()
-                if not str(merged.get("client_secret") or "").strip() \
-                   or str(merged.get("client_secret") or "").strip() == str(YOUTUBE_CLIENT_SECRET_FILE):
-                    merged["client_secret"] = str(BASE_DIR / "accounts" / _acc_lower / "client_secret.json")
-                if not str(merged.get("token") or "").strip() \
-                   or str(merged.get("token") or "").strip() == str(YOUTUBE_TOKEN_FILE):
-                    merged["token"] = str(BASE_DIR / "accounts" / _acc_lower / "token.json")
-                for key in ("client_secret", "token"):
-                    v = merged.get(key)
-                    if v:
-                        p = Path(v)
-                        p = p if p.is_absolute() else BASE_DIR / p
-                        if p.is_dir():  # bad value (folder) - clear it so fallback works
-                            merged[key] = ""
-                        else:
-                            merged[key] = str(p)
+                for key, filename, root_default in (
+                    ("client_secret", "client_secret.json", YOUTUBE_CLIENT_SECRET_FILE),
+                    ("token", "token.json", YOUTUBE_TOKEN_FILE),
+                ):
+                    raw_value = str(merged.get(key) or "").strip()
+                    if raw_value == str(root_default):
+                        raw_value = ""
+                    path = credential_path(BASE_DIR, merged["name"], raw_value, filename)
+                    if path.is_dir():
+                        path = credential_path(BASE_DIR, merged["name"], None, filename)
+                    merged[key] = str(path)
+                if not str(merged.get("expected_channel") or "").strip() and merged.get("connected_channel"):
+                    merged["expected_channel"] = str(merged["connected_channel"]).strip()
                 ch = merged.get("target_channels")
                 if isinstance(ch, str):
                     merged["target_channels"] = [c.strip() for c in ch.split(",") if c.strip()]

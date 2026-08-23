@@ -80,9 +80,11 @@ Total time: ~15 minutes per channel. Example with 3 channels:
    **Go to Shorts Bot (unsafe)** → **Continue** → **Allow**.
    > This warning is normal for unverified personal apps — you're only connecting
    > your own account. (If you also upload a `token.json`… no: the bot saves it itself.)
-3. The bot saves the token (`accounts/<name>/token.json` or bot root) and prints:
-   **🎯 ACCOUNT 'X' is connected to CHANNEL 'Y'** — check that Y is the RIGHT channel.
-4. The tab's dot turns **green** and the panel shows the connected channel name.
+3. The bot saves the token to the safe project-relative
+   `accounts/<name>/token.json` path and reads the destination channel title + ID.
+4. The tab's dot turns **green**. The first successful connection also sets the
+   destination safety lock. Every upload re-verifies that exact channel ID (or
+   exact title when an ID is unavailable) and fails closed on verification errors.
 
 Repeat Steps 1–7 in each Google account for each of your channels.
 

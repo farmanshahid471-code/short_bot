@@ -2,14 +2,11 @@
 storage.py - Cloudflare R2 (S3-compatible) integration, storage monitoring,
 8 GB threshold enforcement (auto-deleting oldest clips), and local disk cleanup.
 """
-import os
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 import boto3
-from botocore.exceptions import BotoCoreError, ClientError
 
 from .config import (
-    R2_ACCOUNT_ID,
     R2_ACCESS_KEY_ID,
     R2_SECRET_ACCESS_KEY,
     R2_BUCKET_NAME,
@@ -41,6 +38,7 @@ class CloudStorageManager:
         self.endpoint_url = endpoint_url
         self.bucket_name = bucket_name
         self.max_bucket_bytes = max_bucket_bytes
+        self.last_usage_error: Optional[str] = None
         self.client = self._init_s3_client()
 
     @staticmethod
@@ -60,8 +58,8 @@ class CloudStorageManager:
         ):
             if not CloudStorageManager._dry_run_warned:
                 logger.warning(
-                    "Cloudflare R2 credentials not fully configured (missing or still "
-                    "template placeholders). Storage operations will run in DRY-RUN mode."
+                    "Cloudflare R2 credentials are not configured. Optional R2 backups "
+                    "are disabled; no simulated upload will be recorded."
                 )
                 CloudStorageManager._dry_run_warned = True
             return None
@@ -94,6 +92,7 @@ class CloudStorageManager:
 
         total_bytes = 0
         objects = []
+        self.last_usage_error = None
 
         try:
             paginator = self.client.get_paginator("list_objects_v2")
@@ -107,7 +106,8 @@ class CloudStorageManager:
                         "LastModified": obj["LastModified"]
                     })
         except Exception as e:
-            logger.error(f"Error listing R2 bucket {self.bucket_name}: {e}")
+            self.last_usage_error = str(e)
+            logger.error("Error listing R2 bucket %s: %s", self.bucket_name, e)
             return 0, []
 
         # Sort oldest first
@@ -122,16 +122,15 @@ class CloudStorageManager:
 
         return total_bytes, objects
 
-    def enforce_storage_limit(self) -> int:
-        """
-        Monitors bucket usage against the 8 GB threshold.
-        If total storage >= 8 GB, automatically deletes the oldest objects in the bucket
-        until total storage is safely below threshold (e.g. 7.5 GB).
-        
-        Returns number of deleted objects.
-        """
+    def enforce_storage_limit(self, incoming_bytes: int = 0) -> int:
+        """Prune only bot-owned objects before an incoming upload crosses the cap."""
         total_bytes, objects = self.get_bucket_usage()
-        if total_bytes < self.max_bucket_bytes:
+        if self.last_usage_error:
+            raise RuntimeError(
+                "R2 usage could not be verified; refusing to upload beyond an unknown limit"
+            )
+        incoming_bytes = max(0, int(incoming_bytes))
+        if total_bytes + incoming_bytes < self.max_bucket_bytes:
             return 0
 
         logger.warning(
@@ -140,9 +139,13 @@ class CloudStorageManager:
         )
 
         deleted_count = 0
-        target_bytes = int(self.max_bucket_bytes * 0.92)  # Prune down to 92% of threshold
+        target_bytes = max(0, int(self.max_bucket_bytes * 0.92) - incoming_bytes)
+        owned_objects = [
+            obj for obj in objects
+            if str(obj.get("Key") or "").startswith(("shorts/", "reposts/"))
+        ]
 
-        for obj in objects:
+        for obj in owned_objects:
             if total_bytes <= target_bytes:
                 break
             key = obj["Key"]
@@ -156,9 +159,14 @@ class CloudStorageManager:
                 logger.error(f"Failed to delete R2 object '{key}': {e}")
 
         logger.info(
-            f"Storage pruning completed. Deleted {deleted_count} old clips. "
-            f"New bucket usage: {total_bytes / (1024**3):.2f} GB."
+            "Storage pruning completed. Deleted %s bot object(s); usage is %.2f GB.",
+            deleted_count,
+            total_bytes / (1024**3),
         )
+        if total_bytes + incoming_bytes > self.max_bucket_bytes:
+            raise RuntimeError(
+                "R2 limit cannot be met without deleting non-bot objects; upload refused"
+            )
         return deleted_count
 
     def upload_file(self, file_path: Path, r2_key: Optional[str] = None) -> Optional[str]:
@@ -173,12 +181,12 @@ class CloudStorageManager:
         if r2_key is None:
             r2_key = f"shorts/{file_path.name}"
 
-        # First, ensure we don't cross the 8 GB threshold
-        self.enforce_storage_limit()
-
         if not self.client:
-            logger.info(f"[DRY-RUN] Simulated R2 upload of {file_path.name} -> key: {r2_key}")
-            return r2_key
+            logger.info("R2 is not configured; optional backup skipped for %s.", file_path.name)
+            return None
+
+        # Include the incoming file in the threshold calculation.
+        self.enforce_storage_limit(incoming_bytes=file_path.stat().st_size)
 
         logger.info(f"Uploading {file_path.name} to R2 bucket '{self.bucket_name}' under key '{r2_key}'...")
         try:

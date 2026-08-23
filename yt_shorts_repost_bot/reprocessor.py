@@ -8,14 +8,15 @@ reprocessor.py - Prepares a downloaded Short for upload to YOUR channel.
 import subprocess
 from pathlib import Path
 from typing import Optional
+from uuid import uuid4
 
 from .config import (
     PROCESS_MODE,
-    VIDEO_CRF,
     VIDEO_CRF_COPY,
     VIDEO_PRESET,
     AUDIO_BITRATE,
     FFMPEG_PATH,
+    FFMPEG_TIMEOUT_SEC,
     TEMP_DIR,
     logger,
 )
@@ -43,7 +44,9 @@ class ShortReprocessor:
         fill: Optional[str] = None,
     ) -> Path:
         if output_path is None:
-            output_path = TEMP_DIR / f"final_{input_path.stem}.mp4"
+            output_path = TEMP_DIR / f"final_{input_path.stem}_{uuid4().hex[:10]}.mp4"
+        output_path = Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
 
         if not Path(input_path).exists():
             raise FileNotFoundError(f"Downloaded Short not found: {input_path}")
@@ -74,18 +77,41 @@ class ShortReprocessor:
             )
 
         # ---- copy mode: clean re-encode (keeps the Short's look) ----
-        logger.info(f"Copy mode: re-encoding {input_path.name} to a clean mp4...")
+        if not FFMPEG_PATH:
+            raise RuntimeError("FFmpeg was not found; run setup or configure FFMPEG_PATH")
+        logger.info("Copy mode: re-encoding %s to a clean mp4...", input_path.name)
         cmd = [
             FFMPEG_PATH, "-y", "-hide_banner", "-loglevel", "error",
             "-i", str(input_path),
-            "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",  # keep even dimensions
+            "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+            "-map", "0:v:0", "-map", "0:a?",
             "-c:v", "libx264", "-preset", VIDEO_PRESET, "-crf", str(VIDEO_CRF_COPY),
             "-profile:v", "high", "-pix_fmt", "yuv420p",
             "-c:a", "aac", "-b:a", AUDIO_BITRATE,
-            "-movflags", "+faststart",
-            "-threads", "0",
+            "-movflags", "+faststart", "-threads", "0",
             str(output_path),
         ]
-        subprocess.run(cmd, check=True, timeout=300)
-        logger.info(f"Re-encoded: {output_path} ({output_path.stat().st_size / 1024 / 1024:.2f} MB)")
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=FFMPEG_TIMEOUT_SEC,
+            )
+        except subprocess.TimeoutExpired as exc:
+            output_path.unlink(missing_ok=True)
+            raise RuntimeError(
+                f"FFmpeg copy-mode render timed out after {FFMPEG_TIMEOUT_SEC} seconds"
+            ) from exc
+        if result.returncode != 0:
+            output_path.unlink(missing_ok=True)
+            raise RuntimeError(f"FFmpeg copy-mode render failed: {result.stderr[-4000:]}")
+        if not output_path.is_file() or output_path.stat().st_size <= 0:
+            raise RuntimeError("FFmpeg copy mode produced no output")
+        logger.info(
+            "Re-encoded: %s (%.2f MB)",
+            output_path,
+            output_path.stat().st_size / 1024 / 1024,
+        )
         return output_path
