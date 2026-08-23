@@ -2,10 +2,11 @@
 fetcher.py - Target selection, newest-to-oldest channel listing, heatmap peak analysis,
 and section-only downloading using yt-dlp and FFmpeg.
 """
-import os
 import subprocess
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
+from uuid import uuid4
+
 import yt_dlp
 import numpy as np
 
@@ -137,7 +138,9 @@ class YouTubeFetcher:
                     v_id = entry.get("id")
                     if not v_id:
                         continue
-                    v_url = entry.get("url") or f"https://www.youtube.com/watch?v={v_id}"
+                    v_url = entry.get("webpage_url") or entry.get("url") or ""
+                    if not str(v_url).startswith(("http://", "https://")):
+                        v_url = f"https://www.youtube.com/watch?v={v_id}"
                     duration = entry.get("duration", 0) or 0
                     # Ignore existing YouTube Shorts (< 60s) or extremely short videos (< 45s)
                     if 0 < duration < 60:
@@ -345,7 +348,8 @@ class YouTubeFetcher:
             t = min(max(0.0, i * step), max(0.0, duration - sample_len))
             try:
                 e = self._measure_audio_energy(stream_url, t, sample_len)
-            except Exception:
+            except Exception as exc:
+                logger.debug("Audio sample at %.1fs failed: %s", t, exc)
                 continue
             if e > best_e:
                 best_e, best_t = e, t
@@ -362,7 +366,8 @@ class YouTubeFetcher:
             t = min(max(0.0, t - sample_len / 2.0), max(0.0, duration - sample_len))
             try:
                 e = self._measure_audio_energy(stream_url, t, sample_len)
-            except Exception:
+            except Exception as exc:
+                logger.debug("Refined audio sample at %.1fs failed: %s", t, exc)
                 continue
             if e > refined_e:
                 refined_e, refined_t = e, t
@@ -443,7 +448,8 @@ class YouTubeFetcher:
                 t = min(max(0.0, i * step), max(0.0, duration - sample_len))
                 try:
                     e = self._measure_audio_energy(stream_url, t, sample_len)
-                except Exception:
+                except Exception as exc:
+                    logger.debug("Ranked audio sample at %.1fs failed: %s", t, exc)
                     continue
                 candidates.append({
                     "start": t,
@@ -489,7 +495,9 @@ class YouTubeFetcher:
         """
         if output_path is None:
             v_id = self._extract_video_id(video_url)
-            output_path = TEMP_DIR / f"raw_clip_{v_id}_{int(clip_start)}_{int(clip_end)}.mp4"
+            output_path = TEMP_DIR / (
+                f"raw_clip_{v_id}_{int(clip_start)}_{int(clip_end)}_{uuid4().hex[:10]}.mp4"
+            )
 
         logger.info(
             f"Downloading segment [{clip_start:.2f}s -> {clip_end:.2f}s] "
@@ -504,6 +512,7 @@ class YouTubeFetcher:
             logger.info(f"Downloaded clip section via progressive stream ({clip_path.stat().st_size / 1024 / 1024:.2f} MB)")
             return clip_path
         except Exception as e:
+            output_path.unlink(missing_ok=True)
             logger.debug(f"Strategy A (progressive single URL) failed: {e}")
 
         # Strategy B: best video + best audio stream pair
@@ -512,13 +521,25 @@ class YouTubeFetcher:
             logger.info(f"Downloaded clip section via video+audio streams ({clip_path.stat().st_size / 1024 / 1024:.2f} MB)")
             return clip_path
         except Exception as e:
+            output_path.unlink(missing_ok=True)
             logger.debug(f"Strategy B (AV pair) failed: {e}")
 
         # Strategy C: full download + local slice (slow, but always works)
         logger.warning("Fast stream slicing failed. Falling back to full download + local slice...")
-        clip_path = self._download_full_then_slice(video_url, clip_start, clip_end, output_path)
-        logger.info(f"Downloaded clip section via full download + slice ({clip_path.stat().st_size / 1024 / 1024:.2f} MB)")
-        return clip_path
+        try:
+            clip_path = self._download_full_then_slice(
+                video_url, clip_start, clip_end, output_path
+            )
+            logger.info(
+                "Downloaded clip via full download + slice (%.2f MB)",
+                clip_path.stat().st_size / 1024 / 1024,
+            )
+            return clip_path
+        except Exception:
+            output_path.unlink(missing_ok=True)
+            for fragment in output_path.parent.glob(f"{output_path.name}*.part*"):
+                fragment.unlink(missing_ok=True)
+            raise
 
     @staticmethod
     def _extract_video_id(video_url: str) -> str:
@@ -639,7 +660,9 @@ class YouTubeFetcher:
     def _download_full_then_slice(self, video_url: str, clip_start: float, clip_end: float, output_path: Path) -> Path:
         """Strategy C: yt-dlp downloads the full video, FFmpeg slices it locally, then the full file is deleted."""
         v_id = self._extract_video_id(video_url)
-        full_tmpl = str(TEMP_DIR / f"full_{v_id}.%(ext)s")
+        job_id = uuid4().hex[:10]
+        full_prefix = f"full_{v_id}_{job_id}"
+        full_tmpl = str(TEMP_DIR / f"{full_prefix}.%(ext)s")
 
         ydl_opts = {
             "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/""bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
@@ -652,7 +675,7 @@ class YouTubeFetcher:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
 
-        matches = [p for p in TEMP_DIR.glob(f"full_{v_id}.*") if p.stat().st_size > 0]
+        matches = [p for p in TEMP_DIR.glob(f"{full_prefix}.*") if p.stat().st_size > 0]
         if not matches:
             raise RuntimeError("Full download produced no usable file")
         full_path = max(matches, key=lambda p: p.stat().st_size)
@@ -666,7 +689,7 @@ class YouTubeFetcher:
                 raise RuntimeError("Slice of full download produced an invalid file")
         finally:
             # Free disk: delete the full video + any fragments immediately
-            for p in TEMP_DIR.glob(f"full_{v_id}*"):
+            for p in TEMP_DIR.glob(f"{full_prefix}*"):
                 try:
                     p.unlink()
                 except OSError:

@@ -1,267 +1,333 @@
-"""
-scheduler.py - 24/7 continuous automation scheduler using APScheduler / schedule,
-orchestrating target selection, heatmap analysis, section download, CPU transcription,
-vertical cropping, R2 storage pruning, and YouTube Shorts uploading for MULTIPLE accounts.
-"""
-import time
-import signal
-import sys
+"""Concurrency-safe, dynamically reloadable scheduler for clip farming."""
+from __future__ import annotations
+
+import random
 import shutil
+import signal
 import threading
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, List
-from apscheduler.schedulers.blocking import BlockingScheduler
-from apscheduler.triggers.interval import IntervalTrigger
+from typing import Optional
+from uuid import uuid4
+
+from dotenv import dotenv_values
 
 from .config import (
-    TARGET_CHANNELS,
+    ACCOUNTS,
     CYCLE_INTERVAL_HOURS,
-    SHORTS_PER_VIDEO,
-    SELECTION_ORDER,
     DELETE_AFTER_UPLOAD,
     DELETE_R2_AFTER_UPLOAD,
-    TOP_WATERMARK_ENABLED,
-    TOP_WATERMARK_TEXT,
     KEEP_LOCAL_SHORTS,
     KEEP_SHORTS_DIR,
-    ACCOUNTS,
+    SELECTION_ORDER,
+    SHORTS_PER_VIDEO,
+    TARGET_CHANNELS,
+    TOP_WATERMARK_TEXT,
+    _ENV_FILE,
     logger,
 )
-from .models import StateDB
 from .fetcher import YouTubeFetcher
+from .hashtags import save_metadata_sidecar, srt_to_text
+from .models import StateDB
+from .pathutils import safe_account_slug
 from .processor import VideoProcessor
+from .runtime import pipeline_guard
 from .storage import CloudStorageManager
-from .uploader import YouTubeUploader
-from .hashtags import srt_to_text, save_metadata_sidecar
+from .timewindows import (
+    is_within_posting_window,
+    posting_window_configured,
+    posting_window_label,
+    seconds_until_posting_window,
+    validate_posting_window,
+)
+from .uploader import (
+    UPLOAD_AUTH_REQUIRED,
+    UPLOAD_CHANNEL_MISMATCH,
+    UPLOAD_DRY_RUN,
+    UPLOAD_QUOTA_REACHED,
+    YouTubeUploader,
+    is_real_upload_id,
+    resolve_credentials,
+)
 
 
 class ShortsBotScheduler:
-    """
-    Continuous 24/7 automation engine for farming YouTube clips,
-    processing vertical Shorts, managing R2 storage, and uploading to YouTube
-    across one or many accounts (each with its own channels, credentials,
-    style settings, and daily quota).
-    """
+    """Find high-engagement windows and publish them for each account."""
+
     def __init__(
         self,
-        channels: Optional[List[str]] = None,
+        channels: Optional[list[str]] = None,
         interval_hours: int = CYCLE_INTERVAL_HOURS,
-        accounts: Optional[List[dict]] = None,
+        accounts: Optional[list[dict]] = None,
+        state_db: Optional[StateDB] = None,
+        processor: Optional[VideoProcessor] = None,
+        storage: Optional[CloudStorageManager] = None,
     ):
-        self.interval_hours = interval_hours
-        if accounts is not None:
-            self.accounts = accounts
-        else:
-            # Re-read accounts.json fresh so accounts added/edited from the
-            # control panel apply IMMEDIATELY (no panel restart needed).
-            try:
-                from .config import _load_accounts
-                self.accounts = _load_accounts()
-            except Exception:
-                self.accounts = ACCOUNTS
-        # Backwards-compatible: if caller passes channels directly, build one account
-        if channels is not None and len(self.accounts) == 1 and self.accounts[0]["name"] == "default":
-            self.accounts[0]["target_channels"] = channels
-        self.state_db = StateDB()
-        self.processor = VideoProcessor()
-        self.storage = CloudStorageManager()
-        self.scheduler = BlockingScheduler()
+        self.interval_hours = max(1, int(interval_hours))
+        self._account_filter = (
+            [str(account.get("name") or "").casefold() for account in accounts]
+            if accounts is not None
+            else None
+        )
+        self.accounts = list(accounts) if accounts is not None else self._load_accounts_fresh()
+        if (
+            channels is not None
+            and len(self.accounts) == 1
+            and self.accounts[0].get("name") == "default"
+        ):
+            self.accounts[0]["target_channels"] = list(channels)
+        self.state_db = state_db or StateDB()
+        self.processor = processor or VideoProcessor()
+        self.storage = storage or CloudStorageManager()
+        self.stop_event = threading.Event()
+        self._running = False
+        self._last_upload_result: Optional[str] = None
         self._setup_signal_handlers()
 
+    @staticmethod
+    def _load_accounts_fresh() -> list[dict]:
+        try:
+            from .config import _load_accounts
+
+            return _load_accounts()
+        except Exception as exc:
+            logger.error("Could not reload accounts.json: %s", exc)
+            return list(ACCOUNTS)
+
+    def _current_interval_hours(self) -> int:
+        try:
+            value = dotenv_values(_ENV_FILE).get("CYCLE_INTERVAL_HOURS")
+            return max(1, int(float(value))) if value else self.interval_hours
+        except (TypeError, ValueError, OSError):
+            return self.interval_hours
+
     def _setup_signal_handlers(self) -> None:
-        """Register graceful SIGINT/SIGTERM shutdown handlers (main thread only)."""
         if threading.current_thread() is not threading.main_thread():
             return
 
-        def handle_shutdown(signum, frame):
-            logger.info("Received termination signal. Shutting down 24/7 Shorts bot gracefully...")
-            try:
-                if self.scheduler.running:
-                    self.scheduler.shutdown(wait=False)
-            except Exception:
-                pass
-            sys.exit(0)
+        def handle_shutdown(_signum, _frame):
+            logger.info("Termination requested; stopping after the active operation.")
+            self.stop()
 
         signal.signal(signal.SIGINT, handle_shutdown)
         signal.signal(signal.SIGTERM, handle_shutdown)
 
-    # ------------------------------------------------------------------
-    def run_single_cycle(self, accounts: Optional[List[dict]] = None) -> int:
-        """
-        Runs one complete farming and processing cycle for all enabled accounts.
-        Returns the number of videos successfully processed and uploaded.
-        """
-        accounts = accounts if accounts is not None else self.accounts
-        logger.info("=== STARTING 24/7 SHORTS BOT FARMING & PROCESSING CYCLE ===")
-        total_made = 0
+    def run_single_cycle(self, accounts: Optional[list[dict]] = None) -> int:
+        with pipeline_guard(blocking=False) as acquired:
+            if not acquired:
+                logger.warning("Another clip pipeline is active; cycle skipped.")
+                return 0
+            if accounts is None:
+                fresh = self._load_accounts_fresh()
+                if self._account_filter is None:
+                    self.accounts = fresh
+                else:
+                    fresh_by_name = {
+                        str(item.get("name") or "").casefold(): item for item in fresh
+                    }
+                    self.accounts = [
+                        fresh_by_name.get(str(item.get("name") or "").casefold(), item)
+                        for item in self.accounts
+                        if str(item.get("name") or "").casefold() in self._account_filter
+                    ]
+            selected = list(accounts) if accounts is not None else list(self.accounts)
+            logger.info("=== STARTING CLIP FARMING CYCLE ===")
+            total_uploaded = 0
+            for account in selected:
+                if self.stop_event.is_set():
+                    break
+                if not account.get("enabled", True):
+                    continue
+                try:
+                    total_uploaded += self._run_cycle_for_account(account)
+                except Exception as exc:
+                    logger.exception(
+                        "Cycle failed for account '%s': %s", account.get("name"), exc
+                    )
+            logger.info("=== CLIP CYCLE COMPLETE: %s real upload(s) ===", total_uploaded)
+            return total_uploaded
 
-        for account in accounts:
-            if not account.get("enabled", True):
-                logger.info(f"Skipping disabled account: {account.get('name')}")
-                continue
-            try:
-                total_made += self._run_cycle_for_account(account)
-            except Exception as e:
-                logger.error(f"Cycle failed for account '{account.get('name')}': {e}")
-
-        logger.info(f"=== COMPLETED CYCLE: Processed {total_made} new Short(s) across all accounts ===")
-        return total_made
-
-    # ------------------------------------------------------------------
     def _run_cycle_for_account(self, account: dict) -> int:
-        """Runs a full cycle for ONE account (its channels, style, quota, creds)."""
-        name = account.get("name", "default")
-        channels = account.get("target_channels") or TARGET_CHANNELS
-        max_daily = int(account.get("max_daily_uploads") or 10)
+        name = str(account.get("name") or "default").strip()
+        window_error = validate_posting_window(account)
+        if window_error:
+            logger.error("[%s] Invalid posting window; account skipped: %s", name, window_error)
+            return 0
+        if not is_within_posting_window(account):
+            logger.info(
+                "[%s] Outside posting window (%s); no automatic upload this cycle.",
+                name,
+                posting_window_label(account),
+            )
+            return 0
+        if posting_window_configured(account):
+            logger.info("[%s] Posting window is open: %s.", name, posting_window_label(account))
+        if "target_channels" in account:
+            channels = [str(value).strip() for value in account.get("target_channels") or [] if str(value).strip()]
+        else:
+            channels = list(TARGET_CHANNELS) if name == "default" else []
+        if not channels:
+            logger.warning("[%s] No source channels configured; account skipped.", name)
+            return 0
+
+        max_daily = max(1, int(account.get("max_daily_uploads") or 10))
         aspect = account.get("aspect")
         fill = account.get("fill")
-        shorts_per_video = int(account.get("shorts_per_video") or SHORTS_PER_VIDEO)
-        min_gap_min = int(account.get("min_minutes_between_uploads") or 0)
-        del_after = account.get("delete_after_upload", DELETE_AFTER_UPLOAD)
-        del_r2 = account.get("delete_r2_after_upload", DELETE_R2_AFTER_UPLOAD)
-        # Clip bot: subtitles ON by default. Per-account override available.
-        subtitles_enabled = account.get("subtitles_enabled", True)
-        expected_channel = (account.get("expected_channel") or "").strip() or None
-        if expected_channel:
-            logger.info(f"[{name}] Channel safety lock: uploads verified against '{expected_channel}'.")
-
-        # Per-account watermark ("LIKE & SUBSCRIBE" banner + top channel watermark)
-        wm_enabled = account.get("watermark_enabled")
-        wm_text = (account.get("watermark") or "").strip() or None
-        top_wm_enabled = account.get("top_watermark_enabled")
-        # Empty top watermark text = NO top watermark (explicit empty stays off,
-        # matching the config docs "leave empty to disable"). No auto fallback
-        # to the account name - if you want your channel name there, type it.
-        top_wm_text = (account.get("top_watermark") or TOP_WATERMARK_TEXT or "").strip() or None
-        if wm_text or top_wm_text:
-            logger.info(
-                f"[{name}] Watermarks: bottom='{wm_text}' top='{top_wm_text}' "
-                f"(enabled bottom={wm_enabled if wm_enabled is not None else 'default'}, "
-                f"top={top_wm_enabled if top_wm_enabled is not None else 'default'})"
-            )
-
-        logger.info(f"--- Account: {name} | channels: {channels} | max uploads/day: {max_daily} ---")
-
-        fetcher = YouTubeFetcher(channels=channels)
-        from .uploader import resolve_credentials
-        cs, tk = resolve_credentials(account)
-        uploader = YouTubeUploader(
-            client_secret_file=cs,
-            token_file=tk,
-            state_db=self.state_db,
+        shorts_per_video = min(20, max(1, int(account.get("shorts_per_video") or SHORTS_PER_VIDEO)))
+        min_gap = max(0, int(account.get("min_minutes_between_uploads") or 0))
+        subtitles_enabled = bool(account.get("subtitles_enabled", True))
+        expected_channel = str(
+            account.get("expected_channel") or account.get("connected_channel") or ""
+        ).strip()
+        expected_channel_id = str(account.get("connected_channel_id") or "").strip()
+        watermark_enabled = account.get("watermark_enabled")
+        watermark_text = str(account.get("watermark") or "").strip()
+        top_enabled = account.get("top_watermark_enabled")
+        top_text = str(account.get("top_watermark") or TOP_WATERMARK_TEXT or "").strip()
+        logo_position = (
+            str(account.get("logo_position") or "").strip()
+            if account.get("logo_remove")
+            else "off"
         )
 
-        can_upload, remaining = self.state_db.can_upload_today(max_daily_uploads=max_daily, account=name)
-        logger.info(f"[{name}] YouTube 24h upload quota: {remaining} slots remaining.")
+        fetcher = YouTubeFetcher(channels=channels)
+        client_secret, token = resolve_credentials(account)
+        uploader = YouTubeUploader(
+            client_secret_file=client_secret,
+            token_file=token,
+            state_db=self.state_db,
+        )
+        uploaded_count = 0
 
-        processed_count = 0
         for channel_url in channels:
+            if self.stop_event.is_set():
+                break
+            can_upload, _remaining = self.state_db.can_upload_today(max_daily, name)
             if not can_upload:
-                logger.warning(f"[{name}] Daily upload cap reached - stopping this account's cycle.")
                 break
-
-            logger.info(f"[{name}] Checking target channel: {channel_url}")
             try:
-                recent_videos = fetcher.fetch_channel_recent_videos(channel_url)
-            except Exception as e:
-                logger.error(f"[{name}] Failed to fetch channel list for {channel_url}: {e}")
+                videos = fetcher.fetch_channel_recent_videos(channel_url)
+            except Exception as exc:
+                logger.error("[%s] Could not scan %s: %s", name, channel_url, exc)
                 continue
-
-            # Apply selection order (per-account override > global setting)
-            order = (account.get("selection_order") or SELECTION_ORDER).strip().lower()
+            order = str(account.get("selection_order") or SELECTION_ORDER).lower()
             if order == "oldest":
-                recent_videos = list(reversed(recent_videos))
-                logger.info(f"[{name}] Selection order: oldest first ({len(recent_videos)} candidates)")
+                videos.reverse()
             elif order == "random":
-                import random as _rnd
-                _rnd.shuffle(recent_videos)
-                logger.info(f"[{name}] Selection order: random ({len(recent_videos)} candidates)")
-            else:
-                logger.info(f"[{name}] Selection order: newest first ({len(recent_videos)} candidates)")
+                random.shuffle(videos)
 
-            for video_meta in recent_videos:
-                v_id = video_meta["video_id"]
-                v_url = video_meta["url"]
-                v_title = video_meta["title"]
-
-                if self.state_db.is_video_processed(v_id, account=name):
-                    logger.debug(f"[{name}] Skipping already processed video: '{v_title}' ({v_id})")
+            for video in videos:
+                video_id = video["video_id"]
+                if self.state_db.is_video_processed(video_id, account=name):
                     continue
-
-                # ---- pacing: respect min-minutes-between-uploads ----
-                if min_gap_min > 0:
-                    last_up = self.state_db.get_last_upload_time(account=name)
-                    if last_up is not None:
-                        from datetime import datetime, timezone
-                        elapsed = (datetime.now(timezone.utc) - last_up).total_seconds() / 60.0
-                        if elapsed < min_gap_min:
-                            wait_s = int((min_gap_min - elapsed) * 60) + 1
-                            logger.info(f"[{name}] Waiting {wait_s}s to respect {min_gap_min} min between uploads...")
-                            time.sleep(wait_s)
-
-                logger.info(f"[{name}] --> Processing new target video: '{v_title}' ({v_url})")
-
-                # Step 1: pick window(s) - best heatmap/energy moment, or top N
+                claim = self.state_db.claim_video(video_id, name)
+                if not claim:
+                    continue
                 try:
+                    if not self._wait_for_upload_gap(name, min_gap):
+                        break
                     if shorts_per_video > 1:
-                        top_windows = fetcher.select_top_windows(v_url, count=shorts_per_video)
+                        ranked = fetcher.select_top_windows(
+                            video["url"], count=shorts_per_video
+                        )
                         windows = [
-                            {"start": w["start"], "end": w["end"], "score": w.get("score", 0.0)}
-                            for w in top_windows
+                            {"start": item["start"], "end": item["end"]}
+                            for item in ranked
                         ]
-                        logger.info(f"[{name}] Making {len(windows)} Short(s) from the top moments of '{v_title}'")
+                        # Get complete metadata once for every part.
+                        info, _peak, _start, _end = fetcher.extract_heatmap_and_select_window(
+                            video["url"]
+                        )
                     else:
-                        info, peak_time, clip_start, clip_end = fetcher.extract_heatmap_and_select_window(v_url)
-                        windows = [{"start": clip_start, "end": clip_end, "score": peak_time}]
-                except Exception as e:
-                    logger.error(f"[{name}] Heatmap/energy analysis failed for {v_url}: {e}")
-                    self.state_db.record_video_state(
-                        video_id=v_id, video_url=v_url, title=v_title,
-                        status="FAILED", error_msg=str(e), account=name,
+                        info, _peak, start, end = fetcher.extract_heatmap_and_select_window(
+                            video["url"]
+                        )
+                        windows = [{"start": start, "end": end}]
+                    uploaded_count += self._process_video_windows(
+                        video_id,
+                        video["url"],
+                        video["title"],
+                        channel_url,
+                        windows,
+                        account=name,
+                        max_daily=max_daily,
+                        uploader=uploader,
+                        info=info,
+                        aspect=aspect,
+                        fill=fill,
+                        logo_position=logo_position,
+                        like_subscribe=None if watermark_enabled is None else bool(watermark_enabled),
+                        like_subscribe_text=watermark_text,
+                        top_watermark_enabled=None if top_enabled is None else bool(top_enabled),
+                        top_watermark_text=top_text,
+                        extra_hashtags=str(account.get("extra_hashtags") or "").strip(),
+                        title_prefix=account.get("title_prefix"),
+                        title_hashtags=str(account.get("title_hashtags") or "").strip(),
+                        smart_titles=account.get("smart_titles"),
+                        delete_after_upload=bool(
+                            account.get("delete_after_upload", DELETE_AFTER_UPLOAD)
+                        ),
+                        delete_r2_after_upload=bool(
+                            account.get("delete_r2_after_upload", DELETE_R2_AFTER_UPLOAD)
+                        ),
+                        subtitles_enabled=subtitles_enabled,
+                        expected_channel=expected_channel,
+                        expected_channel_id=expected_channel_id,
                     )
-                    continue
-
-                made = self._process_video_windows(
-                    v_id, v_url, v_title, channel_url, windows,
-                    account=name, max_daily=max_daily,
-                    uploader=uploader, aspect=aspect, fill=fill,
-                    like_subscribe=(None if wm_enabled is None else bool(wm_enabled)),
-                    like_subscribe_text=wm_text,
-                    top_watermark_enabled=(None if top_wm_enabled is None else bool(top_wm_enabled)),
-                    top_watermark_text=top_wm_text,
-                    extra_hashtags=str(account.get("extra_hashtags") or "").strip(),
-                    title_prefix=account.get("title_prefix"),
-                    title_hashtags=str(account.get("title_hashtags") or "").strip(),
-                    smart_titles=account.get("smart_titles"),
-                    delete_after_upload=del_after,
-                    delete_r2_after_upload=del_r2,
-                    subtitles_enabled=subtitles_enabled,
-                    expected_channel=expected_channel,
-                )
-                processed_count += made
-                can_upload, remaining = self.state_db.can_upload_today(
-                    max_daily_uploads=max_daily, account=name
-                )
-
-                # One new video per channel per cycle to pace uploads naturally
+                except Exception as exc:
+                    logger.exception("[%s] Failed to process %s: %s", name, video["url"], exc)
+                    self.state_db.record_video_state(
+                        video_id=video_id,
+                        video_url=video["url"],
+                        title=video["title"],
+                        status="PROCESSING_FAILED",
+                        error_msg=str(exc),
+                        account=name,
+                    )
+                finally:
+                    self.state_db.release_video_claim(video_id, name, claim)
+                # Natural pacing: one source video from each source channel/cycle.
                 break
 
-        logger.info(f"[{name}] Account cycle done: {processed_count} Short(s).")
-        return processed_count
+        return uploaded_count
 
-    # ------------------------------------------------------------------
+    def _wait_for_upload_gap(self, account: str, min_gap_minutes: int) -> bool:
+        if min_gap_minutes <= 0:
+            return not self.stop_event.is_set()
+        last_upload = self.state_db.get_last_upload_time(account)
+        if not last_upload:
+            return not self.stop_event.is_set()
+        elapsed = (datetime.now(timezone.utc) - last_upload).total_seconds() / 60.0
+        if elapsed >= min_gap_minutes:
+            return not self.stop_event.is_set()
+        wait_seconds = max(1, int((min_gap_minutes - elapsed) * 60))
+        return not self.stop_event.wait(wait_seconds)
+
+    @staticmethod
+    def _state_for_upload_result(result: Optional[str]) -> str:
+        if is_real_upload_id(result):
+            return "UPLOADED_YOUTUBE"
+        return {
+            UPLOAD_QUOTA_REACHED: "QUOTA_WAIT",
+            UPLOAD_DRY_RUN: "DRY_RUN_READY",
+            UPLOAD_AUTH_REQUIRED: "AUTH_REQUIRED",
+            UPLOAD_CHANNEL_MISMATCH: "CHANNEL_MISMATCH",
+        }.get(result, "UPLOAD_FAILED")
+
     def _process_video_windows(
         self,
-        v_id: str,
-        v_url: str,
-        v_title: str,
+        video_id: str,
+        video_url: str,
+        video_title: str,
         channel_url: str,
-        windows: List[dict],
+        windows: list[dict],
         account: str = "",
         max_daily: int = 10,
         uploader: Optional[YouTubeUploader] = None,
+        info: Optional[dict] = None,
         aspect: Optional[str] = None,
         fill: Optional[str] = None,
+        logo_position: Optional[str] = None,
         like_subscribe: Optional[bool] = None,
         like_subscribe_text: Optional[str] = None,
         top_watermark_enabled: Optional[bool] = None,
@@ -270,221 +336,223 @@ class ShortsBotScheduler:
         title_prefix: Optional[str] = None,
         title_hashtags: str = "",
         smart_titles: Optional[bool] = None,
-        delete_after_upload: Optional[bool] = None,
-        delete_r2_after_upload: Optional[bool] = None,
+        delete_after_upload: bool = False,
+        delete_r2_after_upload: bool = False,
         subtitles_enabled: Optional[bool] = None,
         expected_channel: Optional[str] = None,
+        expected_channel_id: Optional[str] = None,
     ) -> int:
-        """
-        Downloads, processes, and uploads one Short per window for a single video,
-        for ONE account. Stops early if the account's daily quota is reached.
-        """
-        if uploader is None:
-            uploader = YouTubeUploader(state_db=self.state_db)
-
-        made = 0
+        uploader = uploader or YouTubeUploader(state_db=self.state_db)
+        info = info or {"title": video_title}
         total = len(windows)
+        uploaded_count = 0
+        part_ids: list[str] = []
+        account_slug = safe_account_slug(account)
 
-        for idx, win in enumerate(windows, start=1):
-            clip_start, clip_end = float(win["start"]), float(win["end"])
-            peak_time = (clip_start + clip_end) / 2.0
-            part_label = f"Part {idx}" if total > 1 else None
-            db_video_id = f"{v_id}_part{idx}" if total > 1 else v_id
-
-            logger.info(f"[{account}] --- Short {idx}/{total}: segment [{clip_start:.1f}s -> {clip_end:.1f}s] ---")
-
-            # Step 2: Download ONLY the selected segment
-            raw_clip_path = None
-            try:
-                raw_clip_path = self._download_window(v_url, clip_start, clip_end)
-            except Exception as e:
-                logger.error(f"[{account}] Clip section download failed for {v_url}: {e}")
-                self.state_db.record_video_state(
-                    video_id=db_video_id, video_url=v_url, title=v_title,
-                    peak_time=peak_time, clip_start=clip_start, clip_end=clip_end,
-                    status="FAILED", error_msg=str(e), account=account,
-                )
+        for index, window in enumerate(windows, start=1):
+            if self.stop_event.is_set():
+                break
+            start, end = float(window["start"]), float(window["end"])
+            part_id = f"{video_id}_part{index}" if total > 1 else video_id
+            part_ids.append(part_id)
+            if self.state_db.is_video_processed(part_id, account=account):
                 continue
-
-            # Step 3: Transcribe + crop + subtitles + BGM
-            processed_short_path = None
-            srt_path = None
+            raw_path: Optional[Path] = None
+            processed_path: Optional[Path] = None
+            srt_path: Optional[Path] = None
+            saved_copy: Optional[Path] = None
+            uploaded_key: Optional[str] = None
+            short_id: Optional[str] = None
+            transcript_text = ""
             try:
-                srt_path = Path(raw_clip_path).with_suffix(".srt")
-                processed_short_path = self.processor.process_clip_to_short(
-                    raw_clip_path, srt_path=srt_path, aspect=aspect, fill=fill,
-                    like_subscribe=like_subscribe, like_subscribe_text=like_subscribe_text,
+                raw_path = self._download_window(video_url, start, end)
+                srt_path = raw_path.with_suffix(".srt")
+                processed_path = raw_path.parent / (
+                    f"processed_{raw_path.stem}_{uuid4().hex[:10]}.mp4"
+                )
+                processed_path = self.processor.process_clip_to_short(
+                    raw_path,
+                    output_path=processed_path,
+                    srt_path=srt_path,
+                    aspect=aspect,
+                    fill=fill,
+                    logo_position=logo_position,
+                    like_subscribe=like_subscribe,
+                    like_subscribe_text=like_subscribe_text,
                     top_watermark_enabled=top_watermark_enabled,
                     top_watermark_text=top_watermark_text,
                     subtitles=subtitles_enabled,
                 )
-            except Exception as e:
-                logger.error(f"[{account}] Video processing/subtitles failed for {v_id}: {e}")
+                if KEEP_LOCAL_SHORTS and processed_path.is_file():
+                    saved_copy = KEEP_SHORTS_DIR / f"{account_slug}_short_{part_id}.mp4"
+                    saved_copy.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(processed_path, saved_copy)
+
+                r2_key = f"shorts/{account_slug}/{part_id}.mp4"
+                try:
+                    uploaded_key = self.storage.upload_file(
+                        processed_path, r2_key=r2_key
+                    )
+                except Exception as exc:
+                    logger.error("[%s] Optional R2 backup failed: %s", account, exc)
+
+                transcript_text = srt_to_text(srt_path) if srt_path else ""
                 self.state_db.record_video_state(
-                    video_id=db_video_id, video_url=v_url, title=v_title,
-                    peak_time=peak_time, clip_start=clip_start, clip_end=clip_end,
-                    status="FAILED", error_msg=str(e), account=account,
+                    video_id=part_id,
+                    video_url=video_url,
+                    channel_id=channel_url,
+                    title=video_title,
+                    peak_time=(start + end) / 2.0,
+                    clip_start=start,
+                    clip_end=end,
+                    r2_key=uploaded_key or "",
+                    status="PENDING_UPLOAD",
+                    account=account,
                 )
-                self.storage.cleanup_local_files(raw_clip_path, srt_path)
-                continue
-
-            # Step 4: Upload to Cloudflare R2 (enforcing 8 GB limit)
-            r2_key = f"shorts/{account}/{db_video_id}_short.mp4"
-            try:
-                uploaded_key = self.storage.upload_file(processed_short_path, r2_key=r2_key)
-                if uploaded_key:
-                    r2_key = uploaded_key
-            except Exception as e:
-                logger.error(f"[{account}] R2 upload failed for {v_id}: {e}")
-
-            # Record state as R2 uploaded
-            self.state_db.record_video_state(
-                video_id=db_video_id, video_url=v_url, channel_id=channel_url,
-                title=v_title, peak_time=peak_time,
-                clip_start=clip_start, clip_end=clip_end,
-                r2_key=r2_key, status="UPLOADED_R2", account=account,
-            )
-
-            # Step 5: Upload to YouTube (this account's quota)
-            quota_hit = False
-            try:
-                transcript_text = srt_to_text(srt_path)
                 short_id = uploader.upload_short(
-                    video_path=processed_short_path,
-                    original_video_id=db_video_id,
-                    original_title=v_title,
-                    original_url=v_url,
+                    video_path=processed_path,
+                    original_video_id=part_id,
+                    original_title=video_title,
+                    original_url=video_url,
                     channel_name=channel_url,
-                    part_label=part_label,
+                    part_label=f"Part {index}" if total > 1 else None,
                     account=account,
                     account_max_daily=max_daily,
-                    info={"title": v_title},
+                    info=info,
                     transcript_text=transcript_text,
                     extra_hashtags=extra_hashtags,
                     title_prefix=title_prefix,
                     title_hashtags=title_hashtags,
                     smart_titles=smart_titles,
                     expected_channel=expected_channel,
+                    expected_channel_id=expected_channel_id,
                 )
-                if short_id == "QUOTA_LIMIT_REACHED":
-                    logger.warning(f"[{account}] Upload cap reached - saved in R2, queued for next window.")
-                    quota_hit = True
-                elif short_id:
-                    logger.info(f"[{account}] SUCCESS! Created YouTube Short {short_id} from {v_id}")
-                    made += 1
-            except Exception as e:
-                logger.error(f"[{account}] YouTube upload failed for {v_id}: {e}")
-
-            # Step 6: Keep a local copy (optional), then clean up working files
-            self._keep_local_copy(processed_short_path, db_video_id, account)
-
-            # Save title + hashtags alongside the Short (works in dry-run too)
-            try:
-                meta = uploader.generate_short_metadata(
-                    original_title=v_title,
-                    original_url=v_url,
-                    channel_name=channel_url,
-                    part_label=part_label,
-                    info={"title": v_title},
-                    transcript_text=transcript_text,
-                    extra_hashtags=extra_hashtags,
-                )
-                saved_copy = KEEP_SHORTS_DIR / f"{account}_short_{db_video_id}.mp4"
-                sidecar_target = saved_copy if saved_copy.exists() else processed_short_path
-                save_metadata_sidecar(
-                    sidecar_target, meta,
-                    source_url=v_url,
-                    short_id=short_id or "",
+                self._last_upload_result = short_id
+                state = self._state_for_upload_result(short_id)
+                self.state_db.record_video_state(
+                    video_id=part_id,
+                    video_url=video_url,
+                    channel_id=channel_url,
+                    title=video_title,
+                    peak_time=(start + end) / 2.0,
+                    clip_start=start,
+                    clip_end=end,
+                    r2_key=uploaded_key or "",
+                    youtube_short_id=short_id if is_real_upload_id(short_id) else "",
+                    status=state,
+                    error_msg="" if is_real_upload_id(short_id) else state,
                     account=account,
                 )
-            except Exception as e:
-                logger.warning(f"Could not save metadata sidecar: {e}")
 
-            # Delete-after-upload: remove the local copy + sidecar once posted
-            if short_id and short_id != "QUOTA_LIMIT_REACHED" and delete_after_upload:
-                local_copy = KEEP_SHORTS_DIR / f"{account}_short_{db_video_id}.mp4"
-                for fp in (local_copy, local_copy.with_suffix(".txt")):
-                    try:
-                        if Path(fp).exists():
-                            Path(fp).unlink()
-                            logger.info(f"[{account}] 🗑️ Deleted local copy after upload: {fp}")
-                    except Exception as e:
-                        logger.warning(f"[{account}] Could not delete {fp}: {e}")
-            if short_id and short_id != "QUOTA_LIMIT_REACHED" and delete_r2_after_upload and r2_key and self.storage.client:
-                try:
-                    self.storage.client.delete_object(Bucket=self.storage.bucket_name, Key=r2_key)
-                    logger.info(f"[{account}] 🗑️ Deleted R2 backup after upload: {r2_key}")
-                except Exception as e:
-                    logger.warning(f"[{account}] Could not delete R2 object {r2_key}: {e}")
+                if uploader.last_metadata:
+                    save_metadata_sidecar(
+                        saved_copy if saved_copy and saved_copy.exists() else processed_path,
+                        uploader.last_metadata,
+                        source_url=video_url,
+                        short_id=short_id if is_real_upload_id(short_id) else "",
+                        account=account,
+                    )
 
-            self.storage.cleanup_local_files(raw_clip_path, processed_short_path, srt_path)
+                if is_real_upload_id(short_id):
+                    uploaded_count += 1
+                    if delete_after_upload and saved_copy:
+                        saved_copy.unlink(missing_ok=True)
+                        saved_copy.with_suffix(".txt").unlink(missing_ok=True)
+                    if delete_r2_after_upload and uploaded_key and self.storage.client:
+                        try:
+                            self.storage.client.delete_object(
+                                Bucket=self.storage.bucket_name, Key=uploaded_key
+                            )
+                        except Exception as exc:
+                            logger.warning("[%s] Could not delete R2 backup: %s", account, exc)
+                else:
+                    logger.warning(
+                        "[%s] Part %s remains retryable with state %s.",
+                        account,
+                        index,
+                        state,
+                    )
+            except Exception as exc:
+                self.state_db.record_video_state(
+                    video_id=part_id,
+                    video_url=video_url,
+                    title=video_title,
+                    peak_time=(start + end) / 2.0,
+                    clip_start=start,
+                    clip_end=end,
+                    status="PROCESSING_FAILED",
+                    error_msg=str(exc),
+                    account=account,
+                )
+                logger.exception("[%s] Part %s failed: %s", account, index, exc)
+            finally:
+                self.storage.cleanup_local_files(raw_path, processed_path, srt_path)
 
-            if quota_hit:
+            if short_id == UPLOAD_QUOTA_REACHED:
                 break
 
-        # Mark the base video as processed for this account (multi-shorts case)
-        if total > 1:
+        if total > 1 and part_ids and all(
+            self.state_db.is_video_processed(part_id, account=account)
+            for part_id in part_ids
+        ):
             self.state_db.record_video_state(
-                video_id=v_id, video_url=v_url, channel_id=channel_url,
-                title=v_title,
+                video_id=video_id,
+                video_url=video_url,
+                channel_id=channel_url,
+                title=video_title,
                 clip_start=float(windows[0]["start"]),
                 clip_end=float(windows[-1]["end"]),
-                status="PROCESSED_MULTI", account=account,
+                status="PROCESSED_MULTI",
+                account=account,
             )
+        return uploaded_count
 
-        return made
+    def _download_window(self, video_url: str, start: float, end: float) -> Path:
+        return YouTubeFetcher().download_clip_section(video_url, start, end)
 
-    def _download_window(self, v_url: str, clip_start: float, clip_end: float) -> Path:
-        """Small helper so _process_video_windows uses the shared fetcher download."""
-        return YouTubeFetcher().download_clip_section(v_url, clip_start, clip_end)
+    def _keep_local_copy(self, processed_short_path, video_id: str, account: str = "") -> None:
+        """Compatibility helper retained for external callers/tests."""
+        if not KEEP_LOCAL_SHORTS or not processed_short_path:
+            return
+        source = Path(processed_short_path)
+        if not source.is_file():
+            return
+        destination = KEEP_SHORTS_DIR / f"{safe_account_slug(account)}_short_{video_id}.mp4"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
 
-    # ------------------------------------------------------------------
-    def _keep_local_copy(self, processed_short_path, v_id: str, account: str = "") -> None:
-        try:
-            if not KEEP_LOCAL_SHORTS:
-                return
-            if not processed_short_path or not Path(processed_short_path).exists():
-                return
-            dest = KEEP_SHORTS_DIR / f"{account}_short_{v_id}.mp4"
-            shutil.copy2(processed_short_path, dest)
-            logger.info(f"Saved local copy of finished Short: {dest}")
-        except Exception as e:
-            logger.warning(f"Could not keep local copy of Short {v_id}: {e}")
+    def _next_wait_seconds(self, interval_hours: int) -> float:
+        base_wait = max(60.0, float(interval_hours) * 3600.0)
+        opening_delays = [
+            seconds_until_posting_window(account)
+            for account in self.accounts
+            if account.get("enabled", True)
+            and posting_window_configured(account)
+            and not is_within_posting_window(account)
+            and validate_posting_window(account) is None
+        ]
+        positive = [delay for delay in opening_delays if delay > 0]
+        return max(1.0, min([base_wait, *positive])) if positive else base_wait
 
-    # ------------------------------------------------------------------
     def start_24_7_loop(self) -> None:
-        logger.info(
-            f"Starting 24/7 YouTube Shorts Automation Bot daemon "
-            f"(Interval: every {self.interval_hours} hour(s), "
-            f"{len(self.accounts)} account(s))..."
-        )
+        if self._running:
+            return
+        self._running = True
+        self.stop_event.clear()
+        logger.info("Starting interruptible clip scheduler.")
         try:
-            self.run_single_cycle()
-        except Exception as e:
-            logger.error(f"Exception during initial startup cycle: {e}")
-
-        self.scheduler.add_job(
-            self.run_single_cycle,
-            trigger=IntervalTrigger(hours=self.interval_hours),
-            id="yt_shorts_farming_job",
-            name="YouTube Shorts Clip Farming & Upload Cycle",
-            replace_existing=True,
-            max_instances=1,
-            misfire_grace_time=3600
-        )
-        logger.info("Scheduler running 24/7. Press Ctrl+C to stop.")
-        try:
-            self.scheduler.start()
-        except (KeyboardInterrupt, SystemExit):
-            logger.info("Scheduler stopped by user.")
+            while not self.stop_event.is_set():
+                self.run_single_cycle()
+                if self.stop_event.is_set():
+                    break
+                hours = self._current_interval_hours()
+                wait_seconds = self._next_wait_seconds(hours)
+                logger.info("Next clip cycle in %.1f minute(s).", wait_seconds / 60.0)
+                self.stop_event.wait(wait_seconds)
+        finally:
+            self._running = False
+            logger.info("Clip scheduler stopped.")
 
     def stop(self) -> None:
-        """Stops the 24/7 scheduler loop (used by the web control panel)."""
-        try:
-            if self.scheduler and self.scheduler.running:
-                self.scheduler.shutdown(wait=False)
-                logger.info("Scheduler stopped by web control panel.")
-            else:
-                logger.info("Scheduler was not running.")
-        except Exception as e:
-            logger.error(f"Error stopping scheduler: {e}")
+        self.stop_event.set()
+        logger.info("Scheduler stop requested.")

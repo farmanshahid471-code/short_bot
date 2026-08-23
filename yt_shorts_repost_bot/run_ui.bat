@@ -3,13 +3,13 @@ title Shorts Repost Bot - Control Panel
 cd /d "%~dp0"
 
 if exist ".venv\Scripts\python.exe" goto :has_venv
-REM Kill any OLD bot server still holding the port (avoids "port in use" + stale pages)
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :5100 ^| findstr LISTENING') do taskkill /F /PID %%a >nul 2>&1
 echo First run detected - running the automatic setup first...
 call setup.bat
 if errorlevel 1 goto :fail
 
 :has_venv
+REM Stop an old/stale panel before starting a new one.
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr :5100 ^| findstr LISTENING') do taskkill /F /PID %%a >nul 2>&1
 echo ==================================================
 echo   Starting the Shorts Repost Bot Control Panel
 echo ==================================================
