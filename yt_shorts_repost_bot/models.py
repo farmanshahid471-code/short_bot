@@ -583,6 +583,25 @@ class StateDB:
                 ).fetchone()
             return int(row["cnt"] if row else 0)
 
+    def delete_account_data(self, account: str) -> None:
+        """Delete all local state/quota/lease rows for one removed account."""
+        conn = self._get_connection()
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            for table in (
+                "processed_videos",
+                "daily_uploads",
+                "processing_claims",
+                "upload_reservations",
+            ):
+                conn.execute(f"DELETE FROM {table} WHERE account = ?", (account,))
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+
     def list_accounts_in_db(self) -> list[str]:
         with self._get_connection() as conn:
             rows = conn.execute(

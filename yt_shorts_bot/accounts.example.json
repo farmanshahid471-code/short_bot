@@ -24,6 +24,9 @@
       "title_hashtags": "gaming,minecraft",
       "selection_order": "newest",
       "min_minutes_between_uploads": 60,
+      "posting_timezone": "America/Los_Angeles",
+      "posting_start_time": "05:00",
+      "posting_end_time": "17:00",
       "delete_after_upload": false,
       "delete_r2_after_upload": false,
       "enabled": true

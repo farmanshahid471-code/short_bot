@@ -33,6 +33,13 @@ from .pathutils import safe_account_slug
 from .processor import VideoProcessor
 from .runtime import pipeline_guard
 from .storage import CloudStorageManager
+from .timewindows import (
+    is_within_posting_window,
+    posting_window_configured,
+    posting_window_label,
+    seconds_until_posting_window,
+    validate_posting_window,
+)
 from .uploader import (
     UPLOAD_AUTH_REQUIRED,
     UPLOAD_CHANNEL_MISMATCH,
@@ -142,6 +149,19 @@ class ShortsBotScheduler:
 
     def _run_cycle_for_account(self, account: dict) -> int:
         name = str(account.get("name") or "default").strip()
+        window_error = validate_posting_window(account)
+        if window_error:
+            logger.error("[%s] Invalid posting window; account skipped: %s", name, window_error)
+            return 0
+        if not is_within_posting_window(account):
+            logger.info(
+                "[%s] Outside posting window (%s); no automatic upload this cycle.",
+                name,
+                posting_window_label(account),
+            )
+            return 0
+        if posting_window_configured(account):
+            logger.info("[%s] Posting window is open: %s.", name, posting_window_label(account))
         if "target_channels" in account:
             channels = [str(value).strip() for value in account.get("target_channels") or [] if str(value).strip()]
         else:
@@ -501,6 +521,19 @@ class ShortsBotScheduler:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
 
+    def _next_wait_seconds(self, interval_hours: int) -> float:
+        base_wait = max(60.0, float(interval_hours) * 3600.0)
+        opening_delays = [
+            seconds_until_posting_window(account)
+            for account in self.accounts
+            if account.get("enabled", True)
+            and posting_window_configured(account)
+            and not is_within_posting_window(account)
+            and validate_posting_window(account) is None
+        ]
+        positive = [delay for delay in opening_delays if delay > 0]
+        return max(1.0, min([base_wait, *positive])) if positive else base_wait
+
     def start_24_7_loop(self) -> None:
         if self._running:
             return
@@ -513,8 +546,9 @@ class ShortsBotScheduler:
                 if self.stop_event.is_set():
                     break
                 hours = self._current_interval_hours()
-                logger.info("Next clip cycle in %s hour(s).", hours)
-                self.stop_event.wait(hours * 3600)
+                wait_seconds = self._next_wait_seconds(hours)
+                logger.info("Next clip cycle in %.1f minute(s).", wait_seconds / 60.0)
+                self.stop_event.wait(wait_seconds)
         finally:
             self._running = False
             logger.info("Clip scheduler stopped.")

@@ -20,3 +20,4 @@ Main modules:
 
 Only content with `UPLOADED_YOUTUBE` (or a completed multi-part record) is
 terminal. R2-only, dry-run, authentication, quota and failure states retry.
+Automatic cycles also honor each account's DST-aware US time-zone posting window.

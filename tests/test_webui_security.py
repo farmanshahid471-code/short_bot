@@ -116,6 +116,20 @@ def test_public_bind_requires_password(monkeypatch):
         raise AssertionError("public unauthenticated bind should be refused")
 
 
+def test_delete_account_also_clears_its_local_state(monkeypatch, tmp_path):
+    accounts = [{"name": "A", "target_channels": [], "enabled": True}]
+    configure_temp_panel(monkeypatch, tmp_path, accounts)
+    database = StateDB(tmp_path / "state.db")
+    database.record_video_state("video", status="UPLOADED_YOUTUBE", account="A")
+    database.record_upload("video", "youtube-id", account="A")
+    monkeypatch.setattr(webui, "StateDB", lambda: database)
+    client = webui.create_app(testing=True).test_client()
+    response = client.post("/api/accounts/delete", data={"account": "A"})
+    assert response.status_code == 302
+    assert database.get_video_state("video", "A") is None
+    assert database.get_uploads_in_last_24_hours(account="A") == 0
+
+
 def test_json_partial_update_does_not_reset_other_booleans(monkeypatch, tmp_path):
     accounts = [
         {

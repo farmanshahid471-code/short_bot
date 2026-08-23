@@ -17,6 +17,9 @@ One tab is one destination channel. Settings are stored in ignored
 | `max_daily_uploads` | Local rolling 24-hour cap for real successful uploads. |
 | `selection_order` | `newest`, `oldest`, or `random`. |
 | `min_minutes_between_uploads` | Interruptible delay from the previous real upload. |
+| `posting_timezone` | IANA US zone used for this tab's automatic posting window. |
+| `posting_start_time` | Inclusive local `HH:MM` opening time. |
+| `posting_end_time` | Exclusive local `HH:MM` closing time. |
 | `title_prefix` | Optional text before the clean source title. |
 | `title_hashtags` | The only hashtags appended to titles/descriptions. |
 | `watermark` | Bottom text in render mode. Empty text stays off. |
@@ -30,6 +33,24 @@ One tab is one destination channel. Settings are stored in ignored
 The repost bot additionally uses `process_mode` (`copy` or `render`) and
 `max_shorts_per_channel_cycle`. The clip bot uses `shorts_per_video` and optional
 logo-removal fields.
+
+### Posting-window examples
+
+```ini
+# Pacific local time, 5 AM through 5 PM
+posting_timezone = America/Los_Angeles
+posting_start_time = 05:00
+posting_end_time = 17:00
+```
+
+These values are account fields saved by the panel, not global `.env` values.
+Daylight-saving time is automatic. An overnight range (`17:00`–`05:00`) crosses
+midnight. Empty values or equal start/end permit 24/7 posting. Invalid or partial
+settings fail closed and the account is skipped.
+
+Start Scheduler and Stop Scheduler are global controls for all enabled tabs.
+Every tab still has an independent posting window. Manual specific-URL processing
+overrides the window; automatic cycles do not.
 
 ## Upload states
 

@@ -42,6 +42,7 @@ from .scheduler import ShortsRepostScheduler
 from .main import repost_one_url
 from .pathutils import credential_path, relative_credential_value, safe_account_slug
 from .runtime import PIPELINE_LOCK
+from .timewindows import US_TIMEZONES, validate_posting_window
 
 _jobs: dict = {}
 _scheduler_thread = None
@@ -250,6 +251,9 @@ def _account_state(a: dict, db: StateDB) -> dict:
         "fill": a.get("fill", ""),
         "max_shorts_per_channel_cycle": a.get("max_shorts_per_channel_cycle", ""),
         "min_minutes_between_uploads": a.get("min_minutes_between_uploads", ""),
+        "posting_timezone": a.get("posting_timezone", ""),
+        "posting_start_time": a.get("posting_start_time", ""),
+        "posting_end_time": a.get("posting_end_time", ""),
         "delete_after_upload": a.get("delete_after_upload", None),
         "delete_r2_after_upload": a.get("delete_r2_after_upload", None),
     }
@@ -344,7 +348,8 @@ def _clean_account(acc: dict) -> dict:
         "enabled": bool(acc.get("enabled", True)),
     }
     for opt in ["aspect", "fill", "shorts_per_video", "process_mode", "selection_order",
-                "min_minutes_between_uploads", "delete_after_upload", "delete_r2_after_upload",
+                "min_minutes_between_uploads", "posting_timezone", "posting_start_time",
+                "posting_end_time", "delete_after_upload", "delete_r2_after_upload",
                 "watermark", "watermark_enabled", "top_watermark", "top_watermark_enabled",
                 "extra_hashtags", "title_prefix", "title_hashtags", "smart_titles",
                 "max_shorts_per_channel_cycle", "connected_channel", "connected_channel_id",
@@ -363,6 +368,9 @@ def _clean_account(acc: dict) -> dict:
         elif val is not None:
             # store empty strings too (so e.g. resetting order back to "" works)
             entry[opt] = val
+    window_error = validate_posting_window(entry)
+    if window_error:
+        raise ValueError(window_error)
     return entry
 
 
@@ -639,8 +647,11 @@ def create_app(testing: bool = False) -> Flask:
         if acc is None:
             acc = {"name": name, "target_channels": [], "max_daily_uploads": 10, "enabled": True}
             accounts.append(acc)
-        for field in ["title_prefix", "title_hashtags", "top_watermark", "watermark", "aspect", "fill",
-                      "expected_channel"]:
+        for field in [
+            "title_prefix", "title_hashtags", "top_watermark", "watermark",
+            "aspect", "fill", "expected_channel", "posting_timezone",
+            "posting_start_time", "posting_end_time",
+        ]:
             if field in request.form or (request.is_json and field in (request.json or {})):
                 acc[field] = str(_f(request, field) or "").strip()
         for field in ["max_daily_uploads", "max_shorts_per_channel_cycle", "min_minutes_between_uploads"]:
@@ -672,6 +683,9 @@ def create_app(testing: bool = False) -> Flask:
             acc["subtitles_enabled"] = ("true" in [v.strip().lower() for v in vals]
                                         or "on" in [v.strip().lower() for v in vals]
                                         or "1" in [v.strip().lower() for v in vals])
+        window_error = validate_posting_window(acc)
+        if window_error:
+            return _redirect_msg(window_error, ok=False, account=name)
         if "cycle_interval_hours" in request.form or (request.is_json and "cycle_interval_hours" in (request.json or {})):
             try:
                 _write_env_changes({"CYCLE_INTERVAL_HOURS": int(float(_f(request, "cycle_interval_hours")))})
@@ -732,7 +746,8 @@ def create_app(testing: bool = False) -> Flask:
                 for keep in ["title_prefix", "title_hashtags", "smart_titles", "top_watermark",
                              "top_watermark_enabled", "watermark", "watermark_enabled", "aspect",
                              "fill", "max_shorts_per_channel_cycle", "shorts_per_video",
-                             "min_minutes_between_uploads", "delete_after_upload",
+                             "min_minutes_between_uploads", "posting_timezone",
+                             "posting_start_time", "posting_end_time", "delete_after_upload",
                              "delete_r2_after_upload", "connected_channel", "connected_channel_id",
                              "subtitles_enabled", "expected_channel"]:
                     if keep in old and keep not in acc:
@@ -784,6 +799,8 @@ def create_app(testing: bool = False) -> Flask:
         name = (_f(request, "account") or "").strip()
         if not name:
             return _redirect_msg("No account name given to delete.", ok=False)
+        if PIPELINE_LOCK.locked():
+            return _redirect_msg("Stop or wait for the active pipeline before deleting an account.", ok=False, account=name)
         try:
             data = json.loads(ACCOUNTS_FILE.read_text(encoding="utf-8"))
         except Exception:
@@ -797,6 +814,10 @@ def create_app(testing: bool = False) -> Flask:
             # Never leave an empty account list (panel would show a phantom tab)
             accounts = [{"name": "New Channel 1", "target_channels": [], "max_daily_uploads": 10, "enabled": True}]
         _write_accounts(accounts)
+        try:
+            StateDB().delete_account_data(name)
+        except Exception as exc:
+            logger.error("[webui] Account tab deleted but DB cleanup failed for '%s': %s", name, exc)
         # stay on a REAL tab after deleting
         next_tab = accounts[0].get("name")
         logger.info(f"[webui] Deleted account '{name}'. Remaining: {[a.get('name') for a in accounts]}")
@@ -909,6 +930,9 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
         "aspect": _aset("aspect", "auto"),
         "fill": _aset("fill", _get_env_setting("FILL_MODE", FILL_MODE)),
         "min_minutes_between_uploads": _aset("min_minutes_between_uploads", "0"),
+        "posting_timezone": _aset("posting_timezone", ""),
+        "posting_start_time": _aset("posting_start_time", ""),
+        "posting_end_time": _aset("posting_end_time", ""),
         "delete_after_upload": _aset("delete_after_upload", False, is_bool=True),
         "delete_r2_after_upload": _aset("delete_r2_after_upload", False, is_bool=True),
         "cycle_interval_hours": _get_env_setting("CYCLE_INTERVAL_HOURS", str(CYCLE_INTERVAL_HOURS)),
@@ -988,6 +1012,13 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
         sel = " selected" if str(st["selection_order"] or "") == val else ""
         order_options += f'<option value="{val}"{sel}>{lbl}</option>'
 
+    timezone_options = '<option value="">24/7 (no posting window)</option>'
+    for timezone_label, timezone_key in US_TIMEZONES:
+        selected = " selected" if str(acc_settings["posting_timezone"]) == timezone_key else ""
+        timezone_options += (
+            f'<option value="{_esc(timezone_key)}"{selected}>{_esc(timezone_label)}</option>'
+        )
+
     fin = _finished_files()
     fin_html = '<div class="empty">No finished Shorts yet.</div>'
     if fin:
@@ -1025,7 +1056,7 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
   button.gray {{ background:var(--card2); border:1px solid var(--border); color:var(--text); }} button.green {{ background:var(--green); color:#04120a; }}
   button.red {{ background:var(--red); }}
   .row {{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }}
-  input[type=text], textarea, select {{ background:var(--card2); border:1px solid var(--border); color:var(--text);
+  input[type=text], input[type=time], input[type=number], textarea, select {{ background:var(--card2); border:1px solid var(--border); color:var(--text);
     border-radius:10px; padding:10px 12px; font-size:14px; }}
   input[type=text] {{ flex:1; min-width:200px; }} input[type=file] {{ color:var(--muted); font-size:13px; }}
   .hint {{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.5; }}
@@ -1052,7 +1083,7 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
   <h1>🔁 Shorts Repost Bot</h1>
   <div class="sub">Each tab = one of YOUR channels. Configure separately, run all together.</div>
   <div class="badges">
-    <span class="badge" style="border-color:var(--pink);color:var(--pink);">v6.2 (Aug 16)</span>
+    <span class="badge" style="border-color:var(--pink);color:var(--pink);">v7.0 (Aug 23, 2026)</span>
     {mode_badge} {sched_badge} {jobs_badge}
   </div>
 
@@ -1078,7 +1109,7 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
       </h2>
       <form action="/api/accounts/delete" method="POST" style="display:inline;">
         <input type="hidden" name="account" value="{_esc(loaded_account)}">
-        <button class="red" type="submit" onclick="return confirm('Delete this account and all its settings? This cannot be undone.');">🗑 Delete this account</button>
+        <button class="red" type="submit" onclick="return confirm('Delete this account tab and its settings? OAuth files remain on disk until you remove the account folder manually.');">🗑 Delete this account</button>
       </form>
     </div>
 
@@ -1125,6 +1156,12 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
               <td><input type="number" name="max_shorts_per_channel_cycle" value="{_esc(acc_settings['max_shorts_per_channel_cycle'])}" min="1" max="20" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Min minutes between uploads (0 = as fast as possible)</td>
               <td><input type="number" name="min_minutes_between_uploads" value="{_esc(acc_settings['min_minutes_between_uploads'])}" min="0" max="1440" style="width:100%;"></td></tr>
+          <tr><td style="padding:4px 0;">Automatic posting time zone</td>
+              <td><select name="posting_timezone" style="width:100%;">{timezone_options}</select></td></tr>
+          <tr><td style="padding:4px 0;">Posting window starts</td>
+              <td><input type="time" name="posting_start_time" value="{_esc(acc_settings['posting_start_time'])}" step="60" style="width:100%;"></td></tr>
+          <tr><td style="padding:4px 0;">Posting window ends</td>
+              <td><input type="time" name="posting_end_time" value="{_esc(acc_settings['posting_end_time'])}" step="60" style="width:100%;"><div class="hint">Uses the selected local time with daylight-saving changes. Overnight windows are supported. Choose 24/7 and clear both times to disable.</div></td></tr>
           <tr><td style="padding:4px 0;">Top watermark (light text at top)</td>
               <td><input type="text" name="top_watermark" value="{_esc(acc_settings['top_watermark'])}" placeholder="e.g. Simpson Pimp" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Top watermark on</td>

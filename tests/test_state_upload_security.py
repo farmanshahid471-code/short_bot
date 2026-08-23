@@ -212,6 +212,19 @@ def test_atomic_video_claims_and_quota_reservations(tmp_path):
     assert sum(value is not None for value in reservations) == 2
 
 
+def test_delete_account_data_resets_history_quota_and_claims(tmp_path):
+    db = StateDB(tmp_path / "state.db")
+    db.record_video_state("video", status="UPLOADED_YOUTUBE", account="A")
+    db.record_upload("video", "youtube-id", account="A")
+    assert db.claim_video("working", "A")
+    assert db.reserve_upload_slot(5, "A")[0]
+    db.delete_account_data("A")
+    assert db.get_video_state("video", "A") is None
+    assert db.get_uploads_in_last_24_hours(account="A") == 0
+    assert db.claim_video("working", "A")
+    assert db.reserve_upload_slot(1, "A")[0]
+
+
 def test_total_upload_count_uses_all_accounts(tmp_path):
     db = StateDB(tmp_path / "state.db")
     db.record_upload("a", "id-a", account="A")

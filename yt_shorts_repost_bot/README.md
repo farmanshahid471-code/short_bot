@@ -12,9 +12,9 @@ Copy `.env.example` to ignored `.env`.
 - `render`: optional captions, BGM, account text and vertical fitting.
 
 Each named account has isolated project-relative OAuth paths, an exact
-channel-ID/title safety lock, independent retry state and an atomically reserved
-rolling upload limit. Empty source lists remain empty. Missing OAuth and explicit
-dry-run never create fake upload records.
+channel-ID/title safety lock, independent retry state, a DST-aware US time-zone
+posting window and an atomically reserved rolling upload limit. Empty source
+lists remain empty. Missing OAuth and explicit dry-run never create fake records.
 
 Commands:
 

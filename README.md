@@ -60,6 +60,9 @@ stored locally in each bot's ignored `accounts.json`. A typical account is:
   "connected_channel_id": "UC...",
   "expected_channel": "My Gaming Channel",
   "max_daily_uploads": 6,
+  "posting_timezone": "America/Los_Angeles",
+  "posting_start_time": "05:00",
+  "posting_end_time": "17:00",
   "enabled": true
 }
 ```
@@ -72,6 +75,56 @@ channel-title match. Verification errors block uploads rather than failing open.
 
 An explicitly empty `target_channels` list means **do nothing**. Named accounts
 never fall back to packaged example channels.
+
+### Delete accounts / start fresh
+
+Use **Delete this account** inside each tab. Deleting the final tab creates one
+blank `New Channel 1` tab so the panel is never unusable. Account deletion removes
+the tab/settings and that account's local DB history/quota rows, but intentionally
+leaves OAuth files on disk.
+
+For a complete local reset, stop the scheduler/panel and remove the selected
+bot's ignored `accounts.json`, `accounts/` directory and `bot_state.db`. Remove
+`finished_shorts/` only if you also want to delete review copies. On Windows:
+
+```bat
+rmdir /S /Q yt_shorts_repost_bot\accounts
+del /Q yt_shorts_repost_bot\accounts.json
+del /Q yt_shorts_repost_bot\bot_state.db
+```
+
+Use the same paths under `yt_shorts_bot` to reset the clip bot. Do not delete
+`.env` unless you also want to reset global settings. Reconnect every new tab so
+its destination channel safety ID is recreated.
+
+## Per-account US posting windows
+
+Each tab can restrict **automatic** uploads to a local-time window. Choose a US
+time zone and start/end values in **Settings for this account**. For example:
+
+```json
+{
+  "posting_timezone": "America/Los_Angeles",
+  "posting_start_time": "05:00",
+  "posting_end_time": "17:00"
+}
+```
+
+This permits that account from 5:00 AM (inclusive) until 5:00 PM (exclusive) in
+Pacific local time. IANA time zones apply daylight-saving changes automatically.
+The panel includes Eastern, Central, Mountain, Arizona, Pacific, Alaska,
+Aleutian, Hawaii, Atlantic (Puerto Rico/USVI), Samoa and Chamorro zones.
+Overnight ranges such as `17:00`–`05:00` are supported; equal start/end means
+24 hours. Leaving all three fields empty also means 24/7.
+
+The scheduler wakes early when a configured window is about to open, rather than
+waiting past it for the full global cycle interval. **Run One Cycle** respects
+account windows. A manually requested specific URL is an intentional override.
+
+The Web UI's **Start 24/7 Scheduler** button is global: it starts one scheduler
+that handles every enabled account tab. It does not start only the active tab.
+Each account independently applies its own time zone/window, upload cap and
+pacing. Disable an account to exclude it; **Stop Scheduler** stops all tabs.
 
 ## Clip-bot pipeline
 
