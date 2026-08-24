@@ -79,9 +79,26 @@ class ShortsFetcher:
         return {"ffmpeg_location": str(Path(FFMPEG_PATH).resolve().parent)}
 
     @staticmethod
+    def _is_restricted_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
+                "confirm your age",
+                "age-restricted",
+                "inappropriate for some users",
+                "join this channel to get access",
+                "members-only",
+                "private video",
+            )
+        )
+
+    @staticmethod
     def _is_bot_check_error(error: Exception) -> bool:
-        text = str(error)
-        return "Sign in to confirm" in text or "not a bot" in text
+        if ShortsFetcher._is_restricted_error(error):
+            return False
+        text = str(error).lower()
+        return "not a bot" in text or "sign in to confirm you're not a bot" in text
 
     @staticmethod
     def _extract_video_id(video_url: str) -> str:
@@ -221,6 +238,9 @@ class ShortsFetcher:
                 )
                 for fragment in output_path.parent.glob(f"{output_path.stem}*.part*"):
                     fragment.unlink(missing_ok=True)
+                if self._is_restricted_error(e):
+                    last_err = e
+                    break
                 if self._is_bot_check_error(e):
                     logger.error(
                         "YouTube blocked the download ('Sign in to confirm you're not a bot'). "
@@ -228,6 +248,11 @@ class ShortsFetcher:
                     )
                     raise
         if last_err is not None:
+            if ShortsFetcher._is_restricted_error(last_err):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: YouTube blocked this Short (age-restricted or "
+                    "members-only). Export a logged-in adult cookies.txt to process it."
+                ) from last_err
             raise last_err
 
         # yt-dlp may append extensions for merged files; find the real output

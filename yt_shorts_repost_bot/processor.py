@@ -275,7 +275,7 @@ class VideoProcessor:
         except Exception:
             return False
 
-    def _require_ffmpeg_filters(self, required: set[str]) -> None:
+    def _available_filters(self) -> set[str]:
         if not FFMPEG_PATH:
             raise RuntimeError(
                 "FFmpeg was not found. Run setup.bat/setup.sh or configure FFMPEG_PATH."
@@ -296,13 +296,90 @@ class VideoProcessor:
                 if match:
                     names.add(match.group(1))
             self._ffmpeg_filters = names
-        missing = sorted(required - self._ffmpeg_filters)
+        return self._ffmpeg_filters
+
+    def _require_ffmpeg_filters(self, required: set[str]) -> None:
+        missing = sorted(required - self._available_filters())
         if missing:
             raise RuntimeError(
                 "This FFmpeg build is missing required filter(s): "
                 + ", ".join(missing)
                 + ". Install a full FFmpeg build with libfreetype/fontconfig/libass support."
             )
+
+    @staticmethod
+    def _ass_escape(text: str) -> str:
+        return (
+            str(text or "")
+            .replace("\\", r"\\")
+            .replace("{", r"\{")
+            .replace("}", r"\}")
+            .replace("\n", r"\N")
+        )
+
+    @staticmethod
+    def _ass_primary_color(color: str, opacity: float) -> str:
+        raw = re.sub(r"[^A-Za-z0-9#]", "", str(color or "white")).lower()
+        named = {"white": "ffffff", "black": "000000", "yellow": "ffff00"}
+        hex_rgb = named.get(raw, raw.lstrip("#"))
+        if not re.fullmatch(r"[0-9a-f]{6}", hex_rgb):
+            hex_rgb = "ffffff"
+        red, green, blue = hex_rgb[0:2], hex_rgb[2:4], hex_rgb[4:6]
+        alpha = f"{int(round((1.0 - min(1.0, max(0.0, float(opacity)))) * 255)):02X}"
+        return f"&H{alpha}{blue}{green}{red}&"
+
+    def _write_watermark_ass(
+        self,
+        path: Path,
+        width: int,
+        height: int,
+        top_text: str = "",
+        bottom_text: str = "",
+        top_size: int = 56,
+        bottom_size: int = 56,
+        top_color: str = "white",
+        top_opacity: float = 0.5,
+        bottom_opacity: float = 1.0,
+        top_margin: int = 80,
+        bottom_margin: int = 80,
+    ) -> Path:
+        """Burn account watermarks with libass when drawtext is unavailable."""
+        font = str(SUBTITLE_FONT_NAME or "Arial").replace(",", " ")
+        lines = [
+            "[Script Info]",
+            "ScriptType: v4.00+",
+            f"PlayResX: {max(2, int(width))}",
+            f"PlayResY: {max(2, int(height))}",
+            "WrapStyle: 0",
+            "ScaledBorderAndShadow: yes",
+            "",
+            "[V4+ Styles]",
+            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, "
+            "OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, "
+            "ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, "
+            "Alignment, MarginL, MarginR, MarginV, Encoding",
+            f"Style: Top,{font},{max(8, int(top_size))},"
+            f"{self._ass_primary_color(top_color, top_opacity)},"
+            "&H000000FF&,&H00000000&,&H00000000&,1,0,0,0,100,100,0,0,1,0,0,8,"
+            f"20,20,{max(0, int(top_margin))},1",
+            f"Style: Bottom,{font},{max(8, int(bottom_size))},"
+            f"{self._ass_primary_color('white', bottom_opacity)},"
+            "&H000000FF&,&H00000000&,&H00000000&,1,0,0,0,100,100,0,0,1,0,0,2,"
+            f"20,20,{max(0, int(bottom_margin))},1",
+            "",
+            "[Events]",
+            "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
+        ]
+        if top_text:
+            lines.append(
+                f"Dialogue: 0,0:00:00.00,9:59:59.00,Top,,0,0,0,,{self._ass_escape(top_text)}"
+            )
+        if bottom_text:
+            lines.append(
+                f"Dialogue: 0,0:00:00.00,9:59:59.00,Bottom,,0,0,0,,{self._ass_escape(bottom_text)}"
+            )
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return path
 
     @staticmethod
     def _escape_filter_path(path: Path | str) -> str:
@@ -451,10 +528,27 @@ class VideoProcessor:
         )
         show_top = bool(show_top and top_text)
 
-        required_filters = {"drawtext"} if (show_banner or show_top) else set()
-        if srt_usable:
+        available = self._available_filters()
+        need_text = bool(show_banner or show_top)
+        use_drawtext = need_text and "drawtext" in available
+        use_ass_text = need_text and not use_drawtext and "subtitles" in available
+        if srt_usable and "subtitles" not in available:
+            logger.warning("This FFmpeg build has no subtitles filter; captions were skipped.")
+            srt_usable = False
+        if need_text and not use_drawtext and not use_ass_text:
+            logger.warning(
+                "This FFmpeg build has no drawtext/subtitles filter; watermarks were skipped. "
+                "Install a full FFmpeg build (ffmpeg-release-full.zip) so text overlays work."
+            )
+            show_banner = False
+            show_top = False
+        required_filters = set()
+        if use_drawtext:
+            required_filters.add("drawtext")
+        if srt_usable or use_ass_text:
             required_filters.add("subtitles")
-        self._require_ffmpeg_filters(required_filters)
+        if required_filters:
+            self._require_ffmpeg_filters(required_filters)
 
         # Build the fitted base video first. Logo removal is then applied to the
         # final canvas using coordinates calculated from the visible foreground.
@@ -542,6 +636,32 @@ class VideoProcessor:
                 f"x=(w-text_w)/2:y={max(0, int(y))}[{label}]"
             )
             current = label
+
+        if use_ass_text:
+            ass_path = TEMP_DIR / f"overlay_{uuid4().hex}.ass"
+            top_margin = max(8, int(height * TOP_WATERMARK_Y_PCT / 100.0))
+            bottom_margin = max(8, int(height * (100.0 - BOTTOM_BANNER_Y_PCT) / 100.0))
+            self._write_watermark_ass(
+                ass_path,
+                width,
+                height,
+                top_text=top_text if show_top else "",
+                bottom_text=banner_text if show_banner else "",
+                top_size=TOP_WATERMARK_FONT_SIZE,
+                bottom_size=BOTTOM_BANNER_FONT_SIZE,
+                top_color=TOP_WATERMARK_COLOR,
+                top_opacity=TOP_WATERMARK_OPACITY,
+                bottom_opacity=BOTTOM_BANNER_OPACITY,
+                top_margin=top_margin,
+                bottom_margin=bottom_margin,
+            )
+            temporary_filter_files.append(ass_path)
+            escaped_ass = self._escape_filter_path(ass_path)
+            stages.append(f"[{current}]subtitles=filename='{escaped_ass}'[vmark]")
+            current = "vmark"
+            logger.info("Adding account watermarks with the subtitles filter (no drawtext).")
+            show_banner = False
+            show_top = False
 
         if show_banner:
             banner_y = int(height * BOTTOM_BANNER_Y_PCT / 100.0) - int(BOTTOM_BANNER_FONT_SIZE * 0.6)

@@ -325,6 +325,22 @@ class ShortsBotScheduler:
         return max(1.0, remaining) if remaining > 0 else 1.0
 
     @staticmethod
+    def _status_for_processing_error(exc: Exception) -> str:
+        text = str(exc).lower()
+        if any(
+            marker in text
+            for marker in (
+                "skipped_restricted",
+                "confirm your age",
+                "age-restricted",
+                "members-only",
+                "private video",
+            )
+        ):
+            return "SKIPPED"
+        return "PROCESSING_FAILED"
+
+    @staticmethod
     def _state_for_upload_result(result: Optional[str]) -> str:
         if is_real_upload_id(result):
             return "UPLOADED_YOUTUBE"

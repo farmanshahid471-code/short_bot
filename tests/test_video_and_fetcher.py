@@ -148,20 +148,73 @@ def test_logo_region_stays_inside_visible_foreground():
     assert y + height <= 1270
 
 
-def test_preflight_reports_missing_filters(monkeypatch, tmp_path):
+def test_missing_drawtext_falls_back_instead_of_failing(monkeypatch, tmp_path):
     configure_processor(monkeypatch)
     source = make_source(tmp_path / "source.mp4")
     video_processor = VideoProcessor()
-    video_processor._ffmpeg_filters = {"scale", "crop", "overlay"}
-    with pytest.raises(RuntimeError, match="drawtext"):
-        video_processor.process_clip_to_short(
-            source,
-            output_path=tmp_path / "out.mp4",
-            subtitles=False,
-            like_subscribe=True,
-            like_subscribe_text="text",
-            top_watermark_enabled=False,
+    video_processor._ffmpeg_filters = {
+        "scale",
+        "crop",
+        "overlay",
+        "split",
+        "boxblur",
+        "null",
+    }
+    output = video_processor.process_clip_to_short(
+        source,
+        output_path=tmp_path / "out.mp4",
+        subtitles=False,
+        like_subscribe=True,
+        like_subscribe_text="text",
+        top_watermark_enabled=False,
+    )
+    assert output.is_file() and output.stat().st_size > 0
+
+
+def test_ass_watermark_file_contains_escaped_overlay_text(tmp_path):
+    path = tmp_path / "mark.ass"
+    VideoProcessor()._write_watermark_ass(
+        path,
+        1080,
+        1920,
+        top_text="TOP {ok}",
+        bottom_text="LIKE",
+    )
+    text = path.read_text(encoding="utf-8")
+    assert "Dialogue:" in text
+    assert r"TOP \{ok\}" in text
+    assert "LIKE" in text
+
+
+def test_age_restricted_download_is_marked_skippable(monkeypatch, tmp_path):
+    class AgeBlockedYDL:
+        def __init__(self, _opts):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def download(self, _urls):
+            raise RuntimeError(
+                "ERROR: [youtube] abc: Sign in to confirm your age. "
+                "This video may be inappropriate for some users."
+            )
+
+    monkeypatch.setattr(fetcher_module.yt_dlp, "YoutubeDL", AgeBlockedYDL)
+    monkeypatch.setattr(fetcher_module, "TEMP_DIR", tmp_path)
+    with pytest.raises(RuntimeError, match="SKIPPED_RESTRICTED"):
+        ShortsFetcher().download_short("https://www.youtube.com/shorts/abcdefghijk")
+    from yt_shorts_repost_bot.scheduler import ShortsRepostScheduler
+
+    assert (
+        ShortsRepostScheduler._status_for_processing_error(
+            RuntimeError("SKIPPED_RESTRICTED: age")
         )
+        == "SKIPPED"
+    )
 
 
 def test_transcription_uses_language_detection(monkeypatch, tmp_path):

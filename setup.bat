@@ -73,14 +73,14 @@ where curl >nul 2>&1
 if not errorlevel 1 goto :use_curl
 
 echo       Downloading with PowerShell...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile '%FFZIP%'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.zip' -OutFile '%FFZIP%'"
 if errorlevel 1 goto :ffmpeg_manual
 if not exist "%FFZIP%" goto :ffmpeg_manual
 goto :ffmpeg_extract
 
 :use_curl
 echo       Downloading with curl...
-curl -L -sS -o "%FFZIP%" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
+curl -L -sS -o "%FFZIP%" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.zip"
 if errorlevel 1 goto :ffmpeg_manual
 if not exist "%FFZIP%" goto :ffmpeg_manual
 
@@ -113,7 +113,7 @@ echo.
 echo   Automatic FFmpeg download failed too.
 echo   Please do it manually:
 echo     1. Go to:  https://www.gyan.dev/ffmpeg/builds/
-echo     2. Download ffmpeg-release-essentials.zip
+echo     2. Download ffmpeg-release-full.zip
 echo     3. Extract it, then COPY the bin folder from inside it
 echo        into a folder named:  yt_shorts_bot\ffmpeg
 echo        so that the file exists at:

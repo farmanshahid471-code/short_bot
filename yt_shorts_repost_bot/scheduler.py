@@ -286,12 +286,13 @@ class ShortsRepostScheduler:
                     if self._last_upload_result == UPLOAD_QUOTA_REACHED:
                         break
                 except Exception as exc:
+                    status = self._status_for_processing_error(exc)
                     logger.exception("[%s] Failed to repost %s: %s", name, short["url"], exc)
                     self.state_db.record_video_state(
                         video_id=video_id,
                         video_url=short["url"],
                         title=short["title"],
-                        status="PROCESSING_FAILED",
+                        status=status,
                         error_msg=str(exc),
                         account=name,
                     )
@@ -334,6 +335,22 @@ class ShortsRepostScheduler:
             datetime.now(timezone.utc) - last_upload
         ).total_seconds()
         return max(1.0, remaining) if remaining > 0 else 1.0
+
+    @staticmethod
+    def _status_for_processing_error(exc: Exception) -> str:
+        text = str(exc).lower()
+        if any(
+            marker in text
+            for marker in (
+                "skipped_restricted",
+                "confirm your age",
+                "age-restricted",
+                "members-only",
+                "private video",
+            )
+        ):
+            return "SKIPPED"
+        return "PROCESSING_FAILED"
 
     @staticmethod
     def _state_for_upload_result(result: Optional[str]) -> str:

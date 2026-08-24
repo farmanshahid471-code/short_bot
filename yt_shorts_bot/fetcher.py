@@ -163,8 +163,25 @@ class YouTubeFetcher:
     @staticmethod
     def _is_bot_check_error(error: Exception) -> bool:
         """True if yt-dlp hit YouTube's 'Sign in to confirm you're not a bot' wall."""
-        text = str(error)
-        return "Sign in to confirm" in text or "not a bot" in text or "cookies" in text.lower() and "bot" in text.lower()
+        if YouTubeFetcher._is_restricted_error(error):
+            return False
+        text = str(error).lower()
+        return "not a bot" in text or "sign in to confirm you're not a bot" in text
+
+    @staticmethod
+    def _is_restricted_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
+                "confirm your age",
+                "age-restricted",
+                "inappropriate for some users",
+                "join this channel to get access",
+                "members-only",
+                "private video",
+            )
+        )
 
     def extract_heatmap_and_select_window(self, video_url: str) -> Tuple[Dict[str, Any], float, float, float]:
         """
@@ -187,6 +204,11 @@ class YouTubeFetcher:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
+            if self._is_restricted_error(e):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: YouTube blocked this video (age-restricted or "
+                    "members-only). Export a logged-in adult cookies.txt to process it."
+                ) from e
             if self._is_bot_check_error(e):
                 logger.error(
                     "YouTube blocked the request with 'Sign in to confirm you're not a bot'. "
@@ -395,6 +417,11 @@ class YouTubeFetcher:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
+            if self._is_restricted_error(e):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: YouTube blocked this video (age-restricted or "
+                    "members-only). Export a logged-in adult cookies.txt to process it."
+                ) from e
             if self._is_bot_check_error(e):
                 logger.error(
                     "YouTube blocked the request with 'Sign in to confirm you're not a bot'. "
