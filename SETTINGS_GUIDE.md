@@ -20,8 +20,9 @@ One tab is one destination channel. Settings are stored in ignored
 | `posting_timezone` | IANA US zone used for this tab's automatic posting window. |
 | `posting_start_time` | Inclusive local `HH:MM` opening time. |
 | `posting_end_time` | Exclusive local `HH:MM` closing time. |
-| `title_prefix` | Optional text before the clean source title. |
+| `title_prefix` | Optional text before the generated title. |
 | `title_hashtags` | The only hashtags appended to titles/descriptions. |
+| `smart_titles` | When on, invent a new title from the source title + transcript/description. Off keeps the cleaned source title. Hashtags stay user-typed either way. |
 | `watermark` | Bottom text in render mode. Empty text stays off. |
 | `top_watermark` | Top text in render mode. Empty text stays off. |
 | `aspect` | `auto`, `3:4`, or `9:16`. |
@@ -157,9 +158,12 @@ an older repository commit exposed them.
 The published title is:
 
 ```text
-{title_prefix} {clean source title} {user title_hashtags}
+{title_prefix} {title body} {user title_hashtags}
 ```
 
-No reach/content hashtags are inferred. Legacy `smart_titles` names remain for
-file compatibility but do not change this behavior. Metadata sidecars use the
-exact metadata object used for the upload attempt.
+With `smart_titles` on (the default), the title body is rewritten from the
+source title plus spoken words or the video description so it is not a copy
+of the original. With it off, the body is the cleaned source title.
+
+No reach/content hashtags are inferred. Metadata sidecars use the exact
+metadata object used for the upload attempt.

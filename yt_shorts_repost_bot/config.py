@@ -199,7 +199,9 @@ BOTTOM_BANNER_ITALIC: bool = os.getenv("BOTTOM_BANNER_ITALIC", "true").lower() =
 BOTTOM_BANNER_Y_PCT: float = float(os.getenv("BOTTOM_BANNER_Y_PCT", "90"))
 TOP_WATERMARK_BAND: bool = os.getenv("TOP_WATERMARK_BAND", "false").lower() == "true"
 
-# --- USER-CONTROLLED TITLES & HASHTAGS (legacy setting names retained) ---
+# --- TITLES & HASHTAGS ---
+# Smart titles rewrite the source title using video/transcript words.
+# Hashtags are never inferred; only title_hashtags/extra_hashtags are published.
 ENABLE_SMART_TITLES: bool = os.getenv("ENABLE_SMART_TITLES", "true").lower() == "true"
 MAX_TITLE_HASHTAGS: int = int(os.getenv("MAX_TITLE_HASHTAGS", "4"))
 REACH_HASHTAGS: str = os.getenv("REACH_HASHTAGS", "shorts,viral,fyp,trending")

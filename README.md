@@ -212,16 +212,18 @@ wait. An active FFmpeg/API call finishes before shutdown.
 
 ## Titles, hashtags and sidecars
 
-Metadata is deliberately user-controlled:
+Hashtags stay user-controlled. The title body can be rewritten:
 
 ```text
-{title_prefix} {clean source title} {title_hashtags}
+{title_prefix} {smart or cleaned title} {title_hashtags}
 ```
 
-The bot does not infer or silently add reach/content hashtags. Legacy
-`smart_titles` configuration names are accepted for compatibility but do not
-change that guarantee. A clean source-channel handle may be added as a YouTube
-API tag; generic URL suffixes such as `/shorts` and `/videos` are excluded.
+With **Invent a new title** on (default), the bot builds a new title from the
+source title plus transcript or description words so the upload is not an
+exact copy. Turn the toggle off to keep the cleaned source title. The bot
+does not infer or silently add reach/content hashtags. A clean source-channel
+handle may be added as a YouTube API tag; generic URL suffixes such as
+`/shorts` and `/videos` are excluded.
 
 Each `.txt` sidecar is generated from the exact metadata object used by the
 upload attempt, including prefix, part label and account hashtags.
