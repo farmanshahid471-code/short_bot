@@ -139,7 +139,7 @@ class ShortsBotScheduler:
                 if not account.get("enabled", True):
                     continue
                 try:
-                    total_uploaded += self._run_cycle_for_account(account)
+                    total_uploaded += self._run_cycle_for_account(account, upload_limit=1)
                 except Exception as exc:
                     logger.exception(
                         "Cycle failed for account '%s': %s", account.get("name"), exc
@@ -147,7 +147,7 @@ class ShortsBotScheduler:
             logger.info("=== CLIP CYCLE COMPLETE: %s real upload(s) ===", total_uploaded)
             return total_uploaded
 
-    def _run_cycle_for_account(self, account: dict) -> int:
+    def _run_cycle_for_account(self, account: dict, upload_limit: int = 1) -> int:
         name = str(account.get("name") or "default").strip()
         window_error = validate_posting_window(account)
         if window_error:
@@ -174,7 +174,6 @@ class ShortsBotScheduler:
         aspect = account.get("aspect")
         fill = account.get("fill")
         shorts_per_video = min(20, max(1, int(account.get("shorts_per_video") or SHORTS_PER_VIDEO)))
-        min_gap = max(0, int(account.get("min_minutes_between_uploads") or 0))
         subtitles_enabled = bool(account.get("subtitles_enabled", True))
         expected_channel = str(
             account.get("expected_channel") or account.get("connected_channel") or ""
@@ -224,8 +223,6 @@ class ShortsBotScheduler:
                 if not claim:
                     continue
                 try:
-                    if not self._wait_for_upload_gap(name, min_gap):
-                        break
                     if shorts_per_video > 1:
                         ranked = fetcher.select_top_windows(
                             video["url"], count=shorts_per_video
@@ -286,22 +283,46 @@ class ShortsBotScheduler:
                     )
                 finally:
                     self.state_db.release_video_claim(video_id, name, claim)
-                # Natural pacing: one source video from each source channel/cycle.
+                videos_done += 1
+                if upload_limit and videos_done >= upload_limit:
+                    break
+                break
+            if upload_limit and videos_done >= upload_limit:
                 break
 
         return uploaded_count
 
-    def _wait_for_upload_gap(self, account: str, min_gap_minutes: int) -> bool:
-        if min_gap_minutes <= 0:
-            return not self.stop_event.is_set()
-        last_upload = self.state_db.get_last_upload_time(account)
+    @staticmethod
+    def _round_gap_minutes(accounts: list[dict]) -> int:
+        gaps = [
+            max(0, int(account.get("min_minutes_between_uploads") or 0))
+            for account in accounts
+            if account.get("enabled", True)
+        ]
+        return max(gaps) if gaps else 0
+
+    def _latest_upload_time(self, accounts: list[dict]):
+        latest = None
+        for account in accounts:
+            stamp = self.state_db.get_last_upload_time(
+                str(account.get("name") or "default")
+            )
+            if stamp and (latest is None or stamp > latest):
+                latest = stamp
+        return latest
+
+    def _seconds_until_round_gap(self, accounts: list[dict]) -> Optional[float]:
+        """Seconds until the next all-channel round. None means use the cycle interval."""
+        gap_minutes = self._round_gap_minutes(accounts)
+        if gap_minutes <= 0:
+            return None
+        last_upload = self._latest_upload_time(accounts)
         if not last_upload:
-            return not self.stop_event.is_set()
-        elapsed = (datetime.now(timezone.utc) - last_upload).total_seconds() / 60.0
-        if elapsed >= min_gap_minutes:
-            return not self.stop_event.is_set()
-        wait_seconds = max(1, int((min_gap_minutes - elapsed) * 60))
-        return not self.stop_event.wait(wait_seconds)
+            return None
+        remaining = gap_minutes * 60 - (
+            datetime.now(timezone.utc) - last_upload
+        ).total_seconds()
+        return max(1.0, remaining) if remaining > 0 else 1.0
 
     @staticmethod
     def _state_for_upload_result(result: Optional[str]) -> str:
@@ -522,7 +543,11 @@ class ShortsBotScheduler:
         shutil.copy2(source, destination)
 
     def _next_wait_seconds(self, interval_hours: int) -> float:
-        base_wait = max(60.0, float(interval_hours) * 3600.0)
+        gap_wait = self._seconds_until_round_gap(self.accounts)
+        if gap_wait is not None:
+            base_wait = gap_wait
+        else:
+            base_wait = max(60.0, float(interval_hours) * 3600.0)
         opening_delays = [
             seconds_until_posting_window(account)
             for account in self.accounts

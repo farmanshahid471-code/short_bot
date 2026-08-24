@@ -16,7 +16,7 @@ One tab is one destination channel. Settings are stored in ignored
 | `expected_channel` | Exact fallback title lock when no channel ID is available. |
 | `max_daily_uploads` | Local rolling 24-hour cap for real successful uploads. |
 | `selection_order` | `newest`, `oldest`, or `random`. |
-| `min_minutes_between_uploads` | Interruptible delay from the previous real upload. |
+| `min_minutes_between_uploads` | After every enabled account posts one Short, wait this long before the next round. Other channels are not blocked. `0` uses the global cycle interval. |
 | `posting_timezone` | IANA US zone used for this tab's automatic posting window. |
 | `posting_start_time` | Inclusive local `HH:MM` opening time. |
 | `posting_end_time` | Exclusive local `HH:MM` closing time. |

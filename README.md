@@ -119,7 +119,10 @@ Overnight ranges such as `17:00`–`05:00` are supported; equal start/end means
 
 The scheduler wakes early when a configured window is about to open, rather than
 waiting past it for the full global cycle interval. **Run One Cycle** respects
-account windows. A manually requested specific URL is an intentional override.
+account windows and posts **one Short per enabled account**, then moves to the
+next account. The `min_minutes_between_uploads` wait starts only after that
+full round, so channel 2 is not blocked while channel 1 is pacing. A manually
+requested specific URL is an intentional override.
 
 The Web UI's **Start 24/7 Scheduler** button is global: it starts one scheduler
 that handles every enabled account tab. It does not start only the active tab.

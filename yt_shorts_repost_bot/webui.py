@@ -1155,7 +1155,7 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
               <td><input type="number" name="max_daily_uploads" value="{_esc(acc_settings['max_daily_uploads'])}" min="1" max="30" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Max shorts per channel / cycle</td>
               <td><input type="number" name="max_shorts_per_channel_cycle" value="{_esc(acc_settings['max_shorts_per_channel_cycle'])}" min="1" max="20" style="width:100%;"></td></tr>
-          <tr><td style="padding:4px 0;">Min minutes between uploads (0 = as fast as possible)</td>
+          <tr><td style="padding:4px 0;">Min minutes after every channel posts one Short (0 = use cycle interval)</td>
               <td><input type="number" name="min_minutes_between_uploads" value="{_esc(acc_settings['min_minutes_between_uploads'])}" min="0" max="1440" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Automatic posting time zone</td>
               <td><select name="posting_timezone" style="width:100%;">{timezone_options}</select></td></tr>

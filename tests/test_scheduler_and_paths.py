@@ -59,6 +59,69 @@ def test_accounts_reload_before_each_background_cycle(monkeypatch, tmp_path):
     assert scheduler.accounts == fresh
 
 
+def test_cycle_posts_one_short_per_account_without_waiting(monkeypatch, tmp_path):
+    order = []
+
+    def fake_run(self, account, upload_limit=1):
+        order.append((account["name"], upload_limit))
+        return 1
+
+    monkeypatch.setattr(ShortsRepostScheduler, "_run_cycle_for_account", fake_run)
+    scheduler = ShortsRepostScheduler(
+        accounts=[
+            {
+                "name": "New Channel 1",
+                "target_channels": ["https://www.youtube.com/@One/shorts"],
+                "enabled": True,
+                "min_minutes_between_uploads": 60,
+            },
+            {
+                "name": "default",
+                "target_channels": ["https://www.youtube.com/@Two/shorts"],
+                "enabled": True,
+                "min_minutes_between_uploads": 60,
+            },
+        ],
+        state_db=StateDB(tmp_path / "state.db"),
+    )
+    assert scheduler.run_single_cycle() == 2
+    assert order == [("New Channel 1", 1), ("default", 1)]
+
+
+def test_round_wait_uses_last_upload_across_all_accounts(tmp_path):
+    db = StateDB(tmp_path / "state.db")
+    db.record_upload("a", "yt-a", account="New Channel 1")
+    db.record_upload("b", "yt-b", account="default")
+    scheduler = ShortsRepostScheduler(
+        accounts=[
+            {"name": "New Channel 1", "enabled": True, "min_minutes_between_uploads": 60},
+            {"name": "default", "enabled": True, "min_minutes_between_uploads": 60},
+        ],
+        state_db=db,
+    )
+    wait = scheduler._next_wait_seconds(interval_hours=3)
+    assert 1 <= wait <= 3600
+
+
+def test_clip_cycle_also_visits_every_account_once(monkeypatch, tmp_path):
+    order = []
+
+    def fake_run(self, account, upload_limit=1):
+        order.append(account["name"])
+        return 1
+
+    monkeypatch.setattr(ShortsBotScheduler, "_run_cycle_for_account", fake_run)
+    scheduler = ShortsBotScheduler(
+        accounts=[
+            {"name": "A", "target_channels": ["https://www.youtube.com/@A/videos"], "enabled": True},
+            {"name": "B", "target_channels": ["https://www.youtube.com/@B/videos"], "enabled": True},
+        ],
+        state_db=StateDB(tmp_path / "clip-state.db"),
+    )
+    assert scheduler.run_single_cycle() == 2
+    assert order == ["A", "B"]
+
+
 def test_stop_interrupts_initial_loop_and_wait(monkeypatch, tmp_path):
     scheduler = ShortsRepostScheduler(
         interval_hours=24,
