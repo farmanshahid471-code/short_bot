@@ -108,7 +108,7 @@ class ShortReprocessor:
             cmd += [
                 "-loop", "1", "-i", str(overlay),
                 "-filter_complex",
-                "[0:v][1:v]overlay=0:0:format=auto,scale=trunc(iw/2)*2:trunc(ih/2)*2[v]",
+                "[0:v][1:v]overlay=0:0,scale=trunc(iw/2)*2:trunc(ih/2)*2[v]",
                 "-map", "[v]", "-map", "0:a?",
             ]
         else:

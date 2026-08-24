@@ -23,8 +23,8 @@ One tab is one destination channel. Settings are stored in ignored
 | `title_prefix` | Optional text before the generated title. |
 | `title_hashtags` | The only hashtags appended to titles/descriptions. |
 | `smart_titles` | When on, invent a new title from the source title + transcript/description. Off keeps the cleaned source title. Hashtags stay user-typed either way. |
-| `watermark` | Bottom text in render mode. Empty text stays off. |
-| `top_watermark` | Top text in render mode. Empty text stays off. |
+| `watermark` | Bottom text burned onto every upload (copy and render). Empty text stays off. |
+| `top_watermark` | Top text burned onto every upload. Empty text stays off. Type your channel name, e.g. `Simpson Pimp`. |
 | `aspect` | `auto`, `3:4`, or `9:16`. |
 | `fill` | `crop` or `blur`. |
 | `subtitles_enabled` | Clip default true; repost default false. |
@@ -126,6 +126,11 @@ BOTTOM_BANNER_FONT_SIZE=56
 BOTTOM_BANNER_OPACITY=1.0
 BOTTOM_BANNER_Y_PCT=90
 ```
+
+Watermarks are burned as a PNG overlay (works with slim Windows FFmpeg that
+lacks `drawtext`). If the log says `no drawtext/overlay` and the Short has no
+text, you are on an older bot build — download the latest zip. Already-uploaded
+Shorts cannot be edited; post a new one after updating.
 
 Overlay text is read by FFmpeg from controlled UTF-8 text files, so punctuation
 cannot alter the filter graph.

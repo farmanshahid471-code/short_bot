@@ -171,6 +171,53 @@ def test_missing_drawtext_falls_back_instead_of_failing(monkeypatch, tmp_path):
     assert output.is_file() and output.stat().st_size > 0
 
 
+def test_ffmpeg8_four_flag_filter_list_is_parsed():
+    text = """
+Filters:
+  T.. = Timeline support
+  .S. = Slice threading
+  ..C = Command support
+  ...H = Hardware
+ ...C overlay           VV->V      Overlay a video source on top of the input.
+ T.SCH drawtext          V->V       Draw text on top of video frames using libfreetype library.
+ ..C. subtitles         V->V       Render text subtitles onto input video using the libass library.
+ .S.. scale             V->V       Scale the input video size and/or convert the image format.
+"""
+    names = VideoProcessor._parse_ffmpeg_filter_names(text)
+    assert {"overlay", "drawtext", "subtitles", "scale"} <= names
+
+
+def test_empty_filter_list_still_maps_png_overlay(monkeypatch, tmp_path):
+    configure_processor(monkeypatch)
+    source = make_source(tmp_path / "source.mp4")
+    captured = {}
+    real_run = processor_module.subprocess.run
+
+    def fake_run(*args, **kwargs):
+        cmd = args[0] if args else kwargs.get("args")
+        if isinstance(cmd, list) and "-filter_complex" in cmd:
+            captured["cmd"] = list(cmd)
+        return real_run(*args, **kwargs)
+
+    monkeypatch.setattr(processor_module.subprocess, "run", fake_run)
+    video_processor = VideoProcessor()
+    video_processor._ffmpeg_filters = set()
+    output = video_processor.process_clip_to_short(
+        source,
+        output_path=tmp_path / "out.mp4",
+        subtitles=False,
+        like_subscribe=True,
+        like_subscribe_text="LIKE & SUBSCRIBE",
+        top_watermark_enabled=True,
+        top_watermark_text="Simpson Pimp",
+    )
+    assert output.is_file() and output.stat().st_size > 0
+    graph = captured["cmd"][captured["cmd"].index("-filter_complex") + 1]
+    assert "overlay=0:0[vpng]" in graph
+    assert graph.index("overlay=0:0[vpng]") < graph.index("[vout]")
+    assert captured["cmd"][captured["cmd"].index("-map") + 1] == "[vout]"
+
+
 def test_png_watermark_file_is_written(tmp_path):
     path = tmp_path / "mark.png"
     VideoProcessor().write_watermark_png(

@@ -275,6 +275,50 @@ class VideoProcessor:
         except Exception:
             return False
 
+    # Always-present libavfilter names. Used when `ffmpeg -filters` cannot be
+    # parsed (FFmpeg 8 added extra flag columns; some Windows builds print the
+    # list on stderr). Never assume optional filters such as drawtext here.
+    _CORE_FILTERS = {
+        "overlay",
+        "scale",
+        "crop",
+        "split",
+        "null",
+        "boxblur",
+        "volume",
+        "amix",
+    }
+
+    @staticmethod
+    def _parse_ffmpeg_filter_names(text: str) -> set[str]:
+        """Parse `ffmpeg -filters` from FFmpeg 4.x through 8.x."""
+        names: set[str] = set()
+        if not text:
+            return names
+        # Flags grew from 3 chars (T.C) to 4+ (T.CH) in FFmpeg 8.
+        flagged = re.compile(r"^\s*[.A-Za-z|]{1,8}\s+([A-Za-z0-9_]+)\s+")
+        arrows = re.compile(r"^\s*([A-Za-z0-9_]+)\s+\S*->\S*")
+        for raw in str(text).splitlines():
+            line = raw.replace("\r", "")
+            match = flagged.match(line) or arrows.match(line)
+            if match:
+                names.add(match.group(1))
+        for known in (
+            "overlay",
+            "drawtext",
+            "subtitles",
+            "scale",
+            "crop",
+            "split",
+            "null",
+            "boxblur",
+            "volume",
+            "amix",
+        ):
+            if re.search(rf"(?i)(?:^|\s){known}(?:\s|$)", text):
+                names.add(known)
+        return names
+
     def _available_filters(self) -> set[str]:
         if not FFMPEG_PATH:
             raise RuntimeError(
@@ -285,17 +329,27 @@ class VideoProcessor:
                 [FFMPEG_PATH, "-hide_banner", "-filters"],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=30,
                 check=False,
             )
-            if result.returncode != 0:
-                raise RuntimeError(f"Could not inspect FFmpeg capabilities: {result.stderr.strip()}")
-            names: set[str] = set()
-            for line in result.stdout.splitlines():
-                match = re.match(r"^\s*[.A-Z|]{3}\s+([A-Za-z0-9_]+)\s", line)
-                if match:
-                    names.add(match.group(1))
+            blob = f"{result.stdout or ''}\n{result.stderr or ''}"
+            names = self._parse_ffmpeg_filter_names(blob)
+            if len(names) < 5:
+                logger.warning(
+                    "Could not parse FFmpeg filter list from %s; assuming overlay/scale/crop exist.",
+                    FFMPEG_PATH,
+                )
+                names = set(self._CORE_FILTERS) | names
             self._ffmpeg_filters = names
+            logger.info(
+                "FFmpeg %s: drawtext=%s overlay=%s subtitles=%s",
+                Path(FFMPEG_PATH).name,
+                "drawtext" in names,
+                "overlay" in names,
+                "subtitles" in names,
+            )
         return self._ffmpeg_filters
 
     def _require_ffmpeg_filters(self, required: set[str]) -> None:
@@ -441,7 +495,7 @@ class VideoProcessor:
         bottom_y_pct: float = 90.0,
     ) -> Path:
         """Paint watermark text onto a transparent PNG and overlay it with FFmpeg."""
-        from PIL import Image, ImageDraw, ImageFilter
+        from PIL import Image, ImageDraw
 
         canvas = Image.new("RGBA", (max(2, int(width)), max(2, int(height))), (0, 0, 0, 0))
         draw = ImageDraw.Draw(canvas)
@@ -450,18 +504,25 @@ class VideoProcessor:
             if not str(text or "").strip():
                 return
             font = self._load_overlay_font(size, italic=italic)
-            fill = self._parse_overlay_color(color, opacity)
-            stroke = self._parse_overlay_color("black", min(1.0, opacity + 0.15))
-            bbox = draw.textbbox((0, 0), text, font=font, stroke_width=4)
+            fill = self._parse_overlay_color(color, max(0.85, float(opacity)))
+            stroke = self._parse_overlay_color("black", 1.0)
+            bbox = draw.textbbox((0, 0), text, font=font, stroke_width=5)
             text_w = bbox[2] - bbox[0]
+            text_h = bbox[3] - bbox[1]
             x = max(8, (canvas.width - text_w) // 2)
-            y = max(8, min(canvas.height - (bbox[3] - bbox[1]) - 8, int(y)))
+            y = max(8, min(canvas.height - text_h - 8, int(y)))
+            box = [x - 22, y - 10, x + text_w + 22, y + text_h + 10]
+            backing = (0, 0, 0, 170)
+            try:
+                draw.rounded_rectangle(box, radius=14, fill=backing)
+            except Exception:
+                draw.rectangle(box, fill=backing)
             draw.text(
                 (x, y),
                 text,
                 font=font,
                 fill=fill,
-                stroke_width=4,
+                stroke_width=5,
                 stroke_fill=stroke,
             )
 
@@ -481,7 +542,6 @@ class VideoProcessor:
             bottom_opacity,
             bottom_italic,
         )
-        canvas = canvas.filter(ImageFilter.SMOOTH)
         path.parent.mkdir(parents=True, exist_ok=True)
         canvas.save(path, "PNG")
         return path
@@ -636,29 +696,29 @@ class VideoProcessor:
         available = self._available_filters()
         need_text = bool(show_banner or show_top)
         use_drawtext = need_text and "drawtext" in available
-        use_png_text = need_text and not use_drawtext and "overlay" in available
+        # An empty/unparsed filter list is NOT proof that overlay is missing.
+        # Windows FFmpeg 8 prints extra flag columns, which used to make us
+        # skip watermarks and still upload a clean video.
+        use_png_text = need_text and not use_drawtext and (
+            "overlay" in available or len(available) < 5
+        )
         use_ass_text = (
             need_text and not use_drawtext and not use_png_text and "subtitles" in available
         )
-        if srt_usable and "subtitles" not in available:
+        if need_text and not use_drawtext and not use_png_text and not use_ass_text:
+            use_png_text = True
+            logger.warning(
+                "FFmpeg filter list from %s did not advertise overlay/drawtext; "
+                "trying a PNG watermark overlay anyway.",
+                FFMPEG_PATH,
+            )
+        if srt_usable and "subtitles" not in available and len(available) >= 5:
             logger.warning("This FFmpeg build has no subtitles filter; captions were skipped.")
             srt_usable = False
-        if need_text and not use_drawtext and not use_png_text and not use_ass_text:
-            logger.warning(
-                "This FFmpeg build cannot burn watermarks (no drawtext/overlay). "
-                "Install a full FFmpeg build (ffmpeg-release-full.zip)."
-            )
-            show_banner = False
-            show_top = False
-        required_filters = set()
         if use_drawtext:
-            required_filters.add("drawtext")
-        if use_png_text:
-            required_filters.add("overlay")
-        if srt_usable or use_ass_text:
-            required_filters.add("subtitles")
-        if required_filters:
-            self._require_ffmpeg_filters(required_filters)
+            self._require_ffmpeg_filters({"drawtext"})
+        if (srt_usable or use_ass_text) and "subtitles" in available:
+            self._require_ffmpeg_filters({"subtitles"})
 
         # Build the fitted base video first. Logo removal is then applied to the
         # final canvas using coordinates calculated from the visible foreground.
@@ -821,21 +881,6 @@ class VideoProcessor:
             )
             logger.info("Adding top account watermark.")
 
-        stages.append(f"[{current}]null[vout]")
-        audio_label: Optional[str] = None
-        if selected_bgm:
-            if has_audio:
-                stages.extend(
-                    [
-                        f"[0:a]volume={VOICE_VOLUME}[voice]",
-                        f"[1:a]volume={BGM_VOLUME}[music]",
-                        "[voice][music]amix=inputs=2:duration=first:dropout_transition=2[aout]",
-                    ]
-                )
-            else:
-                stages.append(f"[1:a]volume={BGM_VOLUME}[aout]")
-            audio_label = "[aout]"
-
         next_input = 1
         overlay_input = None
         bgm_input = None
@@ -844,13 +889,17 @@ class VideoProcessor:
             overlay_input = next_input
             next_input += 1
             cmd += ["-i", str(overlay_png)]
-            stages.append(
-                f"[{current}][{overlay_input}:v]overlay=0:0:format=auto[vpng]"
-            )
+            # Overlay MUST feed [vout]. The previous graph created [vout] first
+            # and then overlaid onto a dead branch, so watermarks never appeared.
+            stages.append(f"[{current}][{overlay_input}:v]overlay=0:0[vpng]")
             current = "vpng"
         if selected_bgm:
             bgm_input = next_input
             cmd += ["-stream_loop", "-1", "-i", str(selected_bgm)]
+
+        stages.append(f"[{current}]null[vout]")
+        audio_label: Optional[str] = None
+        if selected_bgm:
             if has_audio:
                 stages.extend(
                     [
