@@ -16,7 +16,7 @@ if command -v ffmpeg >/dev/null 2>&1; then
 else
     echo "  Installing ffmpeg (this may ask for your sudo password)..."
     sudo apt-get update -y
-    sudo apt-get install -y ffmpeg
+    sudo apt-get install -y ffmpeg python3-venv python3-pip fonts-dejavu-core fonts-liberation
     echo "  OK - ffmpeg installed"
 fi
 

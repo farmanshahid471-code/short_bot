@@ -35,6 +35,9 @@ cp yt_shorts_bot/.env.example yt_shorts_bot/.env
 `.venv`. On other distributions, install a full FFmpeg build (including
 `drawtext`, `subtitles`, libfreetype/fontconfig and libass) yourself first.
 
+To run 24/7 on a **Contabo US VPS**, see [VPS_SETUP.md](VPS_SETUP.md). A US IP
+does not replace setting the YouTube channel country to United States.
+
 ### Windows
 
 1. Run `setup.bat` once.
