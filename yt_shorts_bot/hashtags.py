@@ -1,7 +1,8 @@
-"""User-controlled title, hashtag, description, transcript, and sidecar helpers.
+"""Title, hashtag, description, transcript, and sidecar helpers.
 
-Legacy keyword-extraction helpers remain for API compatibility, but publishing
-uses only the account's explicit ``title_hashtags``/``extra_hashtags`` values.
+Hashtags stay user-typed. When smart titles are on, the visible title is
+rewritten from the source title plus spoken/description words so it is not
+a copy of the original.
 """
 from __future__ import annotations
 
@@ -10,7 +11,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Optional
 
-from .config import TITLE_PREFIX, logger
+from .config import ENABLE_SMART_TITLES, TITLE_PREFIX, logger
 
 STOPWORDS = set(
     """a about after all also am an and any are as at be because been before being
@@ -66,9 +67,121 @@ def extract_keywords(*texts: str, top_n: int = 14) -> list[str]:
     )[:top_n]
 
 
+_JUNK_TITLE = re.compile(
+    r"\b(official\s+(?:music\s+)?(?:video|audio)|lyric(?:s)?(?:\s+video)?|"
+    r"full\s+video|hd|4k|youtube\s+shorts?|#shorts|subscribe)\b",
+    re.IGNORECASE,
+)
+_SPOKEN_FILLER = {
+    "um",
+    "uh",
+    "ah",
+    "er",
+    "like",
+    "yeah",
+    "okay",
+    "ok",
+    "so",
+    "well",
+}
+_TITLE_HOOKS = (
+    "Wait for this: {topic}",
+    "This {topic} moment hits different",
+    "When {topic} actually happens",
+    "{topic} but nobody expected this",
+    "The {topic} scene everyone skipped",
+    "Why {topic} still goes hard",
+    "Nobody talks about this {topic}",
+    "{topic} got out of hand",
+)
+
+
 def _split_tags(value: str) -> list[str]:
     value = (value or "").replace("#", " ").replace(",", " ")
     return [tag.strip() for tag in value.split() if tag.strip()]
+
+
+def _smart_titles_enabled(smart_titles: Optional[bool]) -> bool:
+    return ENABLE_SMART_TITLES if smart_titles is None else bool(smart_titles)
+
+
+def _clean_source_title(original: str) -> str:
+    text = re.sub(r"#\w+", " ", original or "")
+    text = re.sub(r"[@\[\](){}]", " ", text)
+    text = _JUNK_TITLE.sub(" ", text)
+    text = re.sub(r"\s+", " ", text).strip(" -_|•·:.")
+    return text
+
+
+def _normalize_title(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", (value or "").casefold()).strip()
+
+
+def _looks_english(text: str) -> bool:
+    letters = [char for char in text if char.isalpha()]
+    if not letters:
+        return True
+    ascii_letters = [char for char in letters if char.isascii()]
+    return (len(ascii_letters) / len(letters)) >= 0.7
+
+
+def _topic_phrase(clean_title: str, keywords: list[str], max_words: int = 6) -> str:
+    words = [word for word in re.findall(r"[A-Za-z0-9']+", clean_title) if word]
+    if words:
+        return " ".join(words[:max_words])
+    if keywords:
+        return " ".join(keywords[:3]).title()
+    return "this clip"
+
+
+def _spoken_hook(transcript: str, max_words: int = 9) -> str:
+    text = re.sub(r"\s+", " ", transcript or "").strip()
+    if not text:
+        return ""
+    sentence = re.split(r"[.!?]\s+", text, maxsplit=1)[0]
+    words = [
+        word
+        for word in re.findall(r"[A-Za-z0-9']+", sentence)
+        if word.casefold() not in _SPOKEN_FILLER
+    ]
+    if len(words) < 3:
+        return ""
+    hook = " ".join(words[:max_words])
+    return hook[:1].upper() + hook[1:] if hook else ""
+
+
+def invent_smart_title(
+    original_title: str,
+    transcript_text: str = "",
+    info: Optional[dict[str, Any]] = None,
+) -> str:
+    """Rewrite a source title using the original words plus video/transcript cues."""
+    info = info or {}
+    clean = _clean_source_title(original_title or str(info.get("title") or ""))
+    description = str(info.get("description") or "")
+    tag_text = " ".join(str(tag) for tag in (info.get("tags") or [])[:8])
+    keywords = extract_keywords(clean, transcript_text, description, tag_text, top_n=8)
+    topic = _topic_phrase(clean, keywords)
+    spoken = _spoken_hook(transcript_text) or _spoken_hook(description)
+    original_key = _normalize_title(clean)
+
+    candidates: list[str] = []
+    if spoken and _normalize_title(spoken) != original_key:
+        candidates.append(spoken)
+        if topic and topic.casefold() not in spoken.casefold():
+            candidates.append(f"{spoken} — {topic}")
+    if _looks_english(topic):
+        hook = _TITLE_HOOKS[sum(ord(char) for char in original_key) % len(_TITLE_HOOKS)]
+        candidates.append(hook.format(topic=topic))
+    if clean:
+        candidates.append(f"{clean}...")
+        candidates.append(f"Watch this: {clean}")
+
+    for candidate in candidates:
+        rewritten = re.sub(r"\s+", " ", candidate).strip(" -_|")
+        if rewritten and _normalize_title(rewritten) != original_key:
+            return rewritten
+    return f"This {topic} clip" if topic else "This clip hits different"
 
 
 def build_hashtags(
@@ -100,14 +213,20 @@ def make_catchy_title(
     title_hashtags: str = "",
     smart_titles: Optional[bool] = None,
 ) -> str:
-    """Build ``prefix + clean source title + explicit hashtags`` within 100 chars."""
-    del transcript_text, extra_hashtags, smart_titles
+    """Build ``prefix + title + explicit hashtags`` within 100 chars.
+
+    With smart titles on, the middle part is invented from the source title
+    and video/transcript words. Hashtags are never invented.
+    """
+    del extra_hashtags
     info = info or {}
     original = str(info.get("title") or "")
-    clean = re.sub(r"#\w+", "", original)
-    clean = re.sub(r"[@\[\](){}]", "", clean).strip()
-    if len(clean) > 60:
-        clean = clean[:57].strip() + "..."
+    if _smart_titles_enabled(smart_titles):
+        body = invent_smart_title(original, transcript_text, info)
+    else:
+        body = _clean_source_title(original)
+        if len(body) > 60:
+            body = body[:57].strip() + "..."
 
     raw_prefix = (
         title_prefix
@@ -123,15 +242,15 @@ def make_catchy_title(
     user_tags = [tag.lstrip("#") for tag in _split_tags(title_hashtags)]
     tags_text = " ".join("#" + tag for tag in user_tags)
     tags_part = (" " + tags_text) if tags_text else ""
-    if len(prefix) + len(clean) + len(tags_part) > max_len:
+    if len(prefix) + len(body) + len(tags_part) > max_len:
         available = max_len - len(prefix) - len(tags_part) - 1
         if available >= 10:
-            clean = clean[: max(0, available - 1)].rstrip() + "…"
+            body = body[: max(0, available - 1)].rstrip() + "…"
         else:
             available = max_len - len(prefix) - 1
-            clean = clean[: max(0, available - 1)].rstrip() + "…"
+            body = body[: max(0, available - 1)].rstrip() + "…"
             tags_part = ""
-    result = f"{prefix}{clean}{tags_part}".strip()
+    result = f"{prefix}{body}{tags_part}".strip()
     return result if len(result) <= max_len else result[: max_len - 1].rstrip() + "…"
 
 

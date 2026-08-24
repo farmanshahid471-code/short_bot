@@ -342,9 +342,9 @@ WEBUI_PASSWORD: str = os.getenv("WEBUI_PASSWORD", "")
 WEBUI_SECRET_KEY: str = os.getenv("WEBUI_SECRET_KEY", "")
 WEBUI_COOKIE_SECURE: bool = os.getenv("WEBUI_COOKIE_SECURE", "false").lower() == "true"
 
-# --- USER-CONTROLLED TITLES & HASHTAGS ---
-# Compatibility names are retained, but hashtags are never inferred from source
-# content. Only each account's title_hashtags/extra_hashtags are published.
+# --- TITLES & HASHTAGS ---
+# Smart titles rewrite the source title using video/transcript words.
+# Hashtags are never inferred; only title_hashtags/extra_hashtags are published.
 ENABLE_SMART_TITLES: bool = os.getenv("ENABLE_SMART_TITLES", "true").lower() == "true"
 MAX_TITLE_HASHTAGS: int = int(os.getenv("MAX_TITLE_HASHTAGS", "4"))
 REACH_HASHTAGS: str = os.getenv("REACH_HASHTAGS", "shorts,viral,fyp,trending")

@@ -79,9 +79,54 @@ class ShortsFetcher:
         return {"ffmpeg_location": str(Path(FFMPEG_PATH).resolve().parent)}
 
     @staticmethod
+    def _is_age_restricted_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
+                "confirm your age",
+                "age-restricted",
+                "inappropriate for some users",
+            )
+        )
+
+    @staticmethod
+    def _is_members_only_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
+                "join this channel to get access",
+                "members-only",
+                "private video",
+            )
+        )
+
+    @staticmethod
+    def _is_restricted_error(error: Exception) -> bool:
+        return ShortsFetcher._is_age_restricted_error(
+            error
+        ) or ShortsFetcher._is_members_only_error(error)
+
+    @staticmethod
     def _is_bot_check_error(error: Exception) -> bool:
-        text = str(error)
-        return "Sign in to confirm" in text or "not a bot" in text
+        if ShortsFetcher._is_restricted_error(error):
+            return False
+        text = str(error).lower()
+        return "not a bot" in text or "sign in to confirm you're not a bot" in text
+
+    @staticmethod
+    def _cookie_login_hint(opts: dict) -> str:
+        if opts.get("cookiefile") or opts.get("cookiesfrombrowser"):
+            return (
+                "Your cookies.txt is present but YouTube still treated this as "
+                "age-restricted. Re-export cookies from a logged-in 18+ account "
+                "AFTER opening one age-restricted video and clicking I understand."
+            )
+        return (
+            "Put a logged-in 18+ cookies.txt in yt_shorts_repost_bot/cookies.txt "
+            "(or set YT_COOKIES_FROM_BROWSER=chrome) so age-restricted Shorts can download."
+        )
 
     @staticmethod
     def _extract_video_id(video_url: str) -> str:
@@ -188,25 +233,36 @@ class ShortsFetcher:
         if output_path.exists():
             output_path.unlink()
 
-        # Try several player clients - YouTube serves streams differently per
-        # client, and some (tv/android/ios) avoid HTTP 403 on Shorts.
-        client_attempts = [None, "tv", "android", "ios"]
+        # Prefer any playable stream. Requiring avc1+m4a is why recent Shorts
+        # fail with "Requested format is not available".
+        download_format = (
+            "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/"
+            "bestvideo[height<=2160]+bestaudio/"
+            "best[height<=2160]/"
+            "best"
+        )
+        cookie_opts = self._cookies_opts()
+        attempts = [
+            ("android+web", ["android", "web"], cookie_opts),
+            ("tv_embedded", ["tv_embedded"], cookie_opts),
+            ("ios+mweb", ["ios", "mweb"], cookie_opts),
+            ("web_embedded", ["web_embedded"], cookie_opts),
+            ("tv", ["tv"], cookie_opts),
+        ]
+        if cookie_opts:
+            attempts.append(("android+web no-cookies", ["android", "web"], {}))
         last_err = None
-        for player_client in client_attempts:
+        for label, clients, opts in attempts:
             ydl_opts = {
-                "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/"
-                          "bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+                "format": download_format,
                 "outtmpl": str(output_path),
                 "merge_output_format": "mp4",
                 "quiet": True,
                 "no_warnings": True,
-                **self._cookies_opts(),
+                **opts,
                 **self._ffmpeg_opt(),
             }
-            if player_client:
-                ydl_opts["extractor_args"] = {
-                    "youtube": {"player_client": [player_client]}
-                }
+            ydl_opts["extractor_args"] = {"youtube": {"player_client": clients}}
             try:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([video_url])
@@ -214,13 +270,11 @@ class ShortsFetcher:
                 break
             except Exception as e:
                 last_err = e
-                logger.warning(
-                    "Download attempt (client=%s) failed: %s",
-                    player_client or "default",
-                    e,
-                )
+                logger.warning("Download attempt (client=%s) failed: %s", label, e)
                 for fragment in output_path.parent.glob(f"{output_path.stem}*.part*"):
                     fragment.unlink(missing_ok=True)
+                if self._is_members_only_error(e):
+                    break
                 if self._is_bot_check_error(e):
                     logger.error(
                         "YouTube blocked the download ('Sign in to confirm you're not a bot'). "
@@ -228,6 +282,14 @@ class ShortsFetcher:
                     )
                     raise
         if last_err is not None:
+            if ShortsFetcher._is_age_restricted_error(last_err):
+                raise RuntimeError(
+                    "AGE_RESTRICTED: " + ShortsFetcher._cookie_login_hint(cookie_opts)
+                ) from last_err
+            if ShortsFetcher._is_members_only_error(last_err):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: this Short is members-only or private."
+                ) from last_err
             raise last_err
 
         # yt-dlp may append extensions for merged files; find the real output
@@ -259,7 +321,7 @@ class ShortsFetcher:
             "skip_download": True,
             "quiet": True,
             "no_warnings": True,
-            "extractor_args": {"youtube": {"player_client": ["tv"]}},
+            "extractor_args": {"youtube": {"player_client": ["android", "web"]}},
             **ShortsFetcher._cookies_opts(),
             **ShortsFetcher._ffmpeg_opt(),
         }

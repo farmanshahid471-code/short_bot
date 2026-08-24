@@ -94,19 +94,30 @@ def test_metadata_remains_user_controlled_and_source_suffix_is_not_a_tag():
         title_hashtags="mine, ExactTag",
         smart_titles=True,
     ) == ["mine", "exacttag"]
-    title = make_catchy_title(
+    copied = make_catchy_title(
+        info=info,
+        title_prefix="PREFIX",
+        title_hashtags="mine",
+        smart_titles=False,
+    )
+    assert copied == "PREFIX Source #mine"
+    rewritten = make_catchy_title(
         info=info,
         title_prefix="PREFIX",
         title_hashtags="mine",
         smart_titles=True,
     )
-    assert title == "PREFIX Source #mine"
+    assert rewritten.startswith("PREFIX ")
+    assert rewritten.endswith("#mine")
+    assert "Source" in rewritten
+    assert rewritten != copied
     metadata = YouTubeUploader.generate_short_metadata(
         original_title=info["title"],
         channel_name="https://www.youtube.com/@Owner/shorts",
         info=info,
         title_prefix="PREFIX",
         title_hashtags="mine",
+        smart_titles=False,
     )
     assert metadata["tags"] == ["mine", "Owner"]
     assert "shorts" not in metadata["tags"]

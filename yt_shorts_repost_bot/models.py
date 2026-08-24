@@ -20,7 +20,7 @@ from .config import DB_PATH, logger
 # R2-only, quota-waiting, dry-run and failed records intentionally remain
 # retryable.
 TERMINAL_VIDEO_STATUSES = frozenset(
-    {"UPLOADED_YOUTUBE", "PROCESSED", "PROCESSED_MULTI", "SKIPPED"}
+    {"UPLOADED_YOUTUBE", "PROCESSED", "PROCESSED_MULTI"}
 )
 
 

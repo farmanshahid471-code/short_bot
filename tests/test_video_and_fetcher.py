@@ -148,20 +148,140 @@ def test_logo_region_stays_inside_visible_foreground():
     assert y + height <= 1270
 
 
-def test_preflight_reports_missing_filters(monkeypatch, tmp_path):
+def test_missing_drawtext_falls_back_instead_of_failing(monkeypatch, tmp_path):
     configure_processor(monkeypatch)
     source = make_source(tmp_path / "source.mp4")
     video_processor = VideoProcessor()
-    video_processor._ffmpeg_filters = {"scale", "crop", "overlay"}
-    with pytest.raises(RuntimeError, match="drawtext"):
-        video_processor.process_clip_to_short(
-            source,
-            output_path=tmp_path / "out.mp4",
-            subtitles=False,
-            like_subscribe=True,
-            like_subscribe_text="text",
-            top_watermark_enabled=False,
+    video_processor._ffmpeg_filters = {
+        "scale",
+        "crop",
+        "overlay",
+        "split",
+        "boxblur",
+        "null",
+    }
+    output = video_processor.process_clip_to_short(
+        source,
+        output_path=tmp_path / "out.mp4",
+        subtitles=False,
+        like_subscribe=True,
+        like_subscribe_text="text",
+        top_watermark_enabled=False,
+    )
+    assert output.is_file() and output.stat().st_size > 0
+
+
+def test_ffmpeg8_four_flag_filter_list_is_parsed():
+    text = """
+Filters:
+  T.. = Timeline support
+  .S. = Slice threading
+  ..C = Command support
+  ...H = Hardware
+ ...C overlay           VV->V      Overlay a video source on top of the input.
+ T.SCH drawtext          V->V       Draw text on top of video frames using libfreetype library.
+ ..C. subtitles         V->V       Render text subtitles onto input video using the libass library.
+ .S.. scale             V->V       Scale the input video size and/or convert the image format.
+"""
+    names = VideoProcessor._parse_ffmpeg_filter_names(text)
+    assert {"overlay", "drawtext", "subtitles", "scale"} <= names
+
+
+def test_empty_filter_list_still_maps_png_overlay(monkeypatch, tmp_path):
+    configure_processor(monkeypatch)
+    source = make_source(tmp_path / "source.mp4")
+    captured = {}
+    real_run = processor_module.subprocess.run
+
+    def fake_run(*args, **kwargs):
+        cmd = args[0] if args else kwargs.get("args")
+        if isinstance(cmd, list) and "-filter_complex" in cmd:
+            captured["cmd"] = list(cmd)
+        return real_run(*args, **kwargs)
+
+    monkeypatch.setattr(processor_module.subprocess, "run", fake_run)
+    video_processor = VideoProcessor()
+    video_processor._ffmpeg_filters = set()
+    output = video_processor.process_clip_to_short(
+        source,
+        output_path=tmp_path / "out.mp4",
+        subtitles=False,
+        like_subscribe=True,
+        like_subscribe_text="LIKE & SUBSCRIBE",
+        top_watermark_enabled=True,
+        top_watermark_text="Simpson Pimp",
+    )
+    assert output.is_file() and output.stat().st_size > 0
+    graph = captured["cmd"][captured["cmd"].index("-filter_complex") + 1]
+    assert "overlay=0:0[vpng]" in graph
+    assert graph.index("overlay=0:0[vpng]") < graph.index("[vout]")
+    assert captured["cmd"][captured["cmd"].index("-map") + 1] == "[vout]"
+
+
+def test_png_watermark_file_is_written(tmp_path):
+    path = tmp_path / "mark.png"
+    VideoProcessor().write_watermark_png(
+        path,
+        320,
+        180,
+        top_text="TOP",
+        bottom_text="LIKE & SUBSCRIBE",
+    )
+    assert path.is_file() and path.stat().st_size > 0
+
+
+def test_ass_watermark_file_contains_escaped_overlay_text(tmp_path):
+    path = tmp_path / "mark.ass"
+    VideoProcessor()._write_watermark_ass(
+        path,
+        1080,
+        1920,
+        top_text="TOP {ok}",
+        bottom_text="LIKE",
+    )
+    text = path.read_text(encoding="utf-8")
+    assert "Dialogue:" in text
+    assert r"TOP \{ok\}" in text
+    assert "LIKE" in text
+
+
+def test_age_restricted_download_asks_for_adult_cookies(monkeypatch, tmp_path):
+    class AgeBlockedYDL:
+        seen = []
+
+        def __init__(self, opts):
+            self.__class__.seen.append(opts)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def download(self, _urls):
+            raise RuntimeError(
+                "ERROR: [youtube] abc: Sign in to confirm your age. "
+                "This video may be inappropriate for some users."
+            )
+
+    AgeBlockedYDL.seen = []
+    monkeypatch.setattr(fetcher_module.yt_dlp, "YoutubeDL", AgeBlockedYDL)
+    monkeypatch.setattr(fetcher_module, "TEMP_DIR", tmp_path)
+    with pytest.raises(RuntimeError, match="AGE_RESTRICTED"):
+        ShortsFetcher().download_short("https://www.youtube.com/shorts/abcdefghijk")
+    clients = [
+        (opts.get("extractor_args") or {}).get("youtube", {}).get("player_client", [None])[0]
+        for opts in AgeBlockedYDL.seen
+    ]
+    assert "tv_embedded" in clients
+    from yt_shorts_repost_bot.scheduler import ShortsRepostScheduler
+
+    assert (
+        ShortsRepostScheduler._status_for_processing_error(
+            RuntimeError("AGE_RESTRICTED: need cookies")
         )
+        == "PROCESSING_FAILED"
+    )
 
 
 def test_transcription_uses_language_detection(monkeypatch, tmp_path):
@@ -246,9 +366,13 @@ def test_yt_dlp_player_retries_use_extractor_args_and_clean_parts(
     monkeypatch.setattr(fetcher_module, "TEMP_DIR", tmp_path)
     output = ShortsFetcher().download_short("https://www.youtube.com/shorts/abcdefghijk")
     assert output.read_bytes() == b"complete"
-    assert "extractor_args" not in FakeYDL.seen[0]
-    assert FakeYDL.seen[1]["extractor_args"] == {
-        "youtube": {"player_client": ["tv"]}
-    }
+    assert FakeYDL.seen[0]["extractor_args"]["youtube"]["player_client"] == [
+        "android",
+        "web",
+    ]
+    assert FakeYDL.seen[1]["extractor_args"]["youtube"]["player_client"] == [
+        "tv_embedded"
+    ]
+    assert "/best" in FakeYDL.seen[0]["format"]
     assert not list(tmp_path.glob("*.part*"))
     assert "_" in output.stem  # random job suffix avoids cross-account collisions

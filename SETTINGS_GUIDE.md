@@ -16,14 +16,15 @@ One tab is one destination channel. Settings are stored in ignored
 | `expected_channel` | Exact fallback title lock when no channel ID is available. |
 | `max_daily_uploads` | Local rolling 24-hour cap for real successful uploads. |
 | `selection_order` | `newest`, `oldest`, or `random`. |
-| `min_minutes_between_uploads` | Interruptible delay from the previous real upload. |
+| `min_minutes_between_uploads` | After every enabled account posts one Short, wait this long before the next round. Other channels are not blocked. `0` uses the global cycle interval. |
 | `posting_timezone` | IANA US zone used for this tab's automatic posting window. |
 | `posting_start_time` | Inclusive local `HH:MM` opening time. |
 | `posting_end_time` | Exclusive local `HH:MM` closing time. |
-| `title_prefix` | Optional text before the clean source title. |
+| `title_prefix` | Optional text before the generated title. |
 | `title_hashtags` | The only hashtags appended to titles/descriptions. |
-| `watermark` | Bottom text in render mode. Empty text stays off. |
-| `top_watermark` | Top text in render mode. Empty text stays off. |
+| `smart_titles` | When on, invent a new title from the source title + transcript/description. Off keeps the cleaned source title. Hashtags stay user-typed either way. |
+| `watermark` | Bottom text burned onto every upload (copy and render). Empty text stays off. |
+| `top_watermark` | Top text burned onto every upload. Empty text stays off. Type your channel name, e.g. `Simpson Pimp`. |
 | `aspect` | `auto`, `3:4`, or `9:16`. |
 | `fill` | `crop` or `blur`. |
 | `subtitles_enabled` | Clip default true; repost default false. |
@@ -126,6 +127,11 @@ BOTTOM_BANNER_OPACITY=1.0
 BOTTOM_BANNER_Y_PCT=90
 ```
 
+Watermarks are burned as a PNG overlay (works with slim Windows FFmpeg that
+lacks `drawtext`). If the log says `no drawtext/overlay` and the Short has no
+text, you are on an older bot build — download the latest zip. Already-uploaded
+Shorts cannot be edited; post a new one after updating.
+
 Overlay text is read by FFmpeg from controlled UTF-8 text files, so punctuation
 cannot alter the filter graph.
 
@@ -145,21 +151,37 @@ Blank credentials skip R2. Pruning only touches `shorts/` and `reposts/` keys.
 ### Download cookies
 
 ```ini
-YT_COOKIES_FILE=""
+YT_COOKIES_FILE="cookies.txt"
 YT_COOKIES_FROM_BROWSER=""
 ```
 
 Cookies are private credentials. Keep exported files ignored and rotate them if
 an older repository commit exposed them.
 
+**Age-restricted Shorts** download only when the cookie file comes from a
+logged-in YouTube account whose birthday is 18+:
+
+1. In Chrome, log into YouTube with that adult Google account.
+2. Open any age-restricted video and click **I understand** / confirm age.
+3. Export `cookies.txt` with the "Get cookies.txt LOCALLY" extension while
+   still on youtube.com.
+4. Replace `yt_shorts_repost_bot/cookies.txt` (and/or `yt_shorts_bot/cookies.txt`).
+5. Restart the panel. Age-restricted Shorts stay retryable until cookies work.
+
+`YT_COOKIES_FROM_BROWSER=chrome` can be used instead of a file (close Chrome
+first). Members-only/private videos still cannot be downloaded.
+
 ## Metadata guarantee
 
 The published title is:
 
 ```text
-{title_prefix} {clean source title} {user title_hashtags}
+{title_prefix} {title body} {user title_hashtags}
 ```
 
-No reach/content hashtags are inferred. Legacy `smart_titles` names remain for
-file compatibility but do not change this behavior. Metadata sidecars use the
-exact metadata object used for the upload attempt.
+With `smart_titles` on (the default), the title body is rewritten from the
+source title plus spoken words or the video description so it is not a copy
+of the original. With it off, the body is the cleaned source title.
+
+No reach/content hashtags are inferred. Metadata sidecars use the exact
+metadata object used for the upload attempt.

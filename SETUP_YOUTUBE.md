@@ -71,6 +71,8 @@ Total time: ~15 minutes per channel. Example with 3 channels:
    (For many channels, better: drop the files into
    `yt_shorts_bot\accounts\<name>\client_secret.json` per tab — see Step 7.)
 4. Click **Connect / Test YouTube** — a browser tab opens with Google login.
+   After you approve access, Google redirects to `http://localhost` on this
+   machine (that is the official desktop-app callback; the bot now accepts it).
 
 ## Step 7 — Authorize (this picks WHICH channel the tab posts to)
 
@@ -97,6 +99,12 @@ Repeat Steps 1–7 in each Google account for each of your channels.
   5–10 uploads/day per channel across many channels.
 - **Tokens expire** (testing-mode refresh tokens last ~7 days): if a tab stops uploading,
   just press **Connect** again and re-login (per-account settings are kept).
+- **Connect must use a Desktop OAuth client.** In Google Cloud Console create
+  **OAuth client ID → Desktop app**, not a Web application. A Web client
+  expects a registered HTTPS redirect and will not complete this local login.
+- If an older build logged `(insecure_transport) OAuth 2 MUST utilize https`,
+  update the bot. Desktop OAuth legitimately uses `http://localhost`; both the
+  clip bot and the repost bot now allow that loopback callback.
 - **Never share** `client_secret.json` or `token.json` — anyone with them can control the channel.
 - **R2 (Cloudflare) is optional.** The bot uploads directly to YouTube; R2 is just a backup.
   Leave the R2 lines as placeholders and the bot still posts (badge: LIVE for YouTube).

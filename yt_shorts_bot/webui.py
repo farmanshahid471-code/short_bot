@@ -789,6 +789,7 @@ def create_app(testing: bool = False) -> Flask:
             "target_channels": [],
             "max_daily_uploads": 10,
             "enabled": True,
+            "smart_titles": True,
             "client_secret": relative_credential_value(name, "client_secret.json"),
             "token": relative_credential_value(name, "token.json"),
         })
@@ -1149,13 +1150,13 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
               <td><input type="text" name="title_prefix" value="{_esc(acc_settings['title_prefix'])}" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Title hashtags (all go in the title)</td>
               <td><input type="text" name="title_hashtags" value="{_esc(acc_settings['title_hashtags'])}" placeholder="simpsons, homer, bart" style="width:100%;"></td></tr>
-          <tr><td style="padding:4px 0;">User-controlled title metadata (legacy toggle)</td>
+          <tr><td style="padding:4px 0;">Invent a new title from the video + original (hashtags stay yours)</td>
               <td><input type="checkbox" name="smart_titles" value="true"{chk(acc_settings['smart_titles'])} style="transform:scale(1.3);"></td></tr>
           <tr><td style="padding:4px 0;">Max uploads / day</td>
               <td><input type="number" name="max_daily_uploads" value="{_esc(acc_settings['max_daily_uploads'])}" min="1" max="30" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Shorts per video (auto cycles)</td>
               <td><input type="number" name="shorts_per_video" value="{_esc(acc_settings['shorts_per_video'])}" min="1" max="20" style="width:100%;"></td></tr>
-          <tr><td style="padding:4px 0;">Min minutes between uploads (0 = as fast as possible)</td>
+          <tr><td style="padding:4px 0;">Min minutes after every channel posts one Short (0 = use cycle interval)</td>
               <td><input type="number" name="min_minutes_between_uploads" value="{_esc(acc_settings['min_minutes_between_uploads'])}" min="0" max="1440" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Automatic posting time zone</td>
               <td><select name="posting_timezone" style="width:100%;">{timezone_options}</select></td></tr>

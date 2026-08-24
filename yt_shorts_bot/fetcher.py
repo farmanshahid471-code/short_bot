@@ -163,8 +163,40 @@ class YouTubeFetcher:
     @staticmethod
     def _is_bot_check_error(error: Exception) -> bool:
         """True if yt-dlp hit YouTube's 'Sign in to confirm you're not a bot' wall."""
-        text = str(error)
-        return "Sign in to confirm" in text or "not a bot" in text or "cookies" in text.lower() and "bot" in text.lower()
+        if YouTubeFetcher._is_restricted_error(error):
+            return False
+        text = str(error).lower()
+        return "not a bot" in text or "sign in to confirm you're not a bot" in text
+
+    @staticmethod
+    def _is_age_restricted_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
+                "confirm your age",
+                "age-restricted",
+                "inappropriate for some users",
+            )
+        )
+
+    @staticmethod
+    def _is_members_only_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
+                "join this channel to get access",
+                "members-only",
+                "private video",
+            )
+        )
+
+    @staticmethod
+    def _is_restricted_error(error: Exception) -> bool:
+        return YouTubeFetcher._is_age_restricted_error(
+            error
+        ) or YouTubeFetcher._is_members_only_error(error)
 
     def extract_heatmap_and_select_window(self, video_url: str) -> Tuple[Dict[str, Any], float, float, float]:
         """
@@ -187,6 +219,15 @@ class YouTubeFetcher:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
+            if self._is_age_restricted_error(e):
+                raise RuntimeError(
+                    "AGE_RESTRICTED: export a logged-in 18+ cookies.txt after opening "
+                    "one age-restricted video and clicking I understand."
+                ) from e
+            if self._is_members_only_error(e):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: this video is members-only or private."
+                ) from e
             if self._is_bot_check_error(e):
                 logger.error(
                     "YouTube blocked the request with 'Sign in to confirm you're not a bot'. "
@@ -395,6 +436,15 @@ class YouTubeFetcher:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
+            if self._is_age_restricted_error(e):
+                raise RuntimeError(
+                    "AGE_RESTRICTED: export a logged-in 18+ cookies.txt after opening "
+                    "one age-restricted video and clicking I understand."
+                ) from e
+            if self._is_members_only_error(e):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: this video is members-only or private."
+                ) from e
             if self._is_bot_check_error(e):
                 logger.error(
                     "YouTube blocked the request with 'Sign in to confirm you're not a bot'. "
@@ -615,7 +665,7 @@ class YouTubeFetcher:
     def _slice_av_pair(self, video_url: str, clip_start: float, clip_end: float, output_path: Path) -> Path:
         """Strategy B: slice the best mp4 video (h264 preferred) + best m4a audio stream pair."""
         ydl_opts = {
-            "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/""bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "format": "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/""bestvideo[height<=2160]+bestaudio/best[height<=2160]/best",
             "quiet": True,
             "no_warnings": True,
             **self._cookies_opts(),
@@ -665,7 +715,7 @@ class YouTubeFetcher:
         full_tmpl = str(TEMP_DIR / f"{full_prefix}.%(ext)s")
 
         ydl_opts = {
-            "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/""bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "format": "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/""bestvideo[height<=2160]+bestaudio/best[height<=2160]/best",
             "outtmpl": full_tmpl,
             "quiet": True,
             "no_warnings": True,
