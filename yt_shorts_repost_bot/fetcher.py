@@ -79,7 +79,7 @@ class ShortsFetcher:
         return {"ffmpeg_location": str(Path(FFMPEG_PATH).resolve().parent)}
 
     @staticmethod
-    def _is_restricted_error(error: Exception) -> bool:
+    def _is_age_restricted_error(error: Exception) -> bool:
         text = str(error).lower()
         return any(
             marker in text
@@ -87,6 +87,15 @@ class ShortsFetcher:
                 "confirm your age",
                 "age-restricted",
                 "inappropriate for some users",
+            )
+        )
+
+    @staticmethod
+    def _is_members_only_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
                 "join this channel to get access",
                 "members-only",
                 "private video",
@@ -94,11 +103,30 @@ class ShortsFetcher:
         )
 
     @staticmethod
+    def _is_restricted_error(error: Exception) -> bool:
+        return ShortsFetcher._is_age_restricted_error(
+            error
+        ) or ShortsFetcher._is_members_only_error(error)
+
+    @staticmethod
     def _is_bot_check_error(error: Exception) -> bool:
         if ShortsFetcher._is_restricted_error(error):
             return False
         text = str(error).lower()
         return "not a bot" in text or "sign in to confirm you're not a bot" in text
+
+    @staticmethod
+    def _cookie_login_hint(opts: dict) -> str:
+        if opts.get("cookiefile") or opts.get("cookiesfrombrowser"):
+            return (
+                "Your cookies.txt is present but YouTube still treated this as "
+                "age-restricted. Re-export cookies from a logged-in 18+ account "
+                "AFTER opening one age-restricted video and clicking I understand."
+            )
+        return (
+            "Put a logged-in 18+ cookies.txt in yt_shorts_repost_bot/cookies.txt "
+            "(or set YT_COOKIES_FROM_BROWSER=chrome) so age-restricted Shorts can download."
+        )
 
     @staticmethod
     def _extract_video_id(video_url: str) -> str:
@@ -205,10 +233,11 @@ class ShortsFetcher:
         if output_path.exists():
             output_path.unlink()
 
-        # Try several player clients - YouTube serves streams differently per
-        # client, and some (tv/android/ios) avoid HTTP 403 on Shorts.
-        client_attempts = [None, "tv", "android", "ios"]
+        # tv_embedded / web_embedded can unlock age-restricted Shorts when a
+        # logged-in 18+ cookie jar is present. Keep trying every client.
+        client_attempts = [None, "tv_embedded", "web_embedded", "tv", "android", "ios"]
         last_err = None
+        cookie_opts = self._cookies_opts()
         for player_client in client_attempts:
             ydl_opts = {
                 "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/"
@@ -217,7 +246,7 @@ class ShortsFetcher:
                 "merge_output_format": "mp4",
                 "quiet": True,
                 "no_warnings": True,
-                **self._cookies_opts(),
+                **cookie_opts,
                 **self._ffmpeg_opt(),
             }
             if player_client:
@@ -238,8 +267,7 @@ class ShortsFetcher:
                 )
                 for fragment in output_path.parent.glob(f"{output_path.stem}*.part*"):
                     fragment.unlink(missing_ok=True)
-                if self._is_restricted_error(e):
-                    last_err = e
+                if self._is_members_only_error(e):
                     break
                 if self._is_bot_check_error(e):
                     logger.error(
@@ -248,10 +276,13 @@ class ShortsFetcher:
                     )
                     raise
         if last_err is not None:
-            if ShortsFetcher._is_restricted_error(last_err):
+            if ShortsFetcher._is_age_restricted_error(last_err):
                 raise RuntimeError(
-                    "SKIPPED_RESTRICTED: YouTube blocked this Short (age-restricted or "
-                    "members-only). Export a logged-in adult cookies.txt to process it."
+                    "AGE_RESTRICTED: " + ShortsFetcher._cookie_login_hint(cookie_opts)
+                ) from last_err
+            if ShortsFetcher._is_members_only_error(last_err):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: this Short is members-only or private."
                 ) from last_err
             raise last_err
 

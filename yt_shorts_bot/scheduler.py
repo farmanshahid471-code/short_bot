@@ -331,13 +331,16 @@ class ShortsBotScheduler:
             marker in text
             for marker in (
                 "skipped_restricted",
-                "confirm your age",
-                "age-restricted",
                 "members-only",
                 "private video",
             )
         ):
             return "SKIPPED"
+        if any(
+            marker in text
+            for marker in ("age_restricted", "confirm your age", "age-restricted")
+        ):
+            return "PROCESSING_FAILED"
         return "PROCESSING_FAILED"
 
     @staticmethod

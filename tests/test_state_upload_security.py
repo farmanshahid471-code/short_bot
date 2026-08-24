@@ -30,6 +30,7 @@ def test_retryable_states_are_not_terminal(tmp_path):
         "UPLOAD_FAILED",
         "CHANNEL_MISMATCH",
         "PROCESSING_FAILED",
+        "SKIPPED",
     ):
         db.record_video_state("video", status=state, account="A")
         assert not db.is_video_processed("video", "A"), state

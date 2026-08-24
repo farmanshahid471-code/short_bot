@@ -186,10 +186,12 @@ def test_ass_watermark_file_contains_escaped_overlay_text(tmp_path):
     assert "LIKE" in text
 
 
-def test_age_restricted_download_is_marked_skippable(monkeypatch, tmp_path):
+def test_age_restricted_download_asks_for_adult_cookies(monkeypatch, tmp_path):
     class AgeBlockedYDL:
-        def __init__(self, _opts):
-            pass
+        seen = []
+
+        def __init__(self, opts):
+            self.__class__.seen.append(opts)
 
         def __enter__(self):
             return self
@@ -203,17 +205,23 @@ def test_age_restricted_download_is_marked_skippable(monkeypatch, tmp_path):
                 "This video may be inappropriate for some users."
             )
 
+    AgeBlockedYDL.seen = []
     monkeypatch.setattr(fetcher_module.yt_dlp, "YoutubeDL", AgeBlockedYDL)
     monkeypatch.setattr(fetcher_module, "TEMP_DIR", tmp_path)
-    with pytest.raises(RuntimeError, match="SKIPPED_RESTRICTED"):
+    with pytest.raises(RuntimeError, match="AGE_RESTRICTED"):
         ShortsFetcher().download_short("https://www.youtube.com/shorts/abcdefghijk")
+    clients = [
+        (opts.get("extractor_args") or {}).get("youtube", {}).get("player_client", [None])[0]
+        for opts in AgeBlockedYDL.seen
+    ]
+    assert "tv_embedded" in clients
     from yt_shorts_repost_bot.scheduler import ShortsRepostScheduler
 
     assert (
         ShortsRepostScheduler._status_for_processing_error(
-            RuntimeError("SKIPPED_RESTRICTED: age")
+            RuntimeError("AGE_RESTRICTED: need cookies")
         )
-        == "SKIPPED"
+        == "PROCESSING_FAILED"
     )
 
 
@@ -301,7 +309,7 @@ def test_yt_dlp_player_retries_use_extractor_args_and_clean_parts(
     assert output.read_bytes() == b"complete"
     assert "extractor_args" not in FakeYDL.seen[0]
     assert FakeYDL.seen[1]["extractor_args"] == {
-        "youtube": {"player_client": ["tv"]}
+        "youtube": {"player_client": ["tv_embedded"]}
     }
     assert not list(tmp_path.glob("*.part*"))
     assert "_" in output.stem  # random job suffix avoids cross-account collisions

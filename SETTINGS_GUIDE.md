@@ -146,12 +146,25 @@ Blank credentials skip R2. Pruning only touches `shorts/` and `reposts/` keys.
 ### Download cookies
 
 ```ini
-YT_COOKIES_FILE=""
+YT_COOKIES_FILE="cookies.txt"
 YT_COOKIES_FROM_BROWSER=""
 ```
 
 Cookies are private credentials. Keep exported files ignored and rotate them if
 an older repository commit exposed them.
+
+**Age-restricted Shorts** download only when the cookie file comes from a
+logged-in YouTube account whose birthday is 18+:
+
+1. In Chrome, log into YouTube with that adult Google account.
+2. Open any age-restricted video and click **I understand** / confirm age.
+3. Export `cookies.txt` with the "Get cookies.txt LOCALLY" extension while
+   still on youtube.com.
+4. Replace `yt_shorts_repost_bot/cookies.txt` (and/or `yt_shorts_bot/cookies.txt`).
+5. Restart the panel. Age-restricted Shorts stay retryable until cookies work.
+
+`YT_COOKIES_FROM_BROWSER=chrome` can be used instead of a file (close Chrome
+first). Members-only/private videos still cannot be downloaded.
 
 ## Metadata guarantee
 

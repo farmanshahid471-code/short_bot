@@ -169,7 +169,7 @@ class YouTubeFetcher:
         return "not a bot" in text or "sign in to confirm you're not a bot" in text
 
     @staticmethod
-    def _is_restricted_error(error: Exception) -> bool:
+    def _is_age_restricted_error(error: Exception) -> bool:
         text = str(error).lower()
         return any(
             marker in text
@@ -177,11 +177,26 @@ class YouTubeFetcher:
                 "confirm your age",
                 "age-restricted",
                 "inappropriate for some users",
+            )
+        )
+
+    @staticmethod
+    def _is_members_only_error(error: Exception) -> bool:
+        text = str(error).lower()
+        return any(
+            marker in text
+            for marker in (
                 "join this channel to get access",
                 "members-only",
                 "private video",
             )
         )
+
+    @staticmethod
+    def _is_restricted_error(error: Exception) -> bool:
+        return YouTubeFetcher._is_age_restricted_error(
+            error
+        ) or YouTubeFetcher._is_members_only_error(error)
 
     def extract_heatmap_and_select_window(self, video_url: str) -> Tuple[Dict[str, Any], float, float, float]:
         """
@@ -204,10 +219,14 @@ class YouTubeFetcher:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
-            if self._is_restricted_error(e):
+            if self._is_age_restricted_error(e):
                 raise RuntimeError(
-                    "SKIPPED_RESTRICTED: YouTube blocked this video (age-restricted or "
-                    "members-only). Export a logged-in adult cookies.txt to process it."
+                    "AGE_RESTRICTED: export a logged-in 18+ cookies.txt after opening "
+                    "one age-restricted video and clicking I understand."
+                ) from e
+            if self._is_members_only_error(e):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: this video is members-only or private."
                 ) from e
             if self._is_bot_check_error(e):
                 logger.error(
@@ -417,10 +436,14 @@ class YouTubeFetcher:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
-            if self._is_restricted_error(e):
+            if self._is_age_restricted_error(e):
                 raise RuntimeError(
-                    "SKIPPED_RESTRICTED: YouTube blocked this video (age-restricted or "
-                    "members-only). Export a logged-in adult cookies.txt to process it."
+                    "AGE_RESTRICTED: export a logged-in 18+ cookies.txt after opening "
+                    "one age-restricted video and clicking I understand."
+                ) from e
+            if self._is_members_only_error(e):
+                raise RuntimeError(
+                    "SKIPPED_RESTRICTED: this video is members-only or private."
                 ) from e
             if self._is_bot_check_error(e):
                 logger.error(
