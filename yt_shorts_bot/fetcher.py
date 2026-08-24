@@ -665,7 +665,7 @@ class YouTubeFetcher:
     def _slice_av_pair(self, video_url: str, clip_start: float, clip_end: float, output_path: Path) -> Path:
         """Strategy B: slice the best mp4 video (h264 preferred) + best m4a audio stream pair."""
         ydl_opts = {
-            "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/""bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "format": "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/""bestvideo[height<=2160]+bestaudio/best[height<=2160]/best",
             "quiet": True,
             "no_warnings": True,
             **self._cookies_opts(),
@@ -715,7 +715,7 @@ class YouTubeFetcher:
         full_tmpl = str(TEMP_DIR / f"{full_prefix}.%(ext)s")
 
         ydl_opts = {
-            "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/""bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "format": "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/""bestvideo[height<=2160]+bestaudio/best[height<=2160]/best",
             "outtmpl": full_tmpl,
             "quiet": True,
             "no_warnings": True,

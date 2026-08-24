@@ -233,26 +233,36 @@ class ShortsFetcher:
         if output_path.exists():
             output_path.unlink()
 
-        # tv_embedded / web_embedded can unlock age-restricted Shorts when a
-        # logged-in 18+ cookie jar is present. Keep trying every client.
-        client_attempts = [None, "tv_embedded", "web_embedded", "tv", "android", "ios"]
-        last_err = None
+        # Prefer any playable stream. Requiring avc1+m4a is why recent Shorts
+        # fail with "Requested format is not available".
+        download_format = (
+            "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/"
+            "bestvideo[height<=2160]+bestaudio/"
+            "best[height<=2160]/"
+            "best"
+        )
         cookie_opts = self._cookies_opts()
-        for player_client in client_attempts:
+        attempts = [
+            ("android+web", ["android", "web"], cookie_opts),
+            ("tv_embedded", ["tv_embedded"], cookie_opts),
+            ("ios+mweb", ["ios", "mweb"], cookie_opts),
+            ("web_embedded", ["web_embedded"], cookie_opts),
+            ("tv", ["tv"], cookie_opts),
+        ]
+        if cookie_opts:
+            attempts.append(("android+web no-cookies", ["android", "web"], {}))
+        last_err = None
+        for label, clients, opts in attempts:
             ydl_opts = {
-                "format": "bestvideo[height<=2160][vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/"
-                          "bestvideo[height<=2160][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+                "format": download_format,
                 "outtmpl": str(output_path),
                 "merge_output_format": "mp4",
                 "quiet": True,
                 "no_warnings": True,
-                **cookie_opts,
+                **opts,
                 **self._ffmpeg_opt(),
             }
-            if player_client:
-                ydl_opts["extractor_args"] = {
-                    "youtube": {"player_client": [player_client]}
-                }
+            ydl_opts["extractor_args"] = {"youtube": {"player_client": clients}}
             try:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([video_url])
@@ -260,11 +270,7 @@ class ShortsFetcher:
                 break
             except Exception as e:
                 last_err = e
-                logger.warning(
-                    "Download attempt (client=%s) failed: %s",
-                    player_client or "default",
-                    e,
-                )
+                logger.warning("Download attempt (client=%s) failed: %s", label, e)
                 for fragment in output_path.parent.glob(f"{output_path.stem}*.part*"):
                     fragment.unlink(missing_ok=True)
                 if self._is_members_only_error(e):
@@ -315,7 +321,7 @@ class ShortsFetcher:
             "skip_download": True,
             "quiet": True,
             "no_warnings": True,
-            "extractor_args": {"youtube": {"player_client": ["tv"]}},
+            "extractor_args": {"youtube": {"player_client": ["android", "web"]}},
             **ShortsFetcher._cookies_opts(),
             **ShortsFetcher._ffmpeg_opt(),
         }

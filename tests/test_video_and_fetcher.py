@@ -307,9 +307,13 @@ def test_yt_dlp_player_retries_use_extractor_args_and_clean_parts(
     monkeypatch.setattr(fetcher_module, "TEMP_DIR", tmp_path)
     output = ShortsFetcher().download_short("https://www.youtube.com/shorts/abcdefghijk")
     assert output.read_bytes() == b"complete"
-    assert "extractor_args" not in FakeYDL.seen[0]
-    assert FakeYDL.seen[1]["extractor_args"] == {
-        "youtube": {"player_client": ["tv_embedded"]}
-    }
+    assert FakeYDL.seen[0]["extractor_args"]["youtube"]["player_client"] == [
+        "android",
+        "web",
+    ]
+    assert FakeYDL.seen[1]["extractor_args"]["youtube"]["player_client"] == [
+        "tv_embedded"
+    ]
+    assert "/best" in FakeYDL.seen[0]["format"]
     assert not list(tmp_path.glob("*.part*"))
     assert "_" in output.stem  # random job suffix avoids cross-account collisions
