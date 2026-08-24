@@ -1,13 +1,15 @@
 """YouTube OAuth, destination safety checks, metadata, and real uploads."""
 from __future__ import annotations
 
+import os
 import re
 import socket
 import time
 import webbrowser
+from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Iterator, Optional
 from urllib.parse import parse_qs, urlparse
 
 from google.auth.transport.requests import Request
@@ -47,6 +49,27 @@ def is_real_upload_id(value: Optional[str]) -> bool:
     return bool(value and value not in NON_UPLOAD_RESULTS)
 
 
+@contextmanager
+def allow_loopback_oauth_transport() -> Iterator[None]:
+    """Allow oauthlib to accept Google's official http://localhost callback.
+
+    Desktop / installed-app OAuth redirects to a loopback HTTP URL. oauthlib
+    otherwise raises ``(insecure_transport) OAuth 2 MUST utilize https``.
+    The token POST still goes to Google over HTTPS; this flag only relaxes
+    the local callback check and is restored afterwards.
+    """
+    key = "OAUTHLIB_INSECURE_TRANSPORT"
+    previous = os.environ.get(key)
+    os.environ[key] = "1"
+    try:
+        yield
+    finally:
+        if previous is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = previous
+
+
 class YouTubeUploader:
     """Authenticate and upload to exactly the destination account requested."""
 
@@ -79,17 +102,6 @@ class YouTubeUploader:
             include_granted_scopes="true",
             prompt="consent select_account",
         )
-        logger.info("Opening a browser for Google authorization...")
-        # Keep the full one-time URL out of rotating log files. It may be copied
-        # from the process console when automatic browser opening is unavailable.
-        print("\nGoogle authorization URL (valid for this connection attempt):")
-        print(auth_url)
-        print()
-        try:
-            webbrowser.open(auth_url)
-        except Exception as exc:
-            logger.warning("Could not open the browser automatically: %s", exc)
-
         result: dict[str, Optional[str]] = {"authorization_response": None, "error": None}
 
         class Handler(BaseHTTPRequestHandler):
@@ -107,8 +119,20 @@ class YouTubeUploader:
             def log_message(self, *_args):
                 return
 
+        # Listen before opening the browser so a fast redirect is not refused.
         server = HTTPServer(("127.0.0.1", port), Handler)
         server.timeout = 1.0
+        logger.info("Opening a browser for Google authorization...")
+        # Keep the full one-time URL out of rotating log files. It may be copied
+        # from the process console when automatic browser opening is unavailable.
+        print("\nGoogle authorization URL (valid for this connection attempt):")
+        print(auth_url)
+        print()
+        try:
+            webbrowser.open(auth_url)
+        except Exception as exc:
+            logger.warning("Could not open the browser automatically: %s", exc)
+
         deadline = time.monotonic() + 300
         try:
             while not result["authorization_response"] and time.monotonic() < deadline:
@@ -122,7 +146,9 @@ class YouTubeUploader:
         if not response_url:
             raise RuntimeError("OAuth flow timed out after five minutes")
         # OAuthlib validates the returned state when given the complete response.
-        flow.fetch_token(authorization_response=response_url)
+        # Google desktop apps use http://localhost; allow that loopback only here.
+        with allow_loopback_oauth_transport():
+            flow.fetch_token(authorization_response=response_url)
         return flow.credentials
 
     def _get_authenticated_service(self, interactive: bool = True) -> Optional[Resource]:
