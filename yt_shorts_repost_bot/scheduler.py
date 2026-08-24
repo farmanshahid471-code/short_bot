@@ -187,11 +187,10 @@ class ShortsRepostScheduler:
         top_enabled = account.get("top_watermark_enabled")
         top_text = str(account.get("top_watermark") or TOP_WATERMARK_TEXT or "").strip()
         if process_mode != "render" and (
-            (watermark_enabled is not False and watermark_text)
-            or (top_enabled is not False and top_text)
+            watermark_enabled is not False or top_enabled is not False
         ):
-            logger.warning(
-                "[%s] Watermarks require render mode; copy mode preserves the source.",
+            logger.info(
+                "[%s] Copy mode will still burn watermark text onto the re-encode.",
                 name,
             )
 

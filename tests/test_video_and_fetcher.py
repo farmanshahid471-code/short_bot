@@ -171,6 +171,18 @@ def test_missing_drawtext_falls_back_instead_of_failing(monkeypatch, tmp_path):
     assert output.is_file() and output.stat().st_size > 0
 
 
+def test_png_watermark_file_is_written(tmp_path):
+    path = tmp_path / "mark.png"
+    VideoProcessor().write_watermark_png(
+        path,
+        320,
+        180,
+        top_text="TOP",
+        bottom_text="LIKE & SUBSCRIBE",
+    )
+    assert path.is_file() and path.stat().st_size > 0
+
+
 def test_ass_watermark_file_contains_escaped_overlay_text(tmp_path):
     path = tmp_path / "mark.ass"
     VideoProcessor()._write_watermark_ass(

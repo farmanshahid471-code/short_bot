@@ -382,6 +382,111 @@ class VideoProcessor:
         return path
 
     @staticmethod
+    def _load_overlay_font(size: int, italic: bool = False):
+        from PIL import ImageFont
+
+        candidates: list[Path] = []
+        if sys.platform.startswith("win"):
+            fonts = Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts"
+            if italic:
+                candidates.extend([fonts / "ariali.ttf", fonts / "arialbi.ttf"])
+            candidates.extend(
+                [fonts / "arialbd.ttf", fonts / "arial.ttf", fonts / "segoeui.ttf"]
+            )
+        else:
+            if italic:
+                italic_file = _italic_font()
+                if italic_file:
+                    candidates.append(Path(italic_file))
+            candidates.extend(
+                [
+                    Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
+                    Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+                    Path("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"),
+                ]
+            )
+        for candidate in candidates:
+            if candidate.is_file():
+                try:
+                    return ImageFont.truetype(str(candidate), max(12, int(size)))
+                except OSError:
+                    continue
+        return ImageFont.load_default()
+
+    @staticmethod
+    def _parse_overlay_color(color: str, opacity: float) -> tuple[int, int, int, int]:
+        raw = re.sub(r"[^A-Za-z0-9#]", "", str(color or "white")).lower()
+        named = {"white": "ffffff", "black": "000000", "yellow": "ffff00"}
+        hex_rgb = named.get(raw, raw.lstrip("#"))
+        if not re.fullmatch(r"[0-9a-f]{6}", hex_rgb):
+            hex_rgb = "ffffff"
+        alpha = int(round(min(1.0, max(0.0, float(opacity))) * 255))
+        return int(hex_rgb[0:2], 16), int(hex_rgb[2:4], 16), int(hex_rgb[4:6], 16), alpha
+
+    def write_watermark_png(
+        self,
+        path: Path,
+        width: int,
+        height: int,
+        top_text: str = "",
+        bottom_text: str = "",
+        top_size: int = 56,
+        bottom_size: int = 56,
+        top_color: str = "white",
+        top_opacity: float = 0.85,
+        bottom_opacity: float = 1.0,
+        top_italic: bool = True,
+        bottom_italic: bool = True,
+        top_y_pct: float = 12.0,
+        bottom_y_pct: float = 90.0,
+    ) -> Path:
+        """Paint watermark text onto a transparent PNG and overlay it with FFmpeg."""
+        from PIL import Image, ImageDraw, ImageFilter
+
+        canvas = Image.new("RGBA", (max(2, int(width)), max(2, int(height))), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(canvas)
+
+        def paint(text: str, size: int, y: int, color: str, opacity: float, italic: bool) -> None:
+            if not str(text or "").strip():
+                return
+            font = self._load_overlay_font(size, italic=italic)
+            fill = self._parse_overlay_color(color, opacity)
+            stroke = self._parse_overlay_color("black", min(1.0, opacity + 0.15))
+            bbox = draw.textbbox((0, 0), text, font=font, stroke_width=4)
+            text_w = bbox[2] - bbox[0]
+            x = max(8, (canvas.width - text_w) // 2)
+            y = max(8, min(canvas.height - (bbox[3] - bbox[1]) - 8, int(y)))
+            draw.text(
+                (x, y),
+                text,
+                font=font,
+                fill=fill,
+                stroke_width=4,
+                stroke_fill=stroke,
+            )
+
+        paint(
+            top_text,
+            top_size,
+            int(height * float(top_y_pct) / 100.0) - int(top_size * 0.5),
+            top_color,
+            top_opacity,
+            top_italic,
+        )
+        paint(
+            bottom_text,
+            bottom_size,
+            int(height * float(bottom_y_pct) / 100.0) - int(bottom_size * 0.4),
+            "white",
+            bottom_opacity,
+            bottom_italic,
+        )
+        canvas = canvas.filter(ImageFilter.SMOOTH)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        canvas.save(path, "PNG")
+        return path
+
+    @staticmethod
     def _escape_filter_path(path: Path | str) -> str:
         value = str(path).replace("\\", "/")
         for char in (":", "'", ",", ";", "[", "]"):
@@ -531,20 +636,25 @@ class VideoProcessor:
         available = self._available_filters()
         need_text = bool(show_banner or show_top)
         use_drawtext = need_text and "drawtext" in available
-        use_ass_text = need_text and not use_drawtext and "subtitles" in available
+        use_png_text = need_text and not use_drawtext and "overlay" in available
+        use_ass_text = (
+            need_text and not use_drawtext and not use_png_text and "subtitles" in available
+        )
         if srt_usable and "subtitles" not in available:
             logger.warning("This FFmpeg build has no subtitles filter; captions were skipped.")
             srt_usable = False
-        if need_text and not use_drawtext and not use_ass_text:
+        if need_text and not use_drawtext and not use_png_text and not use_ass_text:
             logger.warning(
-                "This FFmpeg build has no drawtext/subtitles filter; watermarks were skipped. "
-                "Install a full FFmpeg build (ffmpeg-release-full.zip) so text overlays work."
+                "This FFmpeg build cannot burn watermarks (no drawtext/overlay). "
+                "Install a full FFmpeg build (ffmpeg-release-full.zip)."
             )
             show_banner = False
             show_top = False
         required_filters = set()
         if use_drawtext:
             required_filters.add("drawtext")
+        if use_png_text:
+            required_filters.add("overlay")
         if srt_usable or use_ass_text:
             required_filters.add("subtitles")
         if required_filters:
@@ -637,6 +747,30 @@ class VideoProcessor:
             )
             current = label
 
+        overlay_png: Optional[Path] = None
+        if use_png_text:
+            overlay_png = TEMP_DIR / f"overlay_{uuid4().hex}.png"
+            self.write_watermark_png(
+                overlay_png,
+                width,
+                height,
+                top_text=top_text if show_top else "",
+                bottom_text=banner_text if show_banner else "",
+                top_size=TOP_WATERMARK_FONT_SIZE,
+                bottom_size=BOTTOM_BANNER_FONT_SIZE,
+                top_color=TOP_WATERMARK_COLOR,
+                top_opacity=max(0.85, float(TOP_WATERMARK_OPACITY or 0.5)),
+                bottom_opacity=BOTTOM_BANNER_OPACITY,
+                top_italic=TOP_WATERMARK_ITALIC,
+                bottom_italic=BOTTOM_BANNER_ITALIC,
+                top_y_pct=TOP_WATERMARK_Y_PCT,
+                bottom_y_pct=BOTTOM_BANNER_Y_PCT,
+            )
+            temporary_filter_files.append(overlay_png)
+            logger.info("Adding account watermarks with a PNG overlay (no drawtext).")
+            show_banner = False
+            show_top = False
+
         if use_ass_text:
             ass_path = TEMP_DIR / f"overlay_{uuid4().hex}.ass"
             top_margin = max(8, int(height * TOP_WATERMARK_Y_PCT / 100.0))
@@ -702,9 +836,33 @@ class VideoProcessor:
                 stages.append(f"[1:a]volume={BGM_VOLUME}[aout]")
             audio_label = "[aout]"
 
+        next_input = 1
+        overlay_input = None
+        bgm_input = None
         cmd = [FFMPEG_PATH, "-y", "-hide_banner", "-loglevel", "error", "-i", str(input_path)]
+        if overlay_png:
+            overlay_input = next_input
+            next_input += 1
+            cmd += ["-i", str(overlay_png)]
+            stages.append(
+                f"[{current}][{overlay_input}:v]overlay=0:0:format=auto[vpng]"
+            )
+            current = "vpng"
         if selected_bgm:
+            bgm_input = next_input
             cmd += ["-stream_loop", "-1", "-i", str(selected_bgm)]
+            if has_audio:
+                stages.extend(
+                    [
+                        f"[0:a]volume={VOICE_VOLUME}[voice]",
+                        f"[{bgm_input}:a]volume={BGM_VOLUME}[music]",
+                        "[voice][music]amix=inputs=2:duration=first:dropout_transition=2[aout]",
+                    ]
+                )
+            else:
+                stages.append(f"[{bgm_input}:a]volume={BGM_VOLUME}[aout]")
+            audio_label = "[aout]"
+
         cmd += ["-filter_complex", ";".join(stages), "-map", "[vout]"]
         if audio_label:
             cmd += ["-map", audio_label]

@@ -1205,7 +1205,7 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
           <input type="number" name="acc_maxdaily_0" value="{st['max_daily']}" min="1" max="30" style="width:90px;" title="Max uploads per day">
           <label style="font-size:12px;color:var(--muted);">uploads/day</label>
           <select name="acc_processmode_0" style="background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px;">
-            <option value="copy"{' selected' if st['process_mode'] == 'copy' else ''}>copy (keep original - NO watermark)</option>
+            <option value="copy"{' selected' if st['process_mode'] == 'copy' else ''}>copy (keep original + watermark text)</option>
             <option value="render"{' selected' if st['process_mode'] == 'render' else ''}>render (subtitles+watermark)</option>
           </select>
           <label style="font-size:12px;color:var(--muted);">mode</label>
