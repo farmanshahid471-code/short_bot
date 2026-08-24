@@ -1084,7 +1084,7 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
   <h1>🔁 Shorts Repost Bot</h1>
   <div class="sub">Each tab = one of YOUR channels. Configure separately, run all together.</div>
   <div class="badges">
-    <span class="badge" style="border-color:var(--pink);color:var(--pink);">v7.0 (Aug 23, 2026)</span>
+    <span class="badge" style="border-color:var(--pink);color:var(--pink);">v7.1 (Aug 24, 2026)</span>
     {mode_badge} {sched_badge} {jobs_badge}
   </div>
 
