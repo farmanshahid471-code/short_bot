@@ -4,6 +4,11 @@ Do these steps **once per channel** (each channel gets its OWN Google account + 
 Google Cloud project — that's the cleanest way to run 5–10 uploads/day per channel without
 everything fighting over one API quota).
 
+> 🤖 **Provisioning many channels?** `provision/provision.bat` automates the
+> scriptable parts (per-account project + API enablement, secret validation,
+> `accounts.json` entries, OAuth token minting) and prints exact console links
+> for the two clicks that can't be scripted. See `provision/README.md`.
+
 Total time: ~15 minutes per channel. Example with 3 channels:
 
 | Channel | Google account | Google Cloud project |
@@ -52,7 +57,13 @@ Total time: ~15 minutes per channel. Example with 3 channels:
    → **Save and Continue**.
 5. **Test users**: click **Add users**, add **this channel's own Google account email**
    (e.g. `channel1@gmail.com`). → **Save and Continue** → **Back to Dashboard**.
-   > Keep it in **Testing** mode — fine for a personal bot, no payment needed.
+6. **Publish the app** (IMPORTANT): on the consent dashboard click **Publish app**
+   → select **In production** → confirm.
+   > **Do not stay in Testing mode.** Testing-mode refresh tokens **expire after
+   > 7 days**, which would force you to re-authorize every channel weekly.
+   > In production an *unverified* app shows an "unverified app" warning that you
+   > bypass once via Advanced → continue — fine for up to 100 of your own users.
+   > No payment info is needed either way.
 
 ## Step 5 — Create the OAuth client + download the key
 

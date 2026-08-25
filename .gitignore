@@ -22,6 +22,11 @@ accounts.fixed.json
 **/accounts.json
 **/accounts/*/
 
+# Channel provisioner: local account list, progress state, downloaded secrets
+provision/accounts.txt
+provision/state.json
+provision/downloads/
+
 # OAuth credentials, login cookies, and tokens
 **/client_secret*.json
 **/token*.json
