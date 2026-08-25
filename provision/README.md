@@ -1,9 +1,13 @@
 # Channel Provisioner — many accounts, minimal clicking
 
 This tool provisions **one Google Cloud project + one OAuth client + one bot
-credentials folder per YouTube channel**, which is what gives each channel its
+credentials folder per YouTube channel**, which gives each channel its
 own upload quota (default: **10,000 API units/day = 6 uploads/day**, resets at
 midnight US-Pacific).
+
+> **Tip:** double-clicking `provision.bat` opens an interactive menu — no
+> commands memorized, window stays open. The same commands work from a
+> terminal (`cmd` in the folder's address bar → `provision.bat doctor`).
 
 It automates everything Google allows to be automated. Two steps physically
 cannot be scripted — the **OAuth consent screen** and **OAuth client creation**

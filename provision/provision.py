@@ -690,7 +690,7 @@ def cmd_status(args: argparse.Namespace) -> None:
 
 # ---------------------------------------------------------------- main
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="provision.py",
         description="Semi-automated Google Cloud + YouTube OAuth provisioner "
@@ -738,12 +738,72 @@ def main() -> None:
     p.add_argument("--deep", action="store_true", help="also list gcloud configurations")
     p.set_defaults(fn=cmd_status)
 
-    args = ap.parse_args()
-    try:
-        args.fn(args)
-    except KeyboardInterrupt:
-        print("\nInterrupted - progress is saved in state.json; re-run any time.")
-        sys.exit(130)
+    return ap
+
+
+def print_welcome() -> None:
+    print(
+        """
+==============================================================
+ SHORTS BOT - CHANNEL PROVISIONER (interactive mode)
+==============================================================
+You started me without a command, so here is a menu.
+Type a command below and press Enter:
+
+  doctor              check prerequisites (gcloud CLI, Python, libs)
+  status              progress table for every account
+
+Per account (replace <name> with one from accounts.txt):
+  init <name>         sign in + create Cloud project + enable API
+  guide <name>        console links for the 2 manual steps
+  verify <name>       validate + install client_secret.json
+  scaffold <name>     create the accounts.json entry
+  connect <name>      one-time OAuth sign-in -> token + channel lock
+
+First time? Start with:   doctor
+Quit: type exit (or press Enter on an empty line)
+Same commands also work in a normal terminal: provision.bat <command>
+"""
+    )
+
+
+def run_cli(argv: List[str]) -> None:
+    args = build_parser().parse_args(argv)
+    args.fn(args)
+
+
+def main() -> None:
+    if len(sys.argv) > 1:
+        try:
+            run_cli(sys.argv[1:])
+        except KeyboardInterrupt:
+            print("\nInterrupted - progress is saved in state.json; re-run any time.")
+            sys.exit(130)
+        return
+
+    # No arguments (e.g. provision.bat was double-clicked): stay open,
+    # show a menu, and accept commands until the user quits.
+    import shlex
+
+    print_welcome()
+    while True:
+        try:
+            line = input("\nprovision> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+        if not line or line.lower() in ("q", "quit", "exit"):
+            return
+        try:
+            run_cli(shlex.split(line))
+        except SystemExit as e:
+            if e.code not in (None, 0):
+                info(f"(command exited with code {e.code} - see messages above)")
+        except KeyboardInterrupt:
+            info("(interrupted - progress is saved in state.json; re-run any time)")
+        except Exception as e:  # never kill the menu on an unexpected error
+            warn(f"unexpected error: {e}")
+        info("(done - window stays open; type another command, or 'exit' to close)")
 
 
 if __name__ == "__main__":
