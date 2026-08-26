@@ -1,7 +1,6 @@
 """Concurrency-safe, dynamically reloadable 24/7 scheduler for the repost bot."""
 from __future__ import annotations
 
-import random
 import shutil
 import signal
 import threading
@@ -213,17 +212,14 @@ class ShortsRepostScheduler:
                 logger.warning("[%s] Rolling upload cap reached; account paused.", name)
                 break
             logger.info("[%s] %s quota slot(s) available.", name, remaining)
+            order = str(account.get("selection_order") or SELECTION_ORDER).lower()
+            if order not in ("newest", "oldest", "random"):
+                order = "newest"
             try:
-                shorts = fetcher.fetch_channel_recent_shorts(channel_url)
+                shorts = fetcher.fetch_channel_recent_shorts(channel_url, order=order)
             except Exception as exc:
                 logger.error("[%s] Could not scan %s: %s", name, channel_url, exc)
                 continue
-
-            order = str(account.get("selection_order") or SELECTION_ORDER).lower()
-            if order == "oldest":
-                shorts.reverse()
-            elif order == "random":
-                random.shuffle(shorts)
 
             attempted = 0
             max_per_channel = max(

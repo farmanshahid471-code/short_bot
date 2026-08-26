@@ -13,6 +13,7 @@ import yt_dlp
 from .config import (
     TARGET_CHANNELS,
     FETCH_LIMIT_PER_CHANNEL,
+    FETCH_SCAN_LIMIT,
     MAX_SHORT_DURATION_SEC,
     FFMPEG_PATH,
     FFPROBE_PATH,
@@ -108,12 +109,29 @@ class ShortsFetcher:
             return None
 
     # ------------------------------------------------------------------
-    def fetch_channel_recent_shorts(self, channel_url: str) -> List[Dict[str, Any]]:
+    def fetch_channel_recent_shorts(
+        self, channel_url: str, order: str = "newest"
+    ) -> List[Dict[str, Any]]:
         """
-        Lists the newest Shorts from a channel (newest first), without downloading.
+        Lists Shorts from a channel without downloading, in the requested order:
+
+          - "newest": newest FETCH_LIMIT_PER_CHANNEL Shorts first
+          - "oldest": oldest Shorts in the scanned window first (deeper scan -
+            YouTube tabs no longer support server-side sorting, so reversing
+            only the newest N would never reach the real backlog)
+          - "random": shuffled sample from the scanned window
+
         Tries the /shorts tab first, then falls back to /videos and filters by duration.
         """
-        logger.info(f"Scanning channel for recent Shorts: {channel_url}")
+        order = str(order or "newest").strip().lower()
+        if order not in ("newest", "oldest", "random"):
+            order = "newest"
+        logger.info(
+            "Scanning channel for recent Shorts (%s, %s order): %s",
+            order,
+            order,
+            channel_url,
+        )
         url = channel_url.rstrip("/")
         candidates = []
         if "@" in url and not url.endswith(("/shorts", "/videos")):
@@ -121,14 +139,14 @@ class ShortsFetcher:
         else:
             candidates = [url]
 
+        window = max(self.fetch_limit, FETCH_SCAN_LIMIT)
         seen = set()
         shorts = []
         for feed in candidates:
             try:
                 ydl_opts = {
                     "extract_flat": "in_playlist",
-                    "playlistend": self.fetch_limit,
-                    "sort": "date",  # newest first
+                    "playlistend": window,
                     "quiet": True,
                     "no_warnings": True,
                     **self._cookies_opts(),
@@ -172,6 +190,18 @@ class ShortsFetcher:
 
         # Filter out anything longer than a Short (when duration was unknown in the feed)
         shorts = [s for s in shorts if not s["duration"] or s["duration"] <= MAX_SHORT_DURATION_SEC]
+        # The tab feeds always arrive newest-first. Apply the order HERE so every
+        # caller gets the same guaranteed ordering (oldest needs the deeper
+        # window fetched above - reversing the newest N is NOT the true oldest).
+        if order == "oldest":
+            shorts.reverse()
+            logger.info("Selected oldest-first from %d candidate Shorts (scanned %s).", len(shorts), window)
+        elif order == "random":
+            import random as _random
+            _random.shuffle(shorts)
+            logger.info("Shuffled %d candidate Shorts (random order).", len(shorts))
+        else:
+            logger.info("Selected %d newest candidate Shorts.", len(shorts))
         logger.info(f"Found {len(shorts)} candidate Shorts from {channel_url}")
         return shorts
 

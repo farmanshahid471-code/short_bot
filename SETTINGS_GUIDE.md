@@ -15,7 +15,7 @@ One tab is one destination channel. Settings are stored in ignored
 | `connected_channel_id` | Immutable ID used by the upload safety lock. |
 | `expected_channel` | Exact fallback title lock when no channel ID is available. |
 | `max_daily_uploads` | Local rolling 24-hour cap for real successful uploads. |
-| `selection_order` | `newest`, `oldest`, or `random`. |
+| `selection_order` | `newest`, `oldest`, or `random`. Guaranteed: the bot scans a deep window, orders it, then picks the FIRST unprocessed video in that order (already-uploaded ones are skipped). |
 | `selection_strategy` | `combined` (Most Replayed + loud/high-pitched voice), `heatmap` (Most Replayed only), or `audio` (voice excitement only). Empty = global default. |
 | `heatmap_weight` | 0-1 weight for Most Replayed when combining (default 0.55). |
 | `audio_excitement_weight` | 0-1 weight for voice excitement when combining (default 0.45). |

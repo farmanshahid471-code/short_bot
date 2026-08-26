@@ -131,7 +131,8 @@ pacing. Disable an account to exclude it; **Stop Scheduler** stops all tabs.
 ## Clip-bot pipeline
 
 ```text
-channel scan
+channel scan (deep window, newest/oldest/random order)
+  -> skip videos already uploaded, pick the FIRST unprocessed one
   -> best 15-20s moment:
        combined: Most Replayed heatmap + audio excitement
        (loud & high-pitched voice). Either signal is used when the

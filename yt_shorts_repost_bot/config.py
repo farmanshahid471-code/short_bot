@@ -42,6 +42,12 @@ TARGET_CHANNELS: List[str] = [c.strip() for c in _channels_env.split(",") if c.s
 # How many newest Shorts to inspect per channel per cycle
 FETCH_LIMIT_PER_CHANNEL: int = int(os.getenv("FETCH_LIMIT_PER_CHANNEL", "20"))
 
+# How deep the channel listing scan goes when selection order is "oldest" or
+# "random". YouTube tabs arrive newest-first and no longer support server-side
+# sorting, so "oldest" needs a deeper window before reversing - otherwise it
+# would only ever see the newest N and never reach the real backlog.
+FETCH_SCAN_LIMIT: int = max(10, min(1000, int(os.getenv("FETCH_SCAN_LIMIT", "300"))))
+
 # Max number of Shorts to repost from ONE channel in a single cycle
 # (spreads uploads across channels; total is still capped by MAX_DAILY_UPLOADS)
 MAX_SHORTS_PER_CHANNEL_CYCLE: int = int(os.getenv("MAX_SHORTS_PER_CHANNEL_CYCLE", "2"))

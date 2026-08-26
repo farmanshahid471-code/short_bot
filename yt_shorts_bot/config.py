@@ -47,6 +47,13 @@ TARGET_CHANNELS: List[str] = [c.strip() for c in _channels_env.split(",") if c.s
 # How many newest videos to inspect per channel per cycle
 FETCH_LIMIT_PER_CHANNEL: int = int(os.getenv("FETCH_LIMIT_PER_CHANNEL", "5"))
 
+# How deep the channel listing scan goes when selection order is "oldest" or
+# "random". YouTube's /videos tab arrives newest-first and no longer supports
+# server-side sorting (yt-dlp's sort=date is a no-op), so "oldest" must fetch a
+# bigger window and reverse it - otherwise it would only ever see the newest 5
+# and never reach the channel's real backlog. Flat metadata only (no downloads).
+FETCH_SCAN_LIMIT: int = max(10, min(1000, int(os.getenv("FETCH_SCAN_LIMIT", "300"))))
+
 # --- HEATMAP & CLIP SETTINGS ---
 CLIP_DURATION_SEC: float = float(os.getenv("CLIP_DURATION_SEC", "18.0"))  # 15-20 second window
 HEATMAP_SMOOTH_WINDOW_SEC: float = float(os.getenv("HEATMAP_SMOOTH_WINDOW_SEC", "18.0"))

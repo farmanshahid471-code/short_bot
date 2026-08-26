@@ -1,7 +1,6 @@
 """Concurrency-safe, dynamically reloadable scheduler for clip farming."""
 from __future__ import annotations
 
-import random
 import shutil
 import signal
 import threading
@@ -210,16 +209,14 @@ class ShortsBotScheduler:
             can_upload, _remaining = self.state_db.can_upload_today(max_daily, name)
             if not can_upload:
                 break
+            order = str(account.get("selection_order") or SELECTION_ORDER).lower()
+            if order not in ("newest", "oldest", "random"):
+                order = "newest"
             try:
-                videos = fetcher.fetch_channel_recent_videos(channel_url)
+                videos = fetcher.fetch_channel_recent_videos(channel_url, order=order)
             except Exception as exc:
                 logger.error("[%s] Could not scan %s: %s", name, channel_url, exc)
                 continue
-            order = str(account.get("selection_order") or SELECTION_ORDER).lower()
-            if order == "oldest":
-                videos.reverse()
-            elif order == "random":
-                random.shuffle(videos)
 
             for video in videos:
                 video_id = video["video_id"]

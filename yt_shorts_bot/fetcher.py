@@ -19,6 +19,7 @@ from .config import (
     MIN_CLIP_DURATION_SEC,
     MAX_CLIP_DURATION_SEC,
     SELECTION_STRATEGY,
+    FETCH_SCAN_LIMIT,
     HEATMAP_WEIGHT,
     AUDIO_EXCITEMENT_WEIGHT,
     AUDIO_ENERGY_WEIGHT,
@@ -145,12 +146,36 @@ class YouTubeFetcher:
         )
         return has_auth
 
-    def fetch_channel_recent_videos(self, channel_url: str) -> List[Dict[str, Any]]:
+    def fetch_channel_recent_videos(
+        self,
+        channel_url: str,
+        order: str = "newest",
+    ) -> List[Dict[str, Any]]:
         """
-        Lists the newest videos from a YouTube channel URL without downloading.
+        Lists videos from a YouTube channel URL without downloading, in the
+        requested order:
+
+          - "newest": most recent first
+          - "oldest": oldest in the scanned window first
+          - "random": shuffled sample of the scanned window
+
+        The scan is deep (FETCH_SCAN_LIMIT, flat metadata only) so the caller
+        can skip videos that are already uploaded and still find the next real
+        candidate in the chosen order. Reversing/shuffling only the newest N
+        never works: YouTube's tabs no longer support server-side sorting, so
+        the list always arrives newest-first.
+
         Returns a list of dicts with video_id, url, title, duration.
         """
-        logger.info(f"Scanning channel for recent videos: {channel_url}")
+        order = str(order or "newest").strip().lower()
+        if order not in ("newest", "oldest", "random"):
+            order = "newest"
+        logger.info(
+            "Scanning channel for recent videos (%s, %s order): %s",
+            channel_url,
+            order,
+            channel_url,
+        )
         # Normalize channel URL to its videos tab if needed. If the user
         # explicitly points at the channel's Live tab (/streams) or Shorts tab
         # (/shorts), keep it - useful for channels whose content is live VODs.
@@ -158,10 +183,14 @@ class YouTubeFetcher:
         if "@" in url and not url.endswith(("/videos", "/streams", "/shorts")):
             url = f"{url}/videos"
 
+        # Scan deep enough that the caller can skip already-uploaded videos and
+        # still find the next candidate in the chosen order. Flat metadata only -
+        # never downloads videos. FETCH_LIMIT_PER_CHANNEL remains the minimum
+        # (back-compat: it used to be the only window).
+        window = max(self.fetch_limit, FETCH_SCAN_LIMIT)
         ydl_opts = {
             "extract_flat": "in_playlist",
-            "playlistend": self.fetch_limit,
-            "sort": "date",  # Sort newest to oldest
+            "playlistend": window,
             "quiet": True,
             "no_warnings": True,
             **self._cookies_opts(),
@@ -201,7 +230,21 @@ class YouTubeFetcher:
         except Exception as e:
             logger.error(f"Error listing channel {channel_url}: {e}")
 
-        logger.info(f"Found {len(videos)} candidate videos from {channel_url}")
+        # The /videos tab always arrives newest-first. Apply the order HERE (not
+        # in the scheduler) so every caller gets the same guaranteed ordering.
+        if order == "oldest":
+            videos.reverse()
+            logger.info(
+                "Selected oldest-first from %d candidate videos (scanned %s).",
+                len(videos),
+                window,
+            )
+        elif order == "random":
+            import random as _random
+            _random.shuffle(videos)
+            logger.info("Shuffled %d candidate videos (random order).", len(videos))
+        else:
+            logger.info("Selected %d newest candidate videos.", len(videos))
         return videos
 
     @staticmethod
