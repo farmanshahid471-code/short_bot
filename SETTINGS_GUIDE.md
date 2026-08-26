@@ -132,12 +132,25 @@ MAX_AUDIO_SAMPLES=60
 
 `combined` blends the YouTube "Most Replayed" heatmap with an audio-excitement
 score built from loudness (energy), high-pitched spectral content (voice) and
-sudden bursts (flux). If one signal is missing the bot automatically uses the
-other — no heatmap (e.g. live VODs) means audio only; a failed audio probe
+sudden bursts (flux). If one signal is missing the bot shifts to the other at
+**100%** — no heatmap (e.g. live VODs) means audio only; a failed audio probe
 means heatmap only; both failing falls back to a smart hook window. The tiny
 audio probes are a few seconds each and never download the full video. Each
 named account can override `selection_strategy`, `heatmap_weight` and
 `audio_excitement_weight` per account.
+
+### Live streams and VODs
+
+- **Finished live streams (VODs)**: add the channel's **Live tab** as a source
+  channel, e.g. `https://www.youtube.com/@SomeLiveChannel/streams`. The bot
+  scans it like a normal channel. Live VODs usually have no Most Replayed
+  heatmap, so `combined` automatically runs on voice-excitement only.
+- **Still-airing streams**: the bot refuses with a clear error. A live edge
+  cannot be seeked/cut, so wait a few minutes until the stream ends, then the
+  same link (or the channel's `/streams` tab) works.
+- **One-off links**: the Web UI "Process URL" box makes **1** Short from the
+  pasted link. To make several Shorts from one specific URL in auto-cycles,
+  add its channel as a source channel instead (respects `shorts_per_video`).
 
 ### Text style
 

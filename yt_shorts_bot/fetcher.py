@@ -151,9 +151,11 @@ class YouTubeFetcher:
         Returns a list of dicts with video_id, url, title, duration.
         """
         logger.info(f"Scanning channel for recent videos: {channel_url}")
-        # Normalize channel URL to its videos tab if needed
+        # Normalize channel URL to its videos tab if needed. If the user
+        # explicitly points at the channel's Live tab (/streams) or Shorts tab
+        # (/shorts), keep it - useful for channels whose content is live VODs.
         url = channel_url.rstrip("/")
-        if not url.endswith("/videos") and "@" in url:
+        if "@" in url and not url.endswith(("/videos", "/streams", "/shorts")):
             url = f"{url}/videos"
 
         ydl_opts = {
@@ -208,6 +210,25 @@ class YouTubeFetcher:
         text = str(error)
         return "Sign in to confirm" in text or "not a bot" in text or "cookies" in text.lower() and "bot" in text.lower()
 
+    @staticmethod
+    def _ensure_not_live(info: Dict[str, Any]) -> None:
+        """
+        Reject still-airing streams with a clear message. `-ss` seeking cannot
+        work on a live edge; the stream must END first so it becomes a VOD.
+        """
+        live_status = str(info.get("live_status") or "").lower()
+        is_live = bool(info.get("is_live")) or live_status == "is_live"
+        if is_live or live_status in ("is_upcoming", "post_live", "premiering"):
+            if is_live:
+                raise RuntimeError(
+                    "This stream is STILL LIVE. It cannot be clipped while it is "
+                    "airing - wait until it ends (a few minutes), then try again."
+                )
+            raise RuntimeError(
+                "This video is not available for clipping yet (live status: "
+                f"{live_status or 'unknown'}). Wait until the stream has ended."
+            )
+
     def _get_info(self, video_url: str) -> Dict[str, Any]:
         """Fetch video metadata once per URL (cached for the lifetime of this fetcher)."""
         cached = self._info_cache.get(video_url)
@@ -252,6 +273,7 @@ class YouTubeFetcher:
             (metadata_dict, peak_time_sec, clip_start_sec, clip_end_sec)
         """
         info = self._get_info(video_url)
+        self._ensure_not_live(info)
         duration = float(info.get("duration") or 0.0)
 
         ranked, used_heatmap, used_audio = self._build_ranked_windows(
@@ -813,6 +835,7 @@ class YouTubeFetcher:
         Returns list of {"start", "end", "score", "source", ...}.
         """
         info = self._get_info(video_url)
+        self._ensure_not_live(info)
         duration = float(info.get("duration") or 0.0)
         ranked, _used_heatmap, _used_audio = self._build_ranked_windows(
             video_url, info, duration, count=count

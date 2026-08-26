@@ -232,3 +232,47 @@ def test_audio_strategy_does_not_need_heatmap(monkeypatch, fake_ydl):
     assert used_audio
     assert windows[0]["source"] == "audio"
     assert windows[0]["start"] < 60.0
+
+
+class FakeYDLChannel:
+    """Records the URL it is asked to extract (for channel-tab normalization)."""
+
+    last_url = None
+    entries = []
+
+    def __init__(self, opts):
+        self.opts = opts
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_args):
+        return False
+
+    def extract_info(self, url, download=False):
+        self.__class__.last_url = url
+        return {"entries": self.entries}
+
+
+def test_streams_tab_url_is_not_mangled(monkeypatch):
+    """A source channel pointed at /streams (live VODs) must be scanned as-is."""
+    FakeYDLChannel.last_url = None
+    monkeypatch.setattr(fetcher_module.yt_dlp, "YoutubeDL", FakeYDLChannel)
+    fetcher = make_fetcher()
+
+    fetcher.fetch_channel_recent_videos("https://www.youtube.com/@SomeLiveChannel/streams")
+    assert FakeYDLChannel.last_url == "https://www.youtube.com/@SomeLiveChannel/streams"
+
+    fetcher.fetch_channel_recent_videos("https://www.youtube.com/@SomeChannel")
+    assert FakeYDLChannel.last_url == "https://www.youtube.com/@SomeChannel/videos"
+
+
+def test_live_stream_is_rejected_with_clear_error(monkeypatch, fake_ydl):
+    """A still-airing stream must not be sliced as if it were a VOD."""
+    info = fake_ydl
+    info["is_live"] = True
+    fetcher = make_fetcher()
+    with pytest.raises(RuntimeError, match="STILL LIVE"):
+        fetcher.extract_heatmap_and_select_window(
+            "https://www.youtube.com/watch?v=abcdefghijk"
+        )
