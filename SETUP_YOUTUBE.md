@@ -108,6 +108,11 @@ Repeat Steps 1–7 in each Google account for each of your channels.
   5–10 uploads/day per channel across many channels.
 - **Tokens expire** (testing-mode refresh tokens last ~7 days): if a tab stops uploading,
   just press **Connect** again and re-login (per-account settings are kept).
+- **"OAuth 2 MUST utilize https" / `insecure_transport` error:** this was a bug in older
+  versions of this bot. oauthlib rejects even the standard `http://localhost` loopback
+  callback. The fix rewrites that callback to `https://localhost` (same as Google's own
+  library) — the code exchange itself still happens over real HTTPS. Update the bot (or
+  re-download the latest zip) so Connect works again.
 - **Never share** `client_secret.json` or `token.json` — anyone with them can control the channel.
 - **R2 (Cloudflare) is optional.** The bot uploads directly to YouTube; R2 is just a backup.
   Leave the R2 lines as placeholders and the bot still posts (badge: LIVE for YouTube).

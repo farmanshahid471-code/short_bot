@@ -67,7 +67,17 @@ class YouTubeUploader:
 
     @staticmethod
     def _run_auth_flow(flow) -> Credentials:
-        """Run a state-checked local OAuth callback with a real five-minute limit."""
+        """
+        Run a state-checked local OAuth callback with a real five-minute limit.
+
+        oauthlib >= 3.2 rejects ANY non-HTTPS callback with
+        'OAuth 2 MUST utilize https' - including the standard loopback redirect
+        (http://localhost:PORT/) that Google's installed-app flow uses. Like
+        Google's own run_local_server, we present the callback to oauthlib as
+        https://localhost (nothing is fetched from it - only the ?code/state
+        params are parsed, then the code is exchanged with Google over the real
+        HTTPS token endpoint).
+        """
         s = socket.socket()
         s.bind(("127.0.0.1", 0))
         port = s.getsockname()[1]
@@ -96,7 +106,9 @@ class YouTubeUploader:
             def do_GET(self):  # noqa: N802
                 params = parse_qs(urlparse(self.path).query)
                 result["error"] = params.get("error", [None])[0]
-                result["authorization_response"] = f"http://localhost:{port}{self.path}"
+                # https here: oauthlib refuses to parse a plain-http callback
+                # URI, even for loopback. Same approach as google_auth_oauthlib.
+                result["authorization_response"] = f"https://localhost:{port}{self.path}"
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.end_headers()
