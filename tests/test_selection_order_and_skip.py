@@ -223,6 +223,68 @@ def test_only_one_video_per_channel_per_cycle(scheduler_env):
     assert processed == [("v1", "default")]  # v1 only, not v2 v3...
 
 
+def test_newest_only_skips_video_when_its_shorts_are_fully_uploaded(monkeypatch, tmp_path):
+    """'newest' must pick the newest video, and only skip it once every short
+    FROM THAT VIDEO exists. Partially-done videos are completed, never jumped."""
+    from pathlib import Path as P
+
+
+    db = StateDB(P(tmp_path) / "state.db")
+    scheduler = ShortsBotScheduler(accounts=[], state_db=db)
+    uploaded: list[str] = []
+
+    # Part 1 of v1 already uploaded -> parts 2 and 3 must still be completed.
+    db.record_video_state(video_id="v1_part1", status="UPLOADED_YOUTUBE", account="default")
+
+    def fake_download(url, start, end):
+        p = P(tmp_path) / f"raw_{start}_{end}.mp4"
+        p.write_bytes(b"x")
+        return p
+
+    def fake_render(raw, output_path=None, **kwargs):
+        P(output_path).write_bytes(b"x")
+        return P(output_path)
+
+    class FakeUploader:
+        def __init__(self, state_db=None):
+            self.last_metadata = None
+
+        def upload_short(self, video_path, original_video_id, account="", **kwargs):
+            uploaded.append(original_video_id)
+            return f"ytshort_{original_video_id}"
+
+    class FakeStorage:
+        client = None
+        bucket_name = ""
+
+        def upload_file(self, path, r2_key=""):
+            return "r2_key"
+
+        def cleanup_local_files(self, *paths):
+            pass
+
+    monkeypatch.setattr(scheduler, "_download_window", fake_download)
+    monkeypatch.setattr(scheduler, "storage", FakeStorage())
+    scheduler.processor.process_clip_to_short = fake_render
+    uploader = FakeUploader()
+    scheduler.state_db = db
+
+    windows = [{"start": 10 + i * 25, "end": 25 + i * 25} for i in range(3)]
+    count = scheduler._process_video_windows(
+        video_id="v1",
+        video_url="https://youtu.be/v1",
+        video_title="T1",
+        channel_url="https://www.youtube.com/@chan",
+        windows=windows,
+        account="default",
+        uploader=uploader,
+    )
+    assert count == 2
+    assert uploaded == ["v1_part2", "v1_part3"]
+    # Whole video is now terminal -> the next cycle skips it entirely.
+    assert db.is_video_processed("v1", account="default")
+
+
 def test_terminal_multi_status_skips_whole_video(scheduler_env):
     """After all parts are uploaded the parent video must never be re-picked."""
     scheduler, db, processed = scheduler_env

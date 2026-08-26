@@ -33,14 +33,16 @@ def test_english_only_model_is_auto_upgraded_to_multilingual(monkeypatch):
     assert loaded["model"] == "tiny"  # english-only must NOT force English
 
 
-def test_explicit_english_keeps_fast_english_model(monkeypatch):
+def test_english_only_model_upgraded_even_when_english_configured(monkeypatch):
+    """Subtitles must follow the SOURCE language, so *.en is never kept: it
+    cannot detect French/Vietnamese/Urdu and would force English gibberish."""
     loaded = {}
     fake_whisper_module(monkeypatch, loaded)
     monkeypatch.setattr(processor_module, "WHISPER_LANGUAGE", "en")
     processor = VideoProcessor(model_size="tiny.en")
 
     processor._get_whisper_model()
-    assert loaded["model"] == "tiny.en"
+    assert loaded["model"] == "tiny"  # NOT tiny.en - detection needs multilingual
 
 
 def test_empty_language_setting_is_treated_as_auto_not_english(monkeypatch):
@@ -87,6 +89,60 @@ def test_multilingual_base_is_used_when_language_auto(monkeypatch):
 
     processor._get_whisper_model()
     assert loaded["model"] == "base"
+
+
+def test_forced_language_never_overrides_detection(monkeypatch, tmp_path):
+    """WHISPER_LANGUAGE=en must NOT force en: the transcribe call always uses
+    auto-detection (language=None) and the detected language wins."""
+    calls: list = []
+
+    class RecordingWhisperModel:
+        def __init__(self, model_size, **kwargs):
+            pass
+
+        def transcribe(self, path, word_timestamps=True, language=None):
+            calls.append(language)
+            return iter(()), SimpleNamespace(language="fr", language_probability=0.95)
+
+    import yt_shorts_bot.processor as mod
+    module = SimpleNamespace(WhisperModel=RecordingWhisperModel)
+    monkeypatch.setitem(sys.modules, "faster_whisper", module)
+    monkeypatch.setattr(mod, "WHISPER_LANGUAGE", "en")
+    processor = VideoProcessor(model_size="base")
+    source = tmp_path / "clip.mp4"
+    source.write_bytes(b"stub")
+
+    processor.transcribe_and_generate_srt(source, tmp_path / "clip.srt")
+    assert calls == [None]  # detected first, never forced to 'en'
+    assert processor.detected_language == "fr"
+    assert processor.detected_language_probability == pytest.approx(0.95)
+
+
+def test_configured_language_is_only_a_low_confidence_fallback(monkeypatch, tmp_path):
+    """WHISPER_LANGUAGE is used ONLY when detection fails/is uncertain."""
+    calls: list = []
+
+    class UncertainWhisperModel:
+        def __init__(self, model_size, **kwargs):
+            pass
+
+        def transcribe(self, path, word_timestamps=True, language=None):
+            calls.append(language)
+            if language is None:
+                return iter(()), SimpleNamespace(language="", language_probability=0.0)
+            return iter(()), SimpleNamespace(language=language, language_probability=0.99)
+
+    import yt_shorts_bot.processor as mod
+    module = SimpleNamespace(WhisperModel=UncertainWhisperModel)
+    monkeypatch.setitem(sys.modules, "faster_whisper", module)
+    monkeypatch.setattr(mod, "WHISPER_LANGUAGE", "ur")
+    processor = VideoProcessor(model_size="base")
+    source = tmp_path / "clip.mp4"
+    source.write_bytes(b"stub")
+
+    processor.transcribe_and_generate_srt(source, tmp_path / "clip.srt")
+    assert calls == [None, "ur"]  # detect first, fallback only when detection empty
+    assert processor.detected_language == "ur"
 
 
 def test_detected_language_and_probability_are_recorded(monkeypatch, tmp_path):

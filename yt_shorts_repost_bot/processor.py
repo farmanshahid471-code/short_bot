@@ -99,7 +99,29 @@ class VideoProcessor:
     def __init__(self, model_size: str = WHISPER_MODEL_SIZE):
         self.model_size = model_size
         self._whisper_model: Optional[Any] = None
+        self._model_size_used: Optional[str] = None
         self._ffmpeg_filters: Optional[set[str]] = None
+
+    def _resolve_model_size(self) -> str:
+        """
+        English-only whisper models (*.en) cannot detect other languages and
+        force English output - on French/Vietnamese/Urdu audio the burned
+        subtitles become English gibberish (looks like dubbing). Subtitles must
+        follow the SOURCE spoken language, so *.en models are always replaced
+        by their multilingual equivalent (tiny.en -> tiny, base.en -> base,
+        small.en -> small).
+        """
+        model = str(self.model_size or WHISPER_MODEL_SIZE).strip()
+        if model.endswith(".en"):
+            multilingual = model[: -len(".en")] or "tiny"
+            logger.warning(
+                "Whisper model '%s' is ENGLISH ONLY - using multilingual model "
+                "'%s' instead so subtitles can follow the source audio language.",
+                model,
+                multilingual,
+            )
+            return multilingual
+        return model
 
     def _get_whisper_model(self):
         """Lazy-load Faster-Whisper only when subtitles are requested."""
@@ -111,12 +133,13 @@ class VideoProcessor:
                     "Subtitles require faster-whisper. Install the project requirements "
                     "or disable subtitles for this account."
                 ) from exc
+            self._model_size_used = self._resolve_model_size()
             logger.info(
-                f"Loading faster-whisper model '{self.model_size}' on "
+                f"Loading faster-whisper model '{self._model_size_used}' on "
                 f"{WHISPER_DEVICE.upper()} ({WHISPER_COMPUTE_TYPE})..."
             )
             self._whisper_model = WhisperModel(
-                self.model_size,
+                self._model_size_used,
                 device=WHISPER_DEVICE,
                 compute_type=WHISPER_COMPUTE_TYPE,
             )
@@ -159,11 +182,43 @@ class VideoProcessor:
         logger.info(f"Transcribing audio from {video_path.name} using CPU whisper (mode={mode})...")
         model = self._get_whisper_model()
 
-        language = None if WHISPER_LANGUAGE in ("", "auto", "detect") else WHISPER_LANGUAGE
+        # ALWAYS detect the spoken language first. Subtitles must follow the
+        # SOURCE language (the bot never dubs or translates); WHISPER_LANGUAGE
+        # is only a fallback when detection fails or is very uncertain.
         segments, info = model.transcribe(
-            str(video_path), word_timestamps=True, language=language
+            str(video_path), word_timestamps=True, language=None
         )
-        logger.info(f"Detected language '{info.language}' with probability {info.language_probability:.2f}")
+        detected = str(getattr(info, "language", "") or "").lower()
+        probability = float(getattr(info, "language_probability", 0.0) or 0.0)
+        configured = str(WHISPER_LANGUAGE or "auto").strip().lower()
+        if not detected and configured not in ("", "auto", "detect"):
+            logger.warning(
+                "No language detected; retrying once with configured WHISPER_LANGUAGE='%s'.",
+                configured,
+            )
+            segments, info = model.transcribe(
+                str(video_path), word_timestamps=True, language=configured
+            )
+            detected = str(getattr(info, "language", "") or "").lower()
+            probability = float(getattr(info, "language_probability", 0.0) or 0.0)
+        elif (
+            detected
+            and configured not in ("", "auto", "detect")
+            and detected[:2] != configured[:2]
+        ):
+            logger.warning(
+                "Audio is '%s' (%.2f) but WHISPER_LANGUAGE forces '%s' - IGNORING "
+                "the forced language so subtitles match the source audio.",
+                detected,
+                probability,
+                configured,
+            )
+        logger.info(
+            "Spoken language detected: '%s' (%.2f confidence) - subtitles are "
+            "generated in THAT language; the audio is never dubbed or replaced.",
+            detected or "unknown",
+            probability,
+        )
 
         subtitle_entries: List[Tuple[float, float, str]] = []
         words_limit = VIRAL_WORDS_PER_LINE if mode == "viral" else MAX_WORDS_PER_SUBTITLE_LINE

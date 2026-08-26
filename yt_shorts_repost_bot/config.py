@@ -48,6 +48,10 @@ FETCH_LIMIT_PER_CHANNEL: int = int(os.getenv("FETCH_LIMIT_PER_CHANNEL", "20"))
 # would only ever see the newest N and never reach the real backlog.
 FETCH_SCAN_LIMIT: int = max(10, min(1000, int(os.getenv("FETCH_SCAN_LIMIT", "300"))))
 
+# Per-network-call timeout for yt-dlp (seconds). Without it a stalled connection
+# can hang a cycle for minutes with NO log output (looks frozen).
+YTDL_SOCKET_TIMEOUT_SEC: float = float(os.getenv("YTDL_SOCKET_TIMEOUT_SEC", "25"))
+
 # Max number of Shorts to repost from ONE channel in a single cycle
 # (spreads uploads across channels; total is still capped by MAX_DAILY_UPLOADS)
 MAX_SHORTS_PER_CHANNEL_CYCLE: int = int(os.getenv("MAX_SHORTS_PER_CHANNEL_CYCLE", "2"))
@@ -78,8 +82,8 @@ else:
     VERTICAL_HEIGHT: int = 1920
 ASPECT_RATIO_EXPRESSION: str = SHORT_ASPECT
 
-VIDEO_CRF: int = int(os.getenv("VIDEO_CRF", "18"))
-VIDEO_PRESET: str = os.getenv("VIDEO_PRESET", "medium")
+VIDEO_CRF: int = int(os.getenv("VIDEO_CRF", "17"))
+VIDEO_PRESET: str = os.getenv("VIDEO_PRESET", "slow")
 AUDIO_BITRATE: str = os.getenv("AUDIO_BITRATE", "192k")
 FFMPEG_TIMEOUT_SEC: int = max(60, int(os.getenv("FFMPEG_TIMEOUT_SEC", "900")))
 
@@ -88,7 +92,7 @@ FFMPEG_TIMEOUT_SEC: int = max(60, int(os.getenv("FFMPEG_TIMEOUT_SEC", "900")))
 VIDEO_CRF_COPY: int = int(os.getenv("VIDEO_CRF_COPY", "21"))
 
 # --- SUBTITLES (render mode) ---
-WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "tiny.en")
+WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "base")
 WHISPER_LANGUAGE: str = os.getenv("WHISPER_LANGUAGE", "auto").strip().lower()
 WHISPER_DEVICE: str = "cpu"
 WHISPER_COMPUTE_TYPE: str = "int8"
@@ -106,7 +110,7 @@ if sys.platform.startswith("win") and SUBTITLE_FONT_NAME.strip().lower() == "dej
 SUBTITLE_FONT_SIZE: int = int(os.getenv("SUBTITLE_FONT_SIZE", "28"))
 SUBTITLE_FORCE_STYLE: str = (
     f"Fontname={SUBTITLE_FONT_NAME},Fontsize={SUBTITLE_FONT_SIZE},Bold=1,"
-    "PrimaryColour=&H0000FFFF,SecondaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
+    "PrimaryColour=&H00FFFFFF,SecondaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
     "BorderStyle=1,Outline=3,Shadow=2,Alignment=2,MarginV=85"
 )
 

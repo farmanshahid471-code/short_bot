@@ -115,25 +115,23 @@ class VideoProcessor:
 
     def _resolve_model_size(self) -> str:
         """
-        An English-only whisper model (*.en) FORCES English output even when
-        WHISPER_LANGUAGE=auto - on Urdu/Vietnamese/Hindi audio the burned
-        subtitles become English gibberish (looks like dubbing). When the user
-        did NOT explicitly ask for English, automatically use the multilingual
-        equivalent (tiny.en -> tiny, base.en -> base, small.en -> small) so
-        subtitles match the spoken language.
+        An English-only whisper model (*.en) CANNOT detect other languages and
+        FORCES English output - on French/Vietnamese/Urdu audio the burned
+        subtitles become English gibberish (looks like dubbing). Subtitles must
+        follow the SOURCE spoken language, so *.en models are always replaced
+        by their multilingual equivalent (tiny.en -> tiny, base.en -> base,
+        small.en -> small) unless WHISPER_LANGUAGE explicitly targets English
+        AND the audio is confirmed English during detection.
         """
         model = str(self.model_size or WHISPER_MODEL_SIZE).strip()
-        if model.endswith(".en") and not self._language_is_english():
+        if model.endswith(".en"):
             multilingual = model[: -len(".en")] or "tiny"
             logger.warning(
-                "Whisper model '%s' is ENGLISH ONLY but WHISPER_LANGUAGE is '%s'. "
-                "Using multilingual model '%s' so subtitles follow the source audio "
-                "language (no dubbing is ever performed). Set WHISPER_MODEL_SIZE=%s "
-                "or WHISPER_LANGUAGE=en to force English.",
+                "Whisper model '%s' is ENGLISH ONLY - using multilingual model "
+                "'%s' instead so subtitles can follow the source audio language "
+                "(English-only models cannot produce Vietnamese/French/Urdu subs).",
                 model,
-                WHISPER_LANGUAGE,
                 multilingual,
-                model,
             )
             return multilingual
         return model
@@ -202,27 +200,58 @@ class VideoProcessor:
         logger.info(f"Transcribing audio from {video_path.name} using CPU whisper (mode={mode})...")
         model = self._get_whisper_model()
 
-        language = None if WHISPER_LANGUAGE in ("", "auto", "detect") else WHISPER_LANGUAGE
+        # ALWAYS detect the spoken language first. Subtitles must follow the
+        # SOURCE language (this bot never dubs or translates). WHISPER_LANGUAGE
+        # is only a fallback when detection fails or is very uncertain.
         segments, info = model.transcribe(
-            str(video_path), word_timestamps=True, language=language
+            str(video_path), word_timestamps=True, language=None
         )
         detected = str(getattr(info, "language", "") or "").lower()
         probability = float(getattr(info, "language_probability", 0.0) or 0.0)
+        configured = str(WHISPER_LANGUAGE or "auto").strip().lower()
+        if detected:
+            if configured not in ("", "auto", "detect") and probability < 0.5:
+                logger.warning(
+                    "Language detection is uncertain (%.2f); retrying once with "
+                    "configured WHISPER_LANGUAGE='%s'.",
+                    probability,
+                    configured,
+                )
+                segments, info = model.transcribe(
+                    str(video_path), word_timestamps=True, language=configured
+                )
+                detected = str(getattr(info, "language", "") or "").lower()
+                probability = float(getattr(info, "language_probability", 0.0) or 0.0)
+            elif configured not in ("", "auto", "detect") and detected[:2] != configured[:2]:
+                logger.warning(
+                    "Audio is '%s' (%.2f) but WHISPER_LANGUAGE forces '%s' - "
+                    "IGNORING the forced language so subtitles match the source "
+                    "audio. Nothing is ever dubbed or translated.",
+                    detected,
+                    probability,
+                    configured,
+                )
+        else:
+            if configured not in ("", "auto", "detect"):
+                logger.warning(
+                    "No language detected; retrying once with configured "
+                    "WHISPER_LANGUAGE='%s'.",
+                    configured,
+                )
+                segments, info = model.transcribe(
+                    str(video_path), word_timestamps=True, language=configured
+                )
+                detected = str(getattr(info, "language", "") or "").lower()
+                probability = float(getattr(info, "language_probability", 0.0) or 0.0)
         self.detected_language = detected
         self.detected_language_probability = probability
         logger.info(
-            "Detected language '%s' (%.2f confidence) - subtitles are generated in "
-            "the SOURCE language; the audio itself is never dubbed or replaced.",
-            detected,
+            "Spoken language detected: '%s' (%.2f confidence) - subtitles are "
+            "generated in THAT language; the audio itself is never dubbed, "
+            "translated or replaced.",
+            detected or "unknown",
             probability,
         )
-        if detected and not detected.startswith("en") and self._language_is_english():
-            logger.warning(
-                "Audio looks like '%s' but WHISPER_LANGUAGE/en model forces English "
-                "subtitles. Set WHISPER_LANGUAGE=auto and WHISPER_MODEL_SIZE to a "
-                "multilingual model (default 'base') for correct-language subtitles.",
-                detected,
-            )
 
         subtitle_entries: List[Tuple[float, float, str]] = []
         words_limit = VIRAL_WORDS_PER_LINE if mode == "viral" else MAX_WORDS_PER_SUBTITLE_LINE
@@ -555,15 +584,15 @@ class VideoProcessor:
             base_chain = (
                 f"[0:v]crop='if(gt(iw/ih,{ratio}),ih*({ratio}),iw)':"
                 f"'if(gt(iw/ih,{ratio}),ih,iw/({ratio}))',"
-                f"scale={width}:{height}[vbase]"
+                f"scale={width}:{height}:flags=lanczos[vbase]"
             )
             frame_x, frame_y, frame_w, frame_h = 0, 0, width, height
         else:
             base_chain = (
                 f"[0:v]split=2[bg0][fg0];"
-                f"[bg0]scale={width}:{height}:force_original_aspect_ratio=increase,"
+                f"[bg0]scale={width}:{height}:flags=lanczos:force_original_aspect_ratio=increase,"
                 f"crop={width}:{height},boxblur=20:5[bg];"
-                f"[fg0]scale={width}:{height}:force_original_aspect_ratio=decrease[fg];"
+                f"[fg0]scale={width}:{height}:flags=lanczos:force_original_aspect_ratio=decrease[fg];"
                 f"[bg][fg]overlay=(W-w)/2:(H-h)/2[vbase]"
             )
             if source_size:

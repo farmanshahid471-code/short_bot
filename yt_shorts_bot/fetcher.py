@@ -103,6 +103,51 @@ class YouTubeFetcher:
         }
 
     @staticmethod
+    def _original_audio_opt() -> dict:
+        """
+        Always prefer the ORIGINAL-language audio track of multi-language
+        videos. YouTube exposes official dubs as separate tracks and yt-dlp's
+        sort puts quality/bitrate BEFORE language, so a higher-bitrate dub can
+        win over the original - that is how French/Vietnamese 'dubbing' got
+        into clips. 'lang' sorts by language_preference: original=10,
+        default=5, other tracks=-1 and single-track videos fall through to
+        the regular quality sort.
+        """
+        return {
+            "format_sort": ["lang", "quality", "tbr", "abr", "vbr", "ext", "proto"],
+        }
+
+    @staticmethod
+    def _audio_track_key(fmt: dict) -> tuple:
+        """Sort key: original language track first, then quality."""
+        return (
+            int(fmt.get("language_preference") or -1),
+            float(fmt.get("abr") or 0.0),
+            float(fmt.get("tbr") or 0.0),
+        )
+
+    @staticmethod
+    def _log_audio_tracks(info: Dict[str, Any]) -> None:
+        """One-time visibility: which audio languages does the source offer?"""
+        tracks = [
+            (
+                str(f.get("language") or "?"),
+                int(f.get("language_preference") or -1),
+                float(f.get("abr") or 0.0),
+                str(f.get("format_id") or ""),
+            )
+            for f in info.get("formats", [])
+            if f.get("acodec") not in (None, "none") and f.get("vcodec") in (None, "none")
+        ]
+        if not tracks:
+            return
+        summary = ", ".join(
+            f"{lang} ({'original' if pref >= 10 else 'default' if pref >= 5 else 'track'}, {abr:.0f}k, {fid})"
+            for lang, pref, abr, fid in sorted(tracks, key=lambda t: (-t[1], -t[2]))
+        )
+        logger.info("Source audio tracks: %s - the ORIGINAL track is preferred.", summary)
+
+    @staticmethod
     def _cookies_opts() -> dict:
         """
         Returns yt-dlp options for YouTube authentication cookies.
@@ -209,6 +254,7 @@ class YouTubeFetcher:
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
             **self._timeout_opt(),
+            **self._original_audio_opt(),
         }
 
         videos = []
@@ -299,6 +345,7 @@ class YouTubeFetcher:
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
             **self._timeout_opt(),
+            **self._original_audio_opt(),
         }
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -312,6 +359,7 @@ class YouTubeFetcher:
                 )
             raise
         self._info_cache[video_url] = info
+        self._log_audio_tracks(info)
         return info
 
     def extract_heatmap_and_select_window(self, video_url: str) -> Tuple[Dict[str, Any], float, float, float]:
@@ -590,14 +638,28 @@ class YouTubeFetcher:
         while the top-level url is the video stream - check both, then do one
         fast bestaudio metadata request as a guaranteed fallback.
         """
-        for group in (info.get("requested_formats") or [], info.get("formats") or []):
-            for fmt in group:
-                if (
-                    fmt.get("acodec") not in (None, "none")
-                    and fmt.get("vcodec") in (None, "none")
-                    and fmt.get("url")
-                ):
-                    return str(fmt["url"])
+        candidates = [
+            fmt
+            for group in (info.get("requested_formats") or [], info.get("formats") or [])
+            for fmt in group
+            if (
+                fmt.get("acodec") not in (None, "none")
+                and fmt.get("vcodec") in (None, "none")
+                and fmt.get("url")
+            )
+        ]
+        if candidates:
+            best = max(candidates, key=self._audio_track_key)
+            logger.info(
+                "Selected audio track: %s (%s, %.0fk, %s) for probing.",
+                best.get("language") or "?",
+                "original" if int(best.get("language_preference") or -1) >= 10
+                else "default" if int(best.get("language_preference") or -1) >= 5
+                else "track",
+                float(best.get("abr") or 0.0),
+                best.get("format_id") or "",
+            )
+            return str(best["url"])
         if info.get("url") and info.get("vcodec") in (None, "none"):
             return str(info["url"])
 
@@ -608,6 +670,7 @@ class YouTubeFetcher:
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
             **self._timeout_opt(),
+            **self._original_audio_opt(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             audio_info = ydl.extract_info(video_url, download=False)
@@ -833,7 +896,7 @@ class YouTubeFetcher:
             raise RuntimeError("Unknown duration - cannot analyze energy")
 
         # Get a direct audio stream URL (fast - metadata only)
-        ydl_opts = {"format": "bestaudio/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt(), **self._timeout_opt()}
+        ydl_opts = {"format": "bestaudio/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt(), **self._timeout_opt(), **self._original_audio_opt()}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
         stream_url = info.get("url")
@@ -1014,10 +1077,16 @@ class YouTubeFetcher:
 
     def _slice_progressive(self, video_url: str, clip_start: float, clip_end: float, output_path: Path) -> Path:
         """Strategy A: find the best single progressive (combined A/V) mp4 format and slice its URL directly."""
-        ydl_opts = {"format": "best[ext=mp4]/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt(), **self._timeout_opt()}
+        ydl_opts = {"format": "best[ext=mp4]/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt(), **self._timeout_opt(), **self._original_audio_opt()}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
 
+        # Prefer yt-dlp's own selection (our format_sort puts the original
+        # language track FIRST); fall back to a language-aware manual pick
+        # instead of the old height-only pick.
+        fmt = None
+        if info.get("url") and info.get("vcodec") not in (None, "none"):
+            fmt = info
         progressive = [
             f for f in info.get("formats", [])
             if f.get("vcodec") not in ("none", None)
@@ -1025,9 +1094,25 @@ class YouTubeFetcher:
             and f.get("ext") == "mp4"
             and f.get("url")
         ]
-        if not progressive:
+        if fmt is None and progressive:
+            fmt = max(
+                progressive,
+                key=lambda x: (
+                    int(x.get("language_preference") or -1),
+                    int(x.get("height") or 0),
+                ),
+            )
+        if fmt is None:
             raise RuntimeError("No progressive mp4 format available")
-        fmt = max(progressive, key=lambda x: x.get("height", 0) or 0)
+        logger.info(
+            "Selected progressive track: %s (%s, %sp, %s).",
+            fmt.get("language") or "?",
+            "original" if int(fmt.get("language_preference") or -1) >= 10
+            else "default" if int(fmt.get("language_preference") or -1) >= 5
+            else "track",
+            fmt.get("height") or "?",
+            fmt.get("format_id") or "",
+        )
 
         self._ffmpeg_slice(
             ["-ss", str(clip_start), "-to", str(clip_end), "-i", fmt["url"]],
@@ -1045,31 +1130,60 @@ class YouTubeFetcher:
             "no_warnings": True,
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
+            **self._timeout_opt(),
+            **self._original_audio_opt(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
 
-        formats = info.get("formats", [])
-        videos = [
-            f for f in formats
-            if f.get("vcodec") not in ("none", None)
-            and f.get("height", 0) <= 2160
-            and f.get("ext") == "mp4"
-            and f.get("url")
+        # yt-dlp's selector already picked the pair (format_sort = original
+        # language first). Use it when present; otherwise pick manually.
+        requested = [
+            f for f in (info.get("requested_formats") or [])
+            if f.get("url")
         ]
-        audios = [
-            f for f in formats
-            if f.get("acodec") not in ("none", None)
-            and f.get("vcodec") in ("none", None)
-            and f.get("ext") == "m4a"
-            and f.get("url")
-        ]
+        if requested:
+            videos = [f for f in requested if f.get("vcodec") not in (None, "none")]
+            audios = [f for f in requested if f.get("acodec") not in (None, "none")]
+        else:
+            formats = info.get("formats", [])
+            videos = [
+                f for f in formats
+                if f.get("vcodec") not in ("none", None)
+                and f.get("height", 0) <= 2160
+                and f.get("ext") == "mp4"
+                and f.get("url")
+            ]
+            audios = [
+                f for f in formats
+                if f.get("acodec") not in ("none", None)
+                and f.get("vcodec") in ("none", None)
+                and f.get("ext") == "m4a"
+                and f.get("url")
+            ]
         if not videos or not audios:
             raise RuntimeError("No suitable video/audio stream pair available")
 
-        # Prefer h264 (avc1) streams over av1/vp9 - far more reliable for direct slicing
-        videos.sort(key=lambda x: (str(x.get("vcodec", "")).startswith("avc1"), x.get("height", 0) or 0), reverse=True)
-        audios.sort(key=lambda x: x.get("abr", 0) or 0, reverse=True)
+        # Prefer h264 (avc1) streams over av1/vp9 - far more reliable for direct slicing.
+        videos.sort(
+            key=lambda x: (
+                str(x.get("vcodec", "")).startswith("avc1"),
+                x.get("height", 0) or 0,
+            ),
+            reverse=True,
+        )
+        # ORIGINAL/audio language first (a louder dub must never win), then bitrate.
+        audios.sort(key=self._audio_track_key, reverse=True)
+        chosen_audio = audios[0]
+        logger.info(
+            "Selected audio pair: %s (%s, %.0fk, %s).",
+            chosen_audio.get("language") or "?",
+            "original" if int(chosen_audio.get("language_preference") or -1) >= 10
+            else "default" if int(chosen_audio.get("language_preference") or -1) >= 5
+            else "track",
+            float(chosen_audio.get("abr") or 0.0),
+            chosen_audio.get("format_id") or "",
+        )
 
         self._ffmpeg_slice(
             [
@@ -1096,6 +1210,8 @@ class YouTubeFetcher:
             "no_warnings": True,
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
+            **self._timeout_opt(),
+            **self._original_audio_opt(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])

@@ -14,6 +14,7 @@ from .config import (
     TARGET_CHANNELS,
     FETCH_LIMIT_PER_CHANNEL,
     FETCH_SCAN_LIMIT,
+    YTDL_SOCKET_TIMEOUT_SEC,
     MAX_SHORT_DURATION_SEC,
     FFMPEG_PATH,
     FFPROBE_PATH,
@@ -78,6 +79,27 @@ class ShortsFetcher:
         if not FFMPEG_PATH:
             return {}
         return {"ffmpeg_location": str(Path(FFMPEG_PATH).resolve().parent)}
+
+    @staticmethod
+    def _timeout_opt() -> dict:
+        """Bound yt-dlp network calls so a stalled connection cannot freeze a cycle."""
+        return {
+            "socket_timeout": YTDL_SOCKET_TIMEOUT_SEC,
+            "retries": 2,
+            "extractor_retries": 2,
+        }
+
+    @staticmethod
+    def _original_audio_opt() -> dict:
+        """
+        Prefer the ORIGINAL-language audio track. YouTube exposes official dubs
+        as separate tracks and yt-dlp sorts by quality before language, so a
+        higher-bitrate dub can win. 'lang' sorts by language_preference:
+        original=10, default=5, others=-1.
+        """
+        return {
+            "format_sort": ["lang", "quality", "tbr", "abr", "vbr", "ext", "proto"],
+        }
 
     @staticmethod
     def _is_bot_check_error(error: Exception) -> bool:
@@ -151,6 +173,8 @@ class ShortsFetcher:
                     "no_warnings": True,
                     **self._cookies_opts(),
                     **self._ffmpeg_opt(),
+                    **self._timeout_opt(),
+                    **self._original_audio_opt(),
                 }
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     res = ydl.extract_info(feed, download=False)
@@ -232,6 +256,8 @@ class ShortsFetcher:
                 "no_warnings": True,
                 **self._cookies_opts(),
                 **self._ffmpeg_opt(),
+                **self._timeout_opt(),
+                **self._original_audio_opt(),
             }
             if player_client:
                 ydl_opts["extractor_args"] = {
@@ -292,6 +318,8 @@ class ShortsFetcher:
             "extractor_args": {"youtube": {"player_client": ["tv"]}},
             **ShortsFetcher._cookies_opts(),
             **ShortsFetcher._ffmpeg_opt(),
+            **ShortsFetcher._timeout_opt(),
+            **ShortsFetcher._original_audio_opt(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             return ydl.extract_info(video_url, download=False)

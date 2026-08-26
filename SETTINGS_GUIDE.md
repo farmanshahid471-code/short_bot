@@ -108,8 +108,8 @@ state-changing form also requires a CSRF token.
 ```ini
 SHORT_ASPECT="3:4"
 FILL_MODE="blur"
-VIDEO_CRF=18
-VIDEO_PRESET="medium"
+VIDEO_CRF=17
+VIDEO_PRESET="slow"
 AUDIO_BITRATE="192k"
 FFMPEG_TIMEOUT_SEC=900
 WHISPER_MODEL_SIZE="base"
@@ -124,12 +124,25 @@ skip transcription and can still render.
 
 **No dubbing — ever.** The bot never synthesizes, translates or replaces speech.
 It uploads the source audio untouched (BGM is only mixed alongside at low
-volume). `WHISPER_MODEL_SIZE=base` (+ `WHISPER_LANGUAGE=auto`) burns subtitles in
-the **spoken language**, e.g. Vietnamese audio → Vietnamese subtitles. If you set
-an English-only model (`tiny.en`/`base.en`) with auto language, the bot now
-automatically switches to the multilingual equivalent so it never forces English
-gibberish onto non-English audio. `VIDEO_LANGUAGE` only tags the upload
-(`defaultLanguage`/`defaultAudioLanguage`) — it does not change audio.
+volume). Subtitles **always follow the language Whisper detects** in the source
+audio — e.g. French audio → French subtitles. `WHISPER_LANGUAGE` is only a
+fallback when detection fails or is uncertain (`< 0.5` confidence): it never
+forces English over a clear French/Vietnamese/Urdu detection. English-only
+models (`tiny.en`/`base.en`/`small.en`) are **always auto-upgraded** to their
+multilingual equivalent, because they cannot detect other languages at all.
+`VIDEO_LANGUAGE` only tags the upload (`defaultLanguage`/`defaultAudioLanguage`)
+— it does not change audio.
+
+**Original audio track.** On multi-language videos (YouTube official dubs are
+separate tracks), every download uses a `format_sort` with `lang` first, so the
+ORIGINAL track always wins — a louder or higher-bitrate dub never does. The log
+prints the source's audio tracks and which one was chosen.
+
+**Subtitles: one WHITE layer.** The burned subtitle style is bold white with a
+black outline only (`PrimaryColour` and `SecondaryColour` are both white). If a
+source re-upload already has its own hard-coded (burned-in) subtitles, those
+pixels cannot be removed by any re-encode — the bot adds nothing but its white
+layer on top; for clean results use the original channel, not dub re-uploads.
 
 ### Moment selection (most watched + high-pitched/high-energy voice)
 

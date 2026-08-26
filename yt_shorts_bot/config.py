@@ -113,8 +113,8 @@ else:  # default 9:16
 ASPECT_RATIO_EXPRESSION: str = SHORT_ASPECT
 
 # Encode quality (higher quality than the old defaults; slower but clips are short)
-VIDEO_CRF: int = int(os.getenv("VIDEO_CRF", "18"))          # lower = better quality (18 ~ visually lossless)
-VIDEO_PRESET: str = os.getenv("VIDEO_PRESET", "medium")     # medium = good quality/speed balance
+VIDEO_CRF: int = int(os.getenv("VIDEO_CRF", "17"))          # lower = better quality (17 = very high quality)
+VIDEO_PRESET: str = os.getenv("VIDEO_PRESET", "slow")       # slow = better compression at same quality
 AUDIO_BITRATE: str = os.getenv("AUDIO_BITRATE", "192k")
 FFMPEG_TIMEOUT_SEC: int = max(60, int(os.getenv("FFMPEG_TIMEOUT_SEC", "900")))
 
@@ -146,14 +146,16 @@ TOP_WATERMARK_ENABLED: bool = os.getenv("TOP_WATERMARK_ENABLED", "true").lower()
 TOP_WATERMARK_TEXT: str = os.getenv("TOP_WATERMARK_TEXT", "")
 
 # Faster-Whisper CPU Settings
+# Subtitles ALWAYS follow the language detected in the SOURCE audio.
 # WHISPER_MODEL_SIZE:
-#   "base"    = multilingual, auto-detects most languages (default - use for
-#               anything that is not English, e.g. Urdu, Vietnamese, Hindi)
+#   "base"    = multilingual, auto-detects most languages (default)
 #   "tiny"    = multilingual but lower accuracy; fastest
 #   "small"   = multilingual, best accuracy, slower
-#   "tiny.en"/"base.en"/"small.en" = ENGLISH ONLY. With these, the .en suffix
-#               is automatically removed when WHISPER_LANGUAGE=auto so the bot
-#               does not force English subtitles onto non-English audio.
+#   "tiny.en"/"base.en"/"small.en" = ENGLISH ONLY - ALWAYS auto-upgraded to the
+#               multilingual equivalent (they cannot detect other languages and
+#               would burn English gibberish onto French/Vietnamese audio).
+# WHISPER_LANGUAGE is only a fallback when detection fails or is very
+# uncertain (confidence < 0.5); it never overrides a clear detection.
 WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "base")
 WHISPER_LANGUAGE: str = os.getenv("WHISPER_LANGUAGE", "auto").strip().lower()
 
@@ -173,7 +175,10 @@ SUBTITLE_STYLE_MODE: str = os.getenv("SUBTITLE_STYLE_MODE", "viral")
 VIRAL_WORDS_PER_LINE: int = int(os.getenv("VIRAL_WORDS_PER_LINE", "2"))
 SUBTITLE_UPPERCASE: bool = os.getenv("SUBTITLE_UPPERCASE", "true").lower() == "true"
 
-# FFmpeg Subtitle Styling (TikTok / Shorts Aesthetic - Bold Yellow/White with Black Outline)
+# FFmpeg Subtitle Styling (TikTok / Shorts Aesthetic - Bold WHITE with Black Outline)
+# ONE white subtitle layer only: PrimaryColour AND SecondaryColour are both white
+# (the old default used yellow PrimaryColour, which rendered a second-looking
+# color/karanoa highlight - users asked for only the white subtitle).
 # Font is auto-chosen per OS: "Arial" on Windows (always present), "DejaVu Sans" elsewhere.
 # Override with SUBTITLE_FONT_NAME in .env if you want something else.
 _DEFAULT_FONT = "Arial" if sys.platform.startswith("win") else "DejaVu Sans"
@@ -185,7 +190,7 @@ if sys.platform.startswith("win") and SUBTITLE_FONT_NAME.strip().lower() == "dej
 SUBTITLE_FONT_SIZE: int = int(os.getenv("SUBTITLE_FONT_SIZE", "28"))
 SUBTITLE_FORCE_STYLE: str = (
     f"Fontname={SUBTITLE_FONT_NAME},Fontsize={SUBTITLE_FONT_SIZE},Bold=1,"
-    "PrimaryColour=&H0000FFFF,SecondaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
+    "PrimaryColour=&H00FFFFFF,SecondaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
     "BorderStyle=1,Outline=3,Shadow=2,Alignment=2,MarginV=85"
 )
 
