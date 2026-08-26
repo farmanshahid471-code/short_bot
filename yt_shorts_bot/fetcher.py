@@ -1,7 +1,9 @@
 """
-fetcher.py - Target selection, newest-to-oldest channel listing, heatmap peak analysis,
-and section-only downloading using yt-dlp and FFmpeg.
+fetcher.py - Target selection, newest-to-oldest channel listing, combined
+"most watched + high-pitched/high-energy voice" moment analysis, and
+section-only downloading using yt-dlp and FFmpeg.
 """
+import math
 import subprocess
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
@@ -16,6 +18,14 @@ from .config import (
     CLIP_DURATION_SEC,
     MIN_CLIP_DURATION_SEC,
     MAX_CLIP_DURATION_SEC,
+    SELECTION_STRATEGY,
+    HEATMAP_WEIGHT,
+    AUDIO_EXCITEMENT_WEIGHT,
+    AUDIO_ENERGY_WEIGHT,
+    AUDIO_PITCH_WEIGHT,
+    AUDIO_FLUX_WEIGHT,
+    AUDIO_SAMPLE_SEC,
+    MAX_AUDIO_SAMPLES,
     FFMPEG_PATH,
     FFPROBE_PATH,
     YT_COOKIES_FILE,
@@ -31,10 +41,42 @@ class YouTubeFetcher:
     Fetches video metadata from target channels, extracts 'Most Replayed' (heatmap) data
     without downloading full videos, calculates the optimal 15-20s engagement window,
     and downloads ONLY that segment.
+
+    Moment selection supports three strategies:
+      - "combined": blends YouTube Most Replayed with audio excitement (loudness +
+        high-pitched voice + sudden bursts). Uses whichever signal exists, and
+        falls back to the other when one is missing.
+      - "heatmap": Most Replayed only (classic behaviour).
+      - "audio": audio excitement only.
     """
-    def __init__(self, channels: Optional[List[str]] = None, fetch_limit: int = FETCH_LIMIT_PER_CHANNEL):
+    def __init__(
+        self,
+        channels: Optional[List[str]] = None,
+        fetch_limit: int = FETCH_LIMIT_PER_CHANNEL,
+        strategy: Optional[str] = None,
+        heatmap_weight: Optional[float] = None,
+        audio_weight: Optional[float] = None,
+    ):
         self.channels = channels if channels is not None else TARGET_CHANNELS
         self.fetch_limit = fetch_limit
+        self.strategy = str(strategy or SELECTION_STRATEGY).strip().lower()
+        if self.strategy not in ("combined", "heatmap", "audio"):
+            self.strategy = "combined"
+
+        def _weight(value: Optional[float], default: float) -> float:
+            try:
+                if value is None or str(value).strip() == "":
+                    return default
+                return float(value)
+            except (TypeError, ValueError):
+                return default
+
+        self.heatmap_weight = min(1.0, max(0.0, _weight(heatmap_weight, HEATMAP_WEIGHT)))
+        self.audio_weight = min(1.0, max(0.0, _weight(audio_weight, AUDIO_EXCITEMENT_WEIGHT)))
+        # Small caches so the scheduler's per-video metadata + audio probes are
+        # not fetched twice when making multiple Shorts from one source.
+        self._info_cache: Dict[str, Dict[str, Any]] = {}
+        self._profile_cache: Dict[str, List[Dict[str, Any]]] = {}
 
     @staticmethod
     def _ffmpeg_opt() -> dict:
@@ -166,15 +208,12 @@ class YouTubeFetcher:
         text = str(error)
         return "Sign in to confirm" in text or "not a bot" in text or "cookies" in text.lower() and "bot" in text.lower()
 
-    def extract_heatmap_and_select_window(self, video_url: str) -> Tuple[Dict[str, Any], float, float, float]:
-        """
-        Extracts full video metadata including 'heatmap' (Most Replayed) data without downloading.
-        Finds the peak engagement timestamp and calculates a 15-20 second window around it.
-        
-        Returns:
-            (metadata_dict, peak_time_sec, clip_start_sec, clip_end_sec)
-        """
-        logger.info(f"Extracting heatmap metadata for: {video_url}")
+    def _get_info(self, video_url: str) -> Dict[str, Any]:
+        """Fetch video metadata once per URL (cached for the lifetime of this fetcher)."""
+        cached = self._info_cache.get(video_url)
+        if cached is not None:
+            return cached
+        logger.info(f"Extracting video metadata for: {video_url}")
         ydl_opts = {
             "skip_download": True,
             "quiet": True,
@@ -182,7 +221,6 @@ class YouTubeFetcher:
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
         }
-
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
@@ -194,71 +232,86 @@ class YouTubeFetcher:
                     "in yt_shorts_bot/.env - see README 'YouTube cookies' section."
                 )
             raise
+        self._info_cache[video_url] = info
+        return info
 
+    def extract_heatmap_and_select_window(self, video_url: str) -> Tuple[Dict[str, Any], float, float, float]:
+        """
+        Extracts full video metadata including 'heatmap' (Most Replayed) data without downloading.
+        Then picks the best 15-20s moment using the configured strategy:
+
+          - "combined": Most Replayed + audio excitement (loud/high-pitched voice)
+          - "heatmap":  Most Replayed only
+          - "audio":    audio excitement only
+
+        If one signal is missing (e.g. no heatmap for a live VOD, or the audio
+        stream cannot be probed), the other signal is used. Only if BOTH fail
+        does it fall back to a smart hook window.
+
+        Returns:
+            (metadata_dict, peak_time_sec, clip_start_sec, clip_end_sec)
+        """
+        info = self._get_info(video_url)
         duration = float(info.get("duration") or 0.0)
-        heatmap = info.get("heatmap") or []
 
-        peak_time = 0.0
-        best_score = 0.0
-        used_heatmap = False
-        used_energy = False
+        ranked, used_heatmap, used_audio = self._build_ranked_windows(
+            video_url, info, duration, count=1
+        )
+        used_energy = used_audio  # compatibility alias: probe-based audio analysis
 
-        if heatmap and len(heatmap) > 0:
-            logger.info(f"Heatmap data found ({len(heatmap)} buckets). Calculating peak engagement...")
-            win = self._best_window_from_heatmap(heatmap, duration)
-            peak_time = (win["start"] + win["end"]) / 2.0
-            best_score = win["score"]
-            used_heatmap = True
-            logger.info(f"Peak heatmap engagement found at timestamp {peak_time:.1f}s (score={best_score:.3f})")
-        else:
-            # Fallback 1: audio-energy analysis (works for live streams / VODs
-            # where YouTube does not provide heatmap data - the most 'exciting'
-            # loud segment is a good proxy for the most-watched part).
-            logger.warning("No heatmap data available in metadata. Trying audio-energy analysis...")
+        if not ranked:
+            # Last-resort fallback: classic audio-energy scan, then hook window.
+            logger.warning("Combined ranking unavailable; falling back to hook window.")
             try:
                 win = self.select_window_by_audio_energy(video_url, duration)
-                peak_time = (win["start"] + win["end"]) / 2.0
-                best_score = win["score"]
+                used_audio = True
                 used_energy = True
-                logger.info(
-                    f"Audio-energy peak found at timestamp {peak_time:.1f}s "
-                    f"(energy score={best_score:.3f}) - fallback for videos without heatmap."
-                )
-            except Exception as e:
-                logger.warning(f"Audio-energy analysis failed ({e}). Using smart fallback hook window.")
+            except Exception as exc:
+                logger.debug("Audio-energy fallback failed too: %s", exc)
                 if duration >= 60.0:
-                    # Pick a hook window after intro at ~15% of duration or at 30 seconds
                     peak_time = min(45.0, max(15.0, duration * 0.15))
                 else:
                     peak_time = duration / 2.0
+                clip_duration = CLIP_DURATION_SEC
+                clip_start = max(0.0, peak_time - clip_duration / 2.0)
+                clip_end = clip_start + clip_duration
+                if duration > 0 and clip_end > duration:
+                    clip_end = duration
+                    clip_start = max(0.0, clip_end - clip_duration)
+                win = {"start": clip_start, "end": clip_end, "score": 0.0}
 
-        # Calculate 15 to 20-second window centered on peak_time
-        clip_duration = CLIP_DURATION_SEC
-        clip_start = max(0.0, peak_time - clip_duration / 2.0)
-        clip_end = clip_start + clip_duration
-
-        if duration > 0 and clip_end > duration:
-            clip_end = duration
-            clip_start = max(0.0, clip_end - clip_duration)
-
-        # Enforce min/max clip duration bounds (15 to 20 seconds)
-        if clip_end - clip_start < MIN_CLIP_DURATION_SEC and duration >= MIN_CLIP_DURATION_SEC:
-            clip_end = min(duration, clip_start + MIN_CLIP_DURATION_SEC)
-        elif clip_end - clip_start > MAX_CLIP_DURATION_SEC:
-            clip_end = clip_start + MAX_CLIP_DURATION_SEC
+        best = ranked[0] if ranked else win
+        best_score = float(best.get("score") or 0.0)
+        clip_start = float(best["start"])
+        clip_end = float(best["end"])
+        clip_start, clip_end = self._finalize_window(clip_start, clip_end, duration)
+        peak_time = (clip_start + clip_end) / 2.0
 
         logger.info(
-            f"Selected segment [{clip_start:.2f}s -> {clip_end:.2f}s] "
-            f"(Duration: {clip_end - clip_start:.2f}s, Heatmap used: {used_heatmap}, "
-            f"Audio-energy used: {used_energy})"
+            "Selected segment [%.2fs -> %.2fs] (Duration: %.2fs, strategy=%s, "
+            "heatmap used: %s, audio used: %s, score=%.3f)",
+            clip_start,
+            clip_end,
+            clip_end - clip_start,
+            self.strategy,
+            used_heatmap,
+            used_audio,
+            best_score,
         )
 
-        # Annotate info with heatmap selection metadata
+        # Annotate info with selection metadata
         info["_peak_time"] = peak_time
         info["_clip_start"] = clip_start
         info["_clip_end"] = clip_end
+        info["_strategy"] = self.strategy
         info["_used_heatmap"] = used_heatmap
+        info["_used_audio"] = used_audio
         info["_used_energy"] = used_energy
+        info["_selection_score"] = best_score
+        if best.get("heatmap_score") is not None:
+            info["_heatmap_score"] = best["heatmap_score"]
+        if best.get("audio_score") is not None:
+            info["_audio_score"] = best["audio_score"]
 
         return info, peak_time, clip_start, clip_end
 
@@ -293,6 +346,375 @@ class YouTubeFetcher:
             clip_start = max(0.0, clip_end - CLIP_DURATION_SEC)
 
         return {"start": clip_start, "end": clip_end, "score": best_win_score}
+
+    # ------------------------------------------------------------------
+    # Combined "most watched + high-pitched/high-energy voice" ranking
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _normalize_scores(values: List[float]) -> List[float]:
+        """Min-max normalize to 0..1; all-equal inputs become neutral 0.5."""
+        finite = [float(v) for v in values if v is not None and math.isfinite(float(v))]
+        if not finite:
+            return [0.0] * len(values)
+        lo, hi = min(finite), max(finite)
+        if hi - lo < 1e-12:
+            return [0.5] * len(values)
+        return [(float(v) - lo) / (hi - lo) for v in values]
+
+    @staticmethod
+    def _heatmap_candidates(heatmap: List[Dict[str, Any]], duration: float) -> List[Dict[str, Any]]:
+        """One 15-20s candidate window per heatmap bucket, scored by average bucket value."""
+        half = CLIP_DURATION_SEC / 2.0
+        candidates: List[Dict[str, Any]] = []
+        for item in heatmap:
+            t_mid = (item.get("start_time", 0.0) + item.get("end_time", 0.0)) / 2.0
+            start = max(0.0, t_mid - half)
+            end = start + CLIP_DURATION_SEC
+            if duration > 0 and end > duration:
+                end = duration
+                start = max(0.0, end - CLIP_DURATION_SEC)
+            in_win = [
+                h.get("value", 0.0)
+                for h in heatmap
+                if start <= (h.get("start_time", 0.0) + h.get("end_time", 0.0)) / 2.0 <= end
+            ]
+            score = float(sum(in_win) / max(1, len(in_win)))
+            candidates.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "heatmap_score": score,
+                    "audio_score": None,
+                    "score": score,
+                    "source": "heatmap",
+                }
+            )
+        return candidates
+
+    def _audio_candidates(
+        self, probes: List[Dict[str, Any]], duration: float
+    ) -> List[Dict[str, Any]]:
+        """Candidate windows for audio-only mode, centered on each audio probe."""
+        half = CLIP_DURATION_SEC / 2.0
+        candidates: List[Dict[str, Any]] = []
+        for probe in probes:
+            center = (probe["start"] + probe["end"]) / 2.0
+            start = max(0.0, center - half)
+            end = start + CLIP_DURATION_SEC
+            if duration > 0 and end > duration:
+                end = duration
+                start = max(0.0, end - CLIP_DURATION_SEC)
+            candidates.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "heatmap_score": None,
+                    "audio_score": float(probe.get("score") or 0.0),
+                    "score": float(probe.get("score") or 0.0),
+                    "source": "audio",
+                }
+            )
+        return candidates
+
+    @staticmethod
+    def _window_audio_score(
+        probes: List[Dict[str, Any]], start: float, end: float
+    ) -> Optional[float]:
+        """Average excitement of the probes inside a window; nearest probe as fallback."""
+        if not probes:
+            return None
+        center = (start + end) / 2.0
+        inside = [p for p in probes if start <= (p["start"] + p["end"]) / 2.0 <= end]
+        if inside:
+            return float(sum(p.get("score", 0.0) for p in inside) / len(inside))
+        nearest = min(probes, key=lambda p: abs(((p["start"] + p["end"]) / 2.0) - center))
+        return float(nearest.get("score") or 0.0)
+
+    @staticmethod
+    def _finalize_window(start: float, end: float, duration: float) -> Tuple[float, float]:
+        """Clamp a window to [0, duration] and enforce 15-20s bounds."""
+        start = max(0.0, float(start))
+        end = max(start, float(end))
+        if duration > 0 and end > duration:
+            end = duration
+            start = min(start, max(0.0, end - MAX_CLIP_DURATION_SEC))
+        if end - start < MIN_CLIP_DURATION_SEC and (duration <= 0 or duration >= MIN_CLIP_DURATION_SEC):
+            if duration > 0 and start + MIN_CLIP_DURATION_SEC > duration:
+                start = max(0.0, duration - MIN_CLIP_DURATION_SEC)
+            end = min(end + (MIN_CLIP_DURATION_SEC - (end - start)), duration if duration > 0 else end + MIN_CLIP_DURATION_SEC)
+        if end - start > MAX_CLIP_DURATION_SEC:
+            end = start + MAX_CLIP_DURATION_SEC
+        return start, end
+
+    def _measure_audio_features(self, stream_url: str, start: float, dur: float) -> Dict[str, float]:
+        """
+        Decodes a short audio snippet from the direct stream URL and returns
+        {energy, centroid, flux}:
+          - energy   = RMS loudness (0.0 = silence)
+          - centroid = average spectral centroid (Hz) -> high-pitched voice
+          - flux     = frame-to-frame spectral change -> shouts/bursts
+        Only a few seconds are pulled per probe - never the whole video.
+        """
+        if not FFMPEG_PATH:
+            raise RuntimeError("FFmpeg not found - cannot run audio-excitement analysis.")
+
+        cmd = [
+            FFMPEG_PATH, "-hide_banner", "-loglevel", "error",
+            "-ss", f"{start:.2f}", "-t", f"{dur:.2f}",
+            "-i", stream_url,
+            "-map", "0:a:0", "-vn",
+            "-f", "s16le", "-ac", "1", "-ar", "16000",
+            "-",
+        ]
+        proc = subprocess.run(cmd, capture_output=True, timeout=120)
+        if proc.returncode != 0 or len(proc.stdout) < 1600:  # at least 0.05s of audio
+            raise RuntimeError(f"Could not decode audio at {start:.0f}s")
+
+        samples = np.frombuffer(proc.stdout, dtype=np.int16).astype(np.float32) / 32768.0
+        if samples.size == 0:
+            return {"energy": 0.0, "centroid": 0.0, "flux": 0.0}
+
+        frame, hop = 2048, 1024
+        window = np.hanning(frame).astype(np.float32)
+        freqs = np.fft.rfftfreq(frame, d=1.0 / 16000.0)
+        n_frames = max(1, 1 + (samples.size - frame) // hop)
+
+        energies = np.zeros(n_frames, dtype=np.float64)
+        centroids = np.zeros(n_frames, dtype=np.float64)
+        fluxes = np.zeros(n_frames, dtype=np.float64)
+        prev_mag: Optional[np.ndarray] = None
+        for i in range(n_frames):
+            seg = samples[i * hop: i * hop + frame]
+            if seg.size < frame:
+                seg = np.pad(seg, (0, frame - seg.size))
+            seg = seg * window
+            mag = np.abs(np.fft.rfft(seg))
+            energies[i] = float(np.sqrt(np.mean(seg ** 2)))
+            denom = float(np.sum(mag))
+            if denom > 1e-9:
+                centroids[i] = float(np.sum(freqs * mag) / denom)
+            if prev_mag is not None:
+                fluxes[i] = float(np.sum(np.maximum(0.0, mag - prev_mag)))
+            prev_mag = mag
+
+        return {
+            "energy": float(np.mean(energies)),
+            "centroid": float(np.mean(centroids)),
+            "flux": float(np.mean(fluxes)),
+        }
+
+    def _resolve_direct_audio_url(self, info: Dict[str, Any], video_url: str) -> str:
+        """
+        Find a direct audio-only stream URL for the probes.
+        YouTube metadata often stores the audio stream in requested_formats
+        while the top-level url is the video stream - check both, then do one
+        fast bestaudio metadata request as a guaranteed fallback.
+        """
+        for group in (info.get("requested_formats") or [], info.get("formats") or []):
+            for fmt in group:
+                if (
+                    fmt.get("acodec") not in (None, "none")
+                    and fmt.get("vcodec") in (None, "none")
+                    and fmt.get("url")
+                ):
+                    return str(fmt["url"])
+        if info.get("url") and info.get("vcodec") in (None, "none"):
+            return str(info["url"])
+
+        ydl_opts = {
+            "format": "bestaudio/best",
+            "quiet": True,
+            "no_warnings": True,
+            **self._cookies_opts(),
+            **self._ffmpeg_opt(),
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            audio_info = ydl.extract_info(video_url, download=False)
+        stream_url = audio_info.get("url")
+        if not stream_url:
+            raise RuntimeError("No direct audio stream URL available")
+        return str(stream_url)
+
+    def _audio_profile(
+        self, info: Dict[str, Any], video_url: str, duration: float
+    ) -> List[Dict[str, Any]]:
+        """
+        Probe loudness + pitch + burstiness across the video with short audio
+        snippets (never the whole video) and return per-probe excitement scores.
+        Cached per video URL.
+        """
+        if video_url in self._profile_cache:
+            return list(self._profile_cache[video_url])
+        if duration <= 0:
+            raise RuntimeError("Unknown duration - cannot analyze audio excitement")
+        if not FFMPEG_PATH:
+            raise RuntimeError("FFmpeg not found - cannot analyze audio excitement")
+
+        stream_url = self._resolve_direct_audio_url(info, video_url)
+        sample_len = min(AUDIO_SAMPLE_SEC, 10.0)
+        n_samples = min(MAX_AUDIO_SAMPLES, max(12, int(round(duration / 25.0))))
+        step = max(sample_len, (duration - sample_len) / max(1, n_samples - 1))
+
+        logger.info(
+            "Audio-excitement scan: %d probes (~%.1fs each) over %.0fs video (energy + pitch)...",
+            n_samples, sample_len, duration,
+        )
+        probes: List[Dict[str, Any]] = []
+        for i in range(n_samples):
+            t = min(max(0.0, i * step), max(0.0, duration - sample_len))
+            try:
+                feats = self._measure_audio_features(stream_url, t, sample_len)
+            except Exception as exc:
+                logger.debug("Audio probe at %.1fs failed: %s", t, exc)
+                continue
+            probes.append({"start": t, "end": min(duration, t + sample_len), **feats})
+
+        if not probes:
+            raise RuntimeError("All audio probes failed")
+
+        scores = self._audio_excitement_scores(probes)
+        for probe, score in zip(probes, scores):
+            probe["score"] = score
+        self._profile_cache[video_url] = probes
+        return probes
+
+    @staticmethod
+    def _audio_excitement_scores(probes: List[Dict[str, Any]]) -> List[float]:
+        """
+        Combine per-probe loudness, high-pitched spectral content, and burstiness
+        into one normalized 0..1 excitement score (per-video min-max scaling).
+        """
+        energy_norm = YouTubeFetcher._normalize_scores(
+            [math.log1p(max(0.0, float(p.get("energy") or 0.0))) for p in probes]
+        )
+        pitch_norm = YouTubeFetcher._normalize_scores(
+            [math.log1p(max(0.0, float(p.get("centroid") or 0.0))) for p in probes]
+        )
+        flux_norm = YouTubeFetcher._normalize_scores(
+            [max(0.0, float(p.get("flux") or 0.0)) for p in probes]
+        )
+        weights = (AUDIO_ENERGY_WEIGHT, AUDIO_PITCH_WEIGHT, AUDIO_FLUX_WEIGHT)
+        total = sum(weights) or 1.0
+        scores = []
+        for energy, pitch, flux in zip(energy_norm, pitch_norm, flux_norm):
+            raw = (energy * AUDIO_ENERGY_WEIGHT + pitch * AUDIO_PITCH_WEIGHT + flux * AUDIO_FLUX_WEIGHT)
+            scores.append(min(1.0, max(0.0, raw / total)))
+        return scores
+
+    def _build_ranked_windows(
+        self,
+        video_url: str,
+        info: Dict[str, Any],
+        duration: float,
+        count: Optional[int] = None,
+    ) -> Tuple[List[Dict[str, Any]], bool, bool]:
+        """
+        Rank candidate 15-20s windows using the configured strategy.
+
+        Returns (windows, used_heatmap, used_audio). A window dict contains
+        start/end, score, source, plus heatmap_score/audio_score when available.
+        """
+        count = 1 if count is None else max(1, int(count))
+        heatmap = info.get("heatmap") or []
+        used_heatmap = bool(heatmap)
+        used_audio = False
+        probes: Optional[List[Dict[str, Any]]] = None
+
+        strategy = self.strategy
+        if strategy in ("combined", "audio"):
+            try:
+                probes = self._audio_profile(info, video_url, duration)
+                used_audio = bool(probes)
+            except Exception as exc:
+                logger.warning(
+                    "Audio-excitement analysis unavailable (%s); using %s.",
+                    exc,
+                    "heatmap only" if heatmap else "smart fallback",
+                )
+                probes = None
+
+        # Candidate windows
+        candidates: List[Dict[str, Any]] = []
+        if strategy == "audio" and probes:
+            logger.info("Audio-only mode: ranking windows by loud/high-pitched voice excitation...")
+            candidates = self._audio_candidates(probes, duration)
+        elif heatmap:
+            logger.info(
+                "Heatmap data found (%d buckets). Ranking top %d window(s) with strategy '%s'...",
+                len(heatmap), count, strategy,
+            )
+            candidates = self._heatmap_candidates(heatmap, duration)
+            if strategy == "audio" and not probes:
+                logger.warning("Audio requested but unavailable; ranking by Most Replayed instead.")
+        elif probes:
+            logger.info("No heatmap data. Ranking windows by audio excitement (voice/pitch/energy)...")
+            candidates = self._audio_candidates(probes, duration)
+            strategy = "audio"
+
+        if not candidates:
+            return [], used_heatmap, used_audio
+
+        # Score every candidate
+        heat_values = [c["heatmap_score"] for c in candidates]
+        heat_norm = self._normalize_scores(
+            [v if v is not None else 0.0 for v in heat_values]
+        )
+        audio_values = [
+            self._window_audio_score(probes, c["start"], c["end"]) if probes else None
+            for c in candidates
+        ]
+        has_audio = any(v is not None for v in audio_values)
+        has_heat = all(v is not None for v in heat_values)
+
+        for index, candidate in enumerate(candidates):
+            heat_score = heat_norm[index] if has_heat else 0.5
+            audio_score = audio_values[index] if audio_values[index] is not None else 0.5
+            candidate["heatmap_score"] = candidate.get("heatmap_score")
+            candidate["audio_score"] = audio_values[index]
+
+            if strategy == "heatmap" and has_heat:
+                combined = heat_score
+                source = "heatmap"
+            elif strategy == "audio" and has_audio:
+                combined = audio_score
+                source = "audio"
+            elif has_heat and has_audio:
+                total_weight = self.heatmap_weight + self.audio_weight
+                combined = (
+                    self.heatmap_weight * heat_score + self.audio_weight * audio_score
+                ) / total_weight if total_weight > 0 else (heat_score + audio_score) / 2.0
+                source = "combined"
+            elif has_heat:
+                combined = heat_score
+                source = "heatmap"
+            else:
+                combined = audio_score
+                source = "audio"
+            candidate["score"] = combined
+            candidate["source"] = source
+
+        # Greedy: pick highest-scoring window, then skip anything overlapping it
+        candidates.sort(key=lambda w: w["score"], reverse=True)
+        chosen: List[Dict[str, Any]] = []
+        for window in candidates:
+            if len(chosen) >= count:
+                break
+            overlap = any(
+                window["start"] < c["end"] - 2.0 and c["start"] < window["end"] - 2.0
+                for c in chosen
+            )
+            if not overlap:
+                chosen.append(window)
+
+        logger.info(
+            "Selected %d top window(s): %s",
+            len(chosen),
+            ", ".join(
+                f"[{w['start']:.0f}s-{w['end']:.0f}s]({w['score']:.2f}/{w['source']})"
+                for w in chosen
+            ),
+        )
+        return chosen, used_heatmap, used_audio
 
     def _measure_audio_energy(self, stream_url: str, start: float, dur: float) -> float:
         """
@@ -385,98 +807,19 @@ class YouTubeFetcher:
 
     def select_top_windows(self, video_url: str, count: int = 3) -> List[Dict[str, Any]]:
         """
-        Returns the top `count` non-overlapping 15-20s windows for a video,
-        using heatmap data when available, otherwise audio-energy analysis.
-        Used to make MULTIPLE shorts from one video.
-        Returns list of {"start", "end", "score", "source"}.
+        Returns the top `count` non-overlapping 15-20s windows for a video.
+        Uses the configured strategy (combined heatmap + audio excitement, or
+        whichever signal is available). Used to make MULTIPLE shorts from one video.
+        Returns list of {"start", "end", "score", "source", ...}.
         """
-        ydl_opts = {"skip_download": True, "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt()}
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(video_url, download=False)
-        except Exception as e:
-            if self._is_bot_check_error(e):
-                logger.error(
-                    "YouTube blocked the request with 'Sign in to confirm you're not a bot'. "
-                    "Fix: set YT_COOKIES_FILE (exported cookies.txt) or YT_COOKIES_FROM_BROWSER "
-                    "in yt_shorts_bot/.env - see README 'YouTube cookies' section."
-                )
-            raise
-
+        info = self._get_info(video_url)
         duration = float(info.get("duration") or 0.0)
-        heatmap = info.get("heatmap") or []
-
-        candidates: List[Dict[str, Any]] = []
-
-        if heatmap and len(heatmap) > 0:
-            logger.info(f"Heatmap data found ({len(heatmap)} buckets). Ranking top {count} windows...")
-            half = CLIP_DURATION_SEC / 2.0
-            for item in heatmap:
-                t_mid = (item.get("start_time", 0.0) + item.get("end_time", 0.0)) / 2.0
-                start = max(0.0, t_mid - half)
-                end = start + CLIP_DURATION_SEC
-                if duration > 0 and end > duration:
-                    end = duration
-                    start = max(0.0, end - CLIP_DURATION_SEC)
-                in_win = [
-                    h.get("value", 0.0) for h in heatmap
-                    if start <= (h.get("start_time", 0.0) + h.get("end_time", 0.0)) / 2.0 <= end
-                ]
-                score = sum(in_win) / max(1, len(in_win))
-                candidates.append({"start": start, "end": end, "score": score, "source": "heatmap"})
-        else:
-            logger.info("No heatmap data. Using audio-energy analysis to rank windows...")
-            sample_len = min(CLIP_DURATION_SEC, 20.0)
-            ydl_audio = {"format": "bestaudio/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt()}
-            try:
-                with yt_dlp.YoutubeDL(ydl_audio) as ydl:
-                    ainfo = ydl.extract_info(video_url, download=False)
-            except Exception as e:
-                if self._is_bot_check_error(e):
-                    logger.error(
-                        "YouTube blocked the request with 'Sign in to confirm you're not a bot'. "
-                        "Fix: set YT_COOKIES_FILE (exported cookies.txt) or YT_COOKIES_FROM_BROWSER "
-                        "in yt_shorts_bot/.env - see README 'YouTube cookies' section."
-                    )
-                raise
-            stream_url = ainfo.get("url")
-            if not stream_url:
-                raise RuntimeError("No direct audio stream URL available")
-            n_samples = max(20, min(60, int(duration / 20.0)))
-            step = max(sample_len, (duration - sample_len) / max(1, n_samples - 1))
-            for i in range(n_samples):
-                t = min(max(0.0, i * step), max(0.0, duration - sample_len))
-                try:
-                    e = self._measure_audio_energy(stream_url, t, sample_len)
-                except Exception as exc:
-                    logger.debug("Ranked audio sample at %.1fs failed: %s", t, exc)
-                    continue
-                candidates.append({
-                    "start": t,
-                    "end": min(duration, t + sample_len),
-                    "score": e,
-                    "source": "audio_energy",
-                })
-
-        if not candidates:
+        ranked, _used_heatmap, _used_audio = self._build_ranked_windows(
+            video_url, info, duration, count=count
+        )
+        if not ranked:
             raise RuntimeError("Could not rank any windows for this video")
-
-        # Greedy: pick highest-scoring window, then skip anything overlapping it
-        candidates.sort(key=lambda w: w["score"], reverse=True)
-        chosen: List[Dict[str, Any]] = []
-        for w in candidates:
-            if len(chosen) >= count:
-                break
-            overlap = any(
-                w["start"] < c["end"] - 2.0 and c["start"] < w["end"] - 2.0
-                for c in chosen
-            )
-            if not overlap:
-                chosen.append(w)
-
-        logger.info(f"Selected {len(chosen)} top windows: " +
-                    ", ".join(f"[{w['start']:.0f}s-{w['end']:.0f}s]({w['score']:.2f})" for w in chosen))
-        return chosen
+        return ranked
 
     def download_clip_section(
         self,

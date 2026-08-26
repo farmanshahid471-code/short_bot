@@ -69,18 +69,31 @@ echo.
 set "FFZIP=%ROOT%ffmpeg.zip"
 if exist "%FFZIP%" del /Q "%FFZIP%"
 
+rem BtbN mirror: the Gyan.dev direct zip URLs now return 404, so we use
+rem GitHub's stable "latest release" asset (filename never changes).
+set "FFURL=https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"
+
 where curl >nul 2>&1
 if not errorlevel 1 goto :use_curl
 
 echo       Downloading with PowerShell...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile '%FFZIP%'"
-if errorlevel 1 goto :ffmpeg_manual
-if not exist "%FFZIP%" goto :ffmpeg_manual
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -UseBasicParsing -Uri '%FFURL%' -OutFile '%FFZIP%'"
+if errorlevel 1 goto :ffmpeg_mirror2
+if not exist "%FFZIP%" goto :ffmpeg_mirror2
 goto :ffmpeg_extract
 
 :use_curl
 echo       Downloading with curl...
-curl -L -sS -o "%FFZIP%" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
+curl -L -sS -o "%FFZIP%" "%FFURL%"
+if errorlevel 1 goto :ffmpeg_mirror2
+if not exist "%FFZIP%" goto :ffmpeg_mirror2
+goto :ffmpeg_extract
+
+:ffmpeg_mirror2
+echo.
+echo       First mirror failed. Trying the GyanD GitHub release (full build)...
+del /Q "%FFZIP%" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $ProgressPreference = 'SilentlyContinue'; $r = Invoke-RestMethod -Uri 'https://api.github.com/repos/GyanD/codexffmpeg/releases/latest' -Headers @{'User-Agent'='yt-shorts-bot'}; $a = $r.assets | Where-Object { $_.name -match 'full_build\.zip$' } | Select-Object -First 1; if (-not $a) { throw 'No zip asset found' }; Invoke-WebRequest -UseBasicParsing -Uri $a.browser_download_url -OutFile '%FFZIP%'"
 if errorlevel 1 goto :ffmpeg_manual
 if not exist "%FFZIP%" goto :ffmpeg_manual
 
@@ -112,13 +125,17 @@ goto :ffmpeg_ok
 echo.
 echo   Automatic FFmpeg download failed too.
 echo   Please do it manually:
-echo     1. Go to:  https://www.gyan.dev/ffmpeg/builds/
-echo     2. Download ffmpeg-release-essentials.zip
+echo     1. Go to:  https://github.com/BtbN/FFmpeg-Builds/releases/latest
+echo     2. Download  ffmpeg-master-latest-win64-gpl.zip
 echo     3. Extract it, then COPY the bin folder from inside it
 echo        into a folder named:  yt_shorts_bot\ffmpeg
 echo        so that the file exists at:
 echo        yt_shorts_bot\ffmpeg\bin\ffmpeg.exe
 echo     4. Run setup.bat again.
+echo.
+echo   Alternative: close this window and run this in Terminal:
+echo       winget install --id Gyan.FFmpeg -e
+echo   then open a NEW window and run setup.bat again.
 echo.
 pause
 exit /b 1

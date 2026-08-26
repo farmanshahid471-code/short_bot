@@ -53,6 +53,35 @@ HEATMAP_SMOOTH_WINDOW_SEC: float = float(os.getenv("HEATMAP_SMOOTH_WINDOW_SEC", 
 MIN_CLIP_DURATION_SEC: float = 15.0
 MAX_CLIP_DURATION_SEC: float = 20.0
 
+# --- MOMENT SELECTION (most watched + high-pitch/high-energy voice) ---
+# How the bot picks the best 15-20s moment from a source video:
+#   "combined" = blend YouTube "Most Replayed" heatmap with audio excitement
+#                (loudness + high-pitched voice + sudden bursts). If heatmap
+#                data is missing it uses audio only; if audio analysis fails
+#                it uses heatmap only. Never fails both - falls back safely.
+#   "heatmap"  = only YouTube Most Replayed data (classic behaviour)
+#   "audio"    = only audio excitement (loud + high-pitched voice moments)
+SELECTION_STRATEGY: str = os.getenv("SELECTION_STRATEGY", "combined").strip().lower()
+if SELECTION_STRATEGY not in ("combined", "heatmap", "audio"):
+    SELECTION_STRATEGY = "combined"
+
+# How much weight each signal gets when both are available (should sum to 1.0).
+HEATMAP_WEIGHT: float = min(1.0, max(0.0, float(os.getenv("HEATMAP_WEIGHT", "0.55"))))
+AUDIO_EXCITEMENT_WEIGHT: float = min(1.0, max(0.0, float(os.getenv("AUDIO_EXCITEMENT_WEIGHT", "0.45"))))
+
+# Inside the audio-excitement score:
+#   AUDIO_ENERGY_WEIGHT = volume/loudness of the moment
+#   AUDIO_PITCH_WEIGHT  = high-pitched / high-voice spectral content
+#   AUDIO_FLUX_WEIGHT   = sudden bursts (shouting, laughter, fast speech)
+AUDIO_ENERGY_WEIGHT: float = min(1.0, max(0.0, float(os.getenv("AUDIO_ENERGY_WEIGHT", "0.45"))))
+AUDIO_PITCH_WEIGHT: float = min(1.0, max(0.0, float(os.getenv("AUDIO_PITCH_WEIGHT", "0.35"))))
+AUDIO_FLUX_WEIGHT: float = min(1.0, max(0.0, float(os.getenv("AUDIO_FLUX_WEIGHT", "0.20"))))
+
+# How long each tiny audio probe is (seconds) and how many probes max.
+# The bot streams only a few seconds per probe, never the whole video.
+AUDIO_SAMPLE_SEC: float = min(10.0, max(2.0, float(os.getenv("AUDIO_SAMPLE_SEC", "5.0"))))
+MAX_AUDIO_SAMPLES: int = max(12, min(120, int(os.getenv("MAX_AUDIO_SAMPLES", "60"))))
+
 # --- VIDEO EDITING & SUBTITLES ---
 # Output canvas. "3:4" matches the reference Short style (1080x1440, like
 # deagzzzshorts/iShowSpeed edits). "9:16" is the classic Shorts format (1080x1920).

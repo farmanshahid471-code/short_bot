@@ -190,7 +190,12 @@ class ShortsBotScheduler:
             else "off"
         )
 
-        fetcher = YouTubeFetcher(channels=channels)
+        fetcher = YouTubeFetcher(
+            channels=channels,
+            strategy=account.get("selection_strategy"),
+            heatmap_weight=account.get("heatmap_weight"),
+            audio_weight=account.get("audio_excitement_weight"),
+        )
         client_secret, token = resolve_credentials(account)
         uploader = YouTubeUploader(
             client_secret_file=client_secret,

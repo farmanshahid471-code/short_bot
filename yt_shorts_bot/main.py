@@ -86,7 +86,11 @@ def process_single_url(
         if top_watermark_text is None:
             top_watermark_text = str(selected.get("top_watermark") or "").strip()
 
-        fetcher = YouTubeFetcher()
+        fetcher = YouTubeFetcher(
+            strategy=selected.get("selection_strategy"),
+            heatmap_weight=selected.get("heatmap_weight"),
+            audio_weight=selected.get("audio_excitement_weight"),
+        )
         count = min(20, max(1, int(count)))
         if count == 1:
             info, _peak, start, end = fetcher.extract_heatmap_and_select_window(url)

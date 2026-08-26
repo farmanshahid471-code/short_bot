@@ -10,7 +10,7 @@ retry, metadata and CLI documentation. Copy `.env.example` to ignored `.env`.
 Main modules:
 
 - `config.py`: paths/settings/account loading
-- `fetcher.py`: feeds, heatmap/audio ranking and section downloads
+- `fetcher.py`: feeds, combined heatmap + voice-excitement ranking, section downloads
 - `processor.py`: Whisper/SRT and FFmpeg rendering
 - `models.py`: SQLite leases, retry states and atomic quotas
 - `uploader.py`: OAuth, destination lock and real YouTube uploads

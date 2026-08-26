@@ -33,6 +33,7 @@ from flask import (
 from .config import (
     logger, LOG_FILE, BGM_DIR, ACCOUNTS, ACCOUNTS_FILE, DRY_RUN,
     MAX_DAILY_UPLOADS, CYCLE_INTERVAL_HOURS, SHORT_ASPECT, FILL_MODE,
+    SELECTION_STRATEGY, HEATMAP_WEIGHT, AUDIO_EXCITEMENT_WEIGHT,
     YOUTUBE_TOKEN_FILE, FFMPEG_PATH, KEEP_SHORTS_DIR, WEBUI_HOST, WEBUI_PORT,
     WEBUI_USERNAME, WEBUI_PASSWORD, WEBUI_SECRET_KEY, WEBUI_COOKIE_SECURE,
 )
@@ -236,6 +237,9 @@ def _account_state(a: dict, db: StateDB) -> dict:
         "uploads": db.get_uploads_in_last_24_hours(account=name),
         "process_mode": a.get("process_mode", ""),
         "selection_order": a.get("selection_order", ""),
+        "selection_strategy": a.get("selection_strategy", ""),
+        "heatmap_weight": a.get("heatmap_weight", ""),
+        "audio_excitement_weight": a.get("audio_excitement_weight", ""),
         "connected_channel": a.get("connected_channel", ""),
         "connected": tk.is_file(),
         "title_prefix": a.get("title_prefix", ""),
@@ -348,6 +352,7 @@ def _clean_account(acc: dict) -> dict:
         "enabled": bool(acc.get("enabled", True)),
     }
     for opt in ["aspect", "fill", "shorts_per_video", "process_mode", "selection_order",
+                "selection_strategy", "heatmap_weight", "audio_excitement_weight",
                 "min_minutes_between_uploads", "posting_timezone", "posting_start_time",
                 "posting_end_time", "delete_after_upload", "delete_r2_after_upload",
                 "watermark", "watermark_enabled", "top_watermark", "top_watermark_enabled",
@@ -667,6 +672,22 @@ def create_app(testing: bool = False) -> Flask:
                         acc[field] = min(20, max(1, value))
                 except (TypeError, ValueError):
                     pass
+        # Moment selection: combined / heatmap / audio, with 0-1 weights.
+        if "selection_strategy" in request.form or (
+            request.is_json and "selection_strategy" in (request.json or {})
+        ):
+            value = str(_f(request, "selection_strategy") or "").strip().lower()
+            if value in ("combined", "heatmap", "audio"):
+                acc["selection_strategy"] = value
+            elif value == "":
+                acc.pop("selection_strategy", None)
+        for field in ["heatmap_weight", "audio_excitement_weight"]:
+            if field in request.form or (request.is_json and field in (request.json or {})):
+                try:
+                    value = min(1.0, max(0.0, float(_f(request, field))))
+                    acc[field] = round(value, 4)
+                except (TypeError, ValueError):
+                    pass
         for field in ["smart_titles", "top_watermark_enabled", "watermark_enabled",
                       "delete_after_upload", "delete_r2_after_upload"]:
             if field in request.form or (request.is_json and field in (request.json or {})):
@@ -922,6 +943,9 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
         "smart_titles": _aset("smart_titles", _get_env_setting("ENABLE_SMART_TITLES", "true").lower() == "true", is_bool=True),
         "max_daily_uploads": _aset("max_daily_uploads", _get_env_setting("MAX_DAILY_UPLOADS", str(MAX_DAILY_UPLOADS))),
         "shorts_per_video": _aset("shorts_per_video", "1"),
+        "selection_strategy": _aset("selection_strategy", _get_env_setting("SELECTION_STRATEGY", SELECTION_STRATEGY)),
+        "heatmap_weight": _aset("heatmap_weight", _get_env_setting("HEATMAP_WEIGHT", str(HEATMAP_WEIGHT))),
+        "audio_excitement_weight": _aset("audio_excitement_weight", _get_env_setting("AUDIO_EXCITEMENT_WEIGHT", str(AUDIO_EXCITEMENT_WEIGHT))),
         "subtitles_enabled": _aset("subtitles_enabled", True, is_bool=True),
         "expected_channel": _aset("expected_channel", ""),
         "top_watermark": _aset("top_watermark", ""),
@@ -1155,6 +1179,16 @@ def _render_page(msg: str = "", msg_type: str = "ok", loaded_account: Optional[s
               <td><input type="number" name="max_daily_uploads" value="{_esc(acc_settings['max_daily_uploads'])}" min="1" max="30" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Shorts per video (auto cycles)</td>
               <td><input type="number" name="shorts_per_video" value="{_esc(acc_settings['shorts_per_video'])}" min="1" max="20" style="width:100%;"></td></tr>
+          <tr><td style="padding:4px 0;">Moment selection</td>
+              <td><select name="selection_strategy" style="width:100%;">
+                    <option value="combined"{' selected' if str(acc_settings['selection_strategy']) == 'combined' else ''}>combined: Most Replayed + loud/high-pitched voice</option>
+                    <option value="heatmap"{' selected' if str(acc_settings['selection_strategy']) == 'heatmap' else ''}>heatmap: Most Replayed only</option>
+                    <option value="audio"{' selected' if str(acc_settings['selection_strategy']) == 'audio' else ''}>audio: loud/high-pitched voice only</option></select>
+                  <div class="hint">Missing signal is replaced by the other; both missing falls back safely.</div></td></tr>
+          <tr><td style="padding:4px 0;">Heatmap weight (0-1, combined only)</td>
+              <td><input type="number" name="heatmap_weight" value="{_esc(acc_settings['heatmap_weight'])}" min="0" max="1" step="0.05" style="width:100%;"></td></tr>
+          <tr><td style="padding:4px 0;">Voice-excitement weight (0-1, combined only)</td>
+              <td><input type="number" name="audio_excitement_weight" value="{_esc(acc_settings['audio_excitement_weight'])}" min="0" max="1" step="0.05" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Min minutes between uploads (0 = as fast as possible)</td>
               <td><input type="number" name="min_minutes_between_uploads" value="{_esc(acc_settings['min_minutes_between_uploads'])}" min="0" max="1440" style="width:100%;"></td></tr>
           <tr><td style="padding:4px 0;">Automatic posting time zone</td>

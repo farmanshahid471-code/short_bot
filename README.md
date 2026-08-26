@@ -130,8 +130,10 @@ pacing. Disable an account to exclude it; **Stop Scheduler** stops all tabs.
 
 ```text
 channel scan
-  -> heatmap best window
-     (audio-energy fallback when no heatmap exists)
+  -> best 15-20s moment:
+       combined: Most Replayed heatmap + audio excitement
+       (loud & high-pitched voice). Either signal is used when the
+       other is missing; both missing -> smart hook fallback.
   -> section download
   -> optional faster-whisper transcription
   -> vertical FFmpeg render

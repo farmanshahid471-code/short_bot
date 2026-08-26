@@ -16,6 +16,9 @@ One tab is one destination channel. Settings are stored in ignored
 | `expected_channel` | Exact fallback title lock when no channel ID is available. |
 | `max_daily_uploads` | Local rolling 24-hour cap for real successful uploads. |
 | `selection_order` | `newest`, `oldest`, or `random`. |
+| `selection_strategy` | `combined` (Most Replayed + loud/high-pitched voice), `heatmap` (Most Replayed only), or `audio` (voice excitement only). Empty = global default. |
+| `heatmap_weight` | 0-1 weight for Most Replayed when combining (default 0.55). |
+| `audio_excitement_weight` | 0-1 weight for voice excitement when combining (default 0.45). |
 | `min_minutes_between_uploads` | Interruptible delay from the previous real upload. |
 | `posting_timezone` | IANA US zone used for this tab's automatic posting window. |
 | `posting_start_time` | Inclusive local `HH:MM` opening time. |
@@ -113,6 +116,28 @@ SUBTITLE_STYLE_MODE="viral"
 `auto` preserves vertical source shape. Landscape/square sources use 9:16.
 Whisper is imported only when subtitles are requested. Sources without audio
 skip transcription and can still render.
+
+### Moment selection (most watched + high-pitched/high-energy voice)
+
+```ini
+SELECTION_STRATEGY="combined"
+HEATMAP_WEIGHT=0.55
+AUDIO_EXCITEMENT_WEIGHT=0.45
+AUDIO_ENERGY_WEIGHT=0.45
+AUDIO_PITCH_WEIGHT=0.35
+AUDIO_FLUX_WEIGHT=0.20
+AUDIO_SAMPLE_SEC=5
+MAX_AUDIO_SAMPLES=60
+```
+
+`combined` blends the YouTube "Most Replayed" heatmap with an audio-excitement
+score built from loudness (energy), high-pitched spectral content (voice) and
+sudden bursts (flux). If one signal is missing the bot automatically uses the
+other — no heatmap (e.g. live VODs) means audio only; a failed audio probe
+means heatmap only; both failing falls back to a smart hook window. The tiny
+audio probes are a few seconds each and never download the full video. Each
+named account can override `selection_strategy`, `heatmap_weight` and
+`audio_excitement_weight` per account.
 
 ### Text style
 
