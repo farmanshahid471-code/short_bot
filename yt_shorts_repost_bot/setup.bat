@@ -44,26 +44,60 @@ echo.
 
 echo [2/4] Checking FFmpeg...
 
-where ffmpeg >nul 2>&1
-if not errorlevel 1 goto :ffmpeg_ok
+set "FFBIN="
 
-if exist "%ROOT%ffmpeg\bin\ffmpeg.exe" goto :ffmpeg_local
+where ffmpeg >nul 2>&1
+if errorlevel 1 goto :no_system_ffmpeg
+
+set "FFBIN=ffmpeg"
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"drawtext" >nul
+if errorlevel 1 goto :system_ffmpeg_weak
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"subtitles" >nul
+if errorlevel 1 goto :system_ffmpeg_weak
+goto :ffmpeg_ready
+
+:system_ffmpeg_weak
+echo       The ffmpeg on PATH is missing drawtext/subtitles filters.
+echo       Using a full portable build instead, so captions and text can render.
+if exist "%ROOT%ffmpeg\bin\ffmpeg.exe" goto :ffmpeg_local_verify
+goto :ffmpeg_portable
+
+:no_system_ffmpeg
+if exist "%ROOT%ffmpeg\bin\ffmpeg.exe" goto :ffmpeg_local_verify
 
 echo       FFmpeg not found. Trying the Windows Store installer, winget...
 where winget >nul 2>&1
-if errorlevel 1 goto :download_ffmpeg
+if errorlevel 1 goto :ffmpeg_portable
 
 winget install --id Gyan.FFmpeg -e --accept-source-agreements --accept-package-agreements
-if errorlevel 1 goto :download_ffmpeg
+if errorlevel 1 goto :ffmpeg_portable
 
+where ffmpeg >nul 2>&1
+if errorlevel 1 goto :ffmpeg_portable
+set "FFBIN=ffmpeg"
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"drawtext" >nul
+if errorlevel 1 goto :ffmpeg_portable
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"subtitles" >nul
+if errorlevel 1 goto :ffmpeg_portable
 echo       FFmpeg installed via winget.
-echo       It will be ready to use in new windows.
-goto :ffmpeg_ok
+goto :ffmpeg_ready
 
-:download_ffmpeg
+:ffmpeg_local_verify
+set "FFBIN=%ROOT%ffmpeg\bin\ffmpeg.exe"
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"drawtext" >nul
+if errorlevel 1 goto :ffmpeg_local_rebuild
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"subtitles" >nul
+if errorlevel 1 goto :ffmpeg_local_rebuild
+goto :ffmpeg_ready
+
+:ffmpeg_local_rebuild
+echo       The bundled FFmpeg is incomplete. Re-downloading a full portable build...
+rmdir /S /Q "%ROOT%ffmpeg" >nul 2>&1
+goto :ffmpeg_portable
+
+:ffmpeg_portable
 echo.
-echo       The automatic installer could not install FFmpeg.
-echo       No problem - downloading a portable copy instead, about 100 MB...
+echo       No full FFmpeg found. Downloading a portable copy, about 100 MB...
 echo.
 
 set "FFZIP=%ROOT%ffmpeg.zip"
@@ -117,9 +151,17 @@ cd /d "%ROOT%"
 del /Q "%FFZIP%" >nul 2>&1
 
 if not exist "%ROOT%ffmpeg\bin\ffmpeg.exe" goto :ffmpeg_manual
+if not exist "%ROOT%ffmpeg\bin\ffprobe.exe" goto :ffmpeg_manual
+set "FFBIN=%ROOT%ffmpeg\bin\ffmpeg.exe"
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"drawtext" >nul
+if errorlevel 1 goto :ffmpeg_manual
+"!FFBIN!" -hide_banner -filters 2>nul | findstr /C:"subtitles" >nul
+if errorlevel 1 goto :ffmpeg_manual
+
 echo       FFmpeg extracted to ffmpeg\bin
+echo       Verified: drawtext + subtitles filters present.
 echo       The bot finds it automatically, no PATH changes needed.
-goto :ffmpeg_ok
+goto :ffmpeg_ready
 
 :ffmpeg_manual
 echo.
@@ -140,20 +182,9 @@ echo.
 pause
 exit /b 1
 
-:ffmpeg_local
-echo       Using the bundled FFmpeg.
-goto :ffmpeg_ok
-
-:ffmpeg_ok
-where ffmpeg >nul 2>&1
-if not errorlevel 1 goto :ffmpeg_version
-echo       FFmpeg is ready - bundled copy in ffmpeg\bin.
-goto :ffmpeg_done
-
-:ffmpeg_version
-for /f "delims=" %%v in ('ffmpeg -version 2^>^&1 ^| findstr /b "ffmpeg version"') do echo       Found: %%v
-
-:ffmpeg_done
+:ffmpeg_ready
+for /f "delims=" %%v in ('"!FFBIN!" -version 2^>^&1 ^| findstr /b "ffmpeg version"') do echo       Found: %%v
+if errorlevel 1 echo       FFmpeg is ready.
 echo.
 
 echo [3/4] Setting up Python environment, first time downloads about 200 MB...

@@ -275,6 +275,28 @@ class VideoProcessor:
         except Exception:
             return False
 
+    @staticmethod
+    def _parse_filter_names(output: str) -> set[str]:
+        """
+        Parse `ffmpeg -hide_banner -filters` output into a set of filter names.
+
+        Tolerates every list format instead of hard-coding the column widths:
+          - FFmpeg <= 7.x:  " TSC drawtext          V->V       ..."  (3 flag chars)
+          - FFmpeg 8.x+:    " T. drawtext          V->V       ..."  (2 flag chars
+                            + dynamic media descriptor, e.g. V->V / | / N)
+        Every filter row starts with a 2-4 char flags token followed by the
+        filter name, so we simply split on whitespace and validate the tokens.
+        """
+        names: set[str] = set()
+        for line in output.splitlines():
+            parts = line.split()
+            if len(parts) < 3:
+                continue
+            flags, name, _descr = parts[0], parts[1], parts[2]
+            if re.fullmatch(r"[.A-Z|]{2,4}", flags) and re.fullmatch(r"[A-Za-z0-9_]{2,64}", name):
+                names.add(name)
+        return names
+
     def _require_ffmpeg_filters(self, required: set[str]) -> None:
         if not FFMPEG_PATH:
             raise RuntimeError(
@@ -290,18 +312,25 @@ class VideoProcessor:
             )
             if result.returncode != 0:
                 raise RuntimeError(f"Could not inspect FFmpeg capabilities: {result.stderr.strip()}")
-            names: set[str] = set()
-            for line in result.stdout.splitlines():
-                match = re.match(r"^\s*[.A-Z|]{3}\s+([A-Za-z0-9_]+)\s", line)
-                if match:
-                    names.add(match.group(1))
+            names = self._parse_filter_names(result.stdout)
+            logger.info(
+                "FFmpeg reported %d filters (detected drawtext=%s, subtitles=%s) from %s",
+                len(names),
+                "drawtext" in names,
+                "subtitles" in names,
+                FFMPEG_PATH,
+            )
             self._ffmpeg_filters = names
         missing = sorted(required - self._ffmpeg_filters)
         if missing:
             raise RuntimeError(
-                "This FFmpeg build is missing required filter(s): "
+                f"This FFmpeg build (at {FFMPEG_PATH}) is missing required filter(s): "
                 + ", ".join(missing)
-                + ". Install a full FFmpeg build with libfreetype/fontconfig/libass support."
+                + ". It reported "
+                + str(len(self._ffmpeg_filters))
+                + " filters. Re-run setup.bat - it downloads a full FFmpeg with "
+                "libfreetype/fontconfig/libass (drawtext + subtitles) automatically, "
+                "or place a full build in yt_shorts_bot\\ffmpeg\\bin."
             )
 
     @staticmethod

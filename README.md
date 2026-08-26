@@ -43,7 +43,9 @@ cp yt_shorts_bot/.env.example yt_shorts_bot/.env
    bot.
 
 The Windows setup scripts download a local FFmpeg build when one is not already
-available. Downloaded binaries are not committed.
+available, and they verify it contains the `drawtext` + `subtitles` filters
+needed for captions/watermarks (a weak/trimmed system FFmpeg is automatically
+replaced by the full portable build). Downloaded binaries are not committed.
 
 ## Account model
 
