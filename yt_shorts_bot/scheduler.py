@@ -218,13 +218,37 @@ class ShortsBotScheduler:
                 logger.error("[%s] Could not scan %s: %s", name, channel_url, exc)
                 continue
 
+            scanned_total = len(videos)
+            skipped_uploaded = 0
+            skipped_claimed = 0
             for video in videos:
                 video_id = video["video_id"]
                 if self.state_db.is_video_processed(video_id, account=name):
+                    skipped_uploaded += 1
+                    if skipped_uploaded % 50 == 0:
+                        logger.info(
+                            "[%s] %d of %d candidate(s) already uploaded/processed - "
+                            "still scanning the window for the next one...",
+                            name,
+                            skipped_uploaded,
+                            scanned_total,
+                        )
                     continue
                 claim = self.state_db.claim_video(video_id, name)
                 if not claim:
+                    skipped_claimed += 1
                     continue
+                logger.info(
+                    "[%s] Picked candidate %s ('%s', %ss) - %d already uploaded, "
+                    "%d held by an active claim, %d remaining in window.",
+                    name,
+                    video_id,
+                    video.get("title", ""),
+                    video.get("duration", "?"),
+                    skipped_uploaded,
+                    skipped_claimed,
+                    max(0, scanned_total - skipped_uploaded - skipped_claimed - 1),
+                )
                 try:
                     if not self._wait_for_upload_gap(name, min_gap):
                         break
@@ -290,6 +314,29 @@ class ShortsBotScheduler:
                     self.state_db.release_video_claim(video_id, name, claim)
                 # Natural pacing: one source video from each source channel/cycle.
                 break
+            else:
+                # The loop ended without picking a video: every candidate in the
+                # scanned window is already handled. Say so instead of staying silent.
+                if not self.stop_event.is_set():
+                    if scanned_total == 0:
+                        logger.warning(
+                            "[%s] No candidates were returned for %s (channel "
+                            "listing empty or all videos are already Shorts).",
+                            name,
+                            channel_url,
+                        )
+                    else:
+                        logger.warning(
+                            "[%s] All %d scanned candidate(s) on %s are already "
+                            "uploaded/claimed (%d uploaded, %d held by an active claim). "
+                            "Nothing left to do in this window - raise FETCH_SCAN_LIMIT "
+                            "(default 300) to scan deeper.",
+                            name,
+                            scanned_total,
+                            channel_url,
+                            skipped_uploaded,
+                            skipped_claimed,
+                        )
 
         return uploaded_count
 
@@ -303,7 +350,21 @@ class ShortsBotScheduler:
         if elapsed >= min_gap_minutes:
             return not self.stop_event.is_set()
         wait_seconds = max(1, int((min_gap_minutes - elapsed) * 60))
-        return not self.stop_event.wait(wait_seconds)
+        logger.info(
+            "[%s] min_minutes_between_uploads=%d: last upload was %.1f min ago. "
+            "Waiting %dm %02ds before the next upload... (press Stop to skip)",
+            account,
+            min_gap_minutes,
+            elapsed,
+            wait_seconds // 60,
+            wait_seconds % 60,
+        )
+        interrupted = self.stop_event.wait(wait_seconds)
+        if interrupted:
+            logger.info("[%s] Upload-gap wait interrupted by a stop request.", account)
+        else:
+            logger.info("[%s] Upload gap elapsed; continuing.", account)
+        return not interrupted
 
     @staticmethod
     def _state_for_upload_result(result: Optional[str]) -> str:

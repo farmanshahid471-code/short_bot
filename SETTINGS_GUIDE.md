@@ -84,6 +84,10 @@ DELETE_R2_AFTER_UPLOAD=false
 
 `DRY_RUN=true` never records uploads. The scheduler reloads account settings and
 the interval before later cycles. Stop interrupts interval and pacing waits.
+`YTDL_SOCKET_TIMEOUT_SEC=25` bounds every yt-dlp network call so a stalled
+YouTube connection cannot freeze a cycle silently. The cycle also logs every
+step: candidates already uploaded (and how many), the video it picks, and how
+long it waits for `min_minutes_between_uploads`.
 
 ### Web UI
 

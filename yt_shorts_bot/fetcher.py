@@ -20,6 +20,7 @@ from .config import (
     MAX_CLIP_DURATION_SEC,
     SELECTION_STRATEGY,
     FETCH_SCAN_LIMIT,
+    YTDL_SOCKET_TIMEOUT_SEC,
     HEATMAP_WEIGHT,
     AUDIO_EXCITEMENT_WEIGHT,
     AUDIO_ENERGY_WEIGHT,
@@ -88,6 +89,18 @@ class YouTubeFetcher:
         if not FFMPEG_PATH:
             return {}
         return {"ffmpeg_location": str(Path(FFMPEG_PATH).resolve().parent)}
+
+    @staticmethod
+    def _timeout_opt() -> dict:
+        """
+        Bound every yt-dlp network call so a stalled YouTube connection cannot
+        hang a cycle with no log output (looks like the bot is frozen).
+        """
+        return {
+            "socket_timeout": YTDL_SOCKET_TIMEOUT_SEC,
+            "retries": 2,
+            "extractor_retries": 2,
+        }
 
     @staticmethod
     def _cookies_opts() -> dict:
@@ -195,6 +208,7 @@ class YouTubeFetcher:
             "no_warnings": True,
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
+            **self._timeout_opt(),
         }
 
         videos = []
@@ -284,6 +298,7 @@ class YouTubeFetcher:
             "no_warnings": True,
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
+            **self._timeout_opt(),
         }
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -592,6 +607,7 @@ class YouTubeFetcher:
             "no_warnings": True,
             **self._cookies_opts(),
             **self._ffmpeg_opt(),
+            **self._timeout_opt(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             audio_info = ydl.extract_info(video_url, download=False)
@@ -817,7 +833,7 @@ class YouTubeFetcher:
             raise RuntimeError("Unknown duration - cannot analyze energy")
 
         # Get a direct audio stream URL (fast - metadata only)
-        ydl_opts = {"format": "bestaudio/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt()}
+        ydl_opts = {"format": "bestaudio/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt(), **self._timeout_opt()}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
         stream_url = info.get("url")
@@ -998,7 +1014,7 @@ class YouTubeFetcher:
 
     def _slice_progressive(self, video_url: str, clip_start: float, clip_end: float, output_path: Path) -> Path:
         """Strategy A: find the best single progressive (combined A/V) mp4 format and slice its URL directly."""
-        ydl_opts = {"format": "best[ext=mp4]/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt()}
+        ydl_opts = {"format": "best[ext=mp4]/best", "quiet": True, "no_warnings": True, **self._cookies_opts(), **self._ffmpeg_opt(), **self._timeout_opt()}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
 
