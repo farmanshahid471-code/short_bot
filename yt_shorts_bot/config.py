@@ -142,8 +142,23 @@ TOP_WATERMARK_ENABLED: bool = os.getenv("TOP_WATERMARK_ENABLED", "true").lower()
 TOP_WATERMARK_TEXT: str = os.getenv("TOP_WATERMARK_TEXT", "")
 
 # Faster-Whisper CPU Settings
-WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "tiny.en")  # tiny.en, base.en, small
+# WHISPER_MODEL_SIZE:
+#   "base"    = multilingual, auto-detects most languages (default - use for
+#               anything that is not English, e.g. Urdu, Vietnamese, Hindi)
+#   "tiny"    = multilingual but lower accuracy; fastest
+#   "small"   = multilingual, best accuracy, slower
+#   "tiny.en"/"base.en"/"small.en" = ENGLISH ONLY. With these, the .en suffix
+#               is automatically removed when WHISPER_LANGUAGE=auto so the bot
+#               does not force English subtitles onto non-English audio.
+WHISPER_MODEL_SIZE: str = os.getenv("WHISPER_MODEL_SIZE", "base")
 WHISPER_LANGUAGE: str = os.getenv("WHISPER_LANGUAGE", "auto").strip().lower()
+
+# Upload language tagging (default "auto"):
+#   "auto" = use the language Whisper detected in the source audio
+#            (e.g. "vi", "ur"). Only tagged when detection confidence is high.
+#   "en"/"ur"/"vi"... = force that ISO code on the upload.
+#   "off" = do not set a language on the upload at all.
+VIDEO_LANGUAGE: str = os.getenv("VIDEO_LANGUAGE", "auto").strip().lower()
 WHISPER_DEVICE: str = "cpu"
 WHISPER_COMPUTE_TYPE: str = "int8"
 MAX_WORDS_PER_SUBTITLE_LINE: int = int(os.getenv("MAX_WORDS_PER_SUBTITLE_LINE", "4"))

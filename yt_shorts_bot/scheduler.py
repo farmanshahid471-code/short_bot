@@ -428,6 +428,11 @@ class ShortsBotScheduler:
                     smart_titles=smart_titles,
                     expected_channel=expected_channel,
                     expected_channel_id=expected_channel_id,
+                    content_language=(
+                        getattr(self.processor, "detected_language", "")
+                        if getattr(self.processor, "detected_language_probability", 0.0) >= 0.5
+                        else ""
+                    ),
                 )
                 self._last_upload_result = short_id
                 state = self._state_for_upload_result(short_id)

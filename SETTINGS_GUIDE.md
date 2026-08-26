@@ -108,14 +108,24 @@ VIDEO_CRF=18
 VIDEO_PRESET="medium"
 AUDIO_BITRATE="192k"
 FFMPEG_TIMEOUT_SEC=900
-WHISPER_MODEL_SIZE="tiny.en"
+WHISPER_MODEL_SIZE="base"
 WHISPER_LANGUAGE="auto"
+VIDEO_LANGUAGE="auto"
 SUBTITLE_STYLE_MODE="viral"
 ```
 
 `auto` preserves vertical source shape. Landscape/square sources use 9:16.
 Whisper is imported only when subtitles are requested. Sources without audio
 skip transcription and can still render.
+
+**No dubbing — ever.** The bot never synthesizes, translates or replaces speech.
+It uploads the source audio untouched (BGM is only mixed alongside at low
+volume). `WHISPER_MODEL_SIZE=base` (+ `WHISPER_LANGUAGE=auto`) burns subtitles in
+the **spoken language**, e.g. Vietnamese audio → Vietnamese subtitles. If you set
+an English-only model (`tiny.en`/`base.en`) with auto language, the bot now
+automatically switches to the multilingual equivalent so it never forces English
+gibberish onto non-English audio. `VIDEO_LANGUAGE` only tags the upload
+(`defaultLanguage`/`defaultAudioLanguage`) — it does not change audio.
 
 ### Moment selection (most watched + high-pitched/high-energy voice)
 

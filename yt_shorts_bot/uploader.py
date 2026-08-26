@@ -20,6 +20,7 @@ from googleapiclient.http import MediaFileUpload
 from .config import (
     DRY_RUN,
     MAX_DAILY_UPLOADS,
+    VIDEO_LANGUAGE,
     YOUTUBE_API_SERVICE_NAME,
     YOUTUBE_API_VERSION,
     YOUTUBE_CLIENT_SECRET_FILE,
@@ -254,6 +255,45 @@ class YouTubeUploader:
             return ""
         return raw
 
+    # Map common ISO 639-2/B (3-letter codes Whisper may return) to the 2-letter
+    # codes the YouTube API accepts in snippet.defaultLanguage.
+    _LANGUAGE_3_TO_2 = {
+        "eng": "en", "vie": "vi", "urd": "ur", "hin": "hi", "spa": "es",
+        "por": "pt", "fra": "fr", "deu": "de", "rus": "ru", "ara": "ar",
+        "tam": "ta", "tel": "te", "ben": "bn", "mar": "mr", "pan": "pa",
+        "jpn": "ja", "kor": "ko", "zho": "zh", "ita": "it", "tur": "tr",
+        "ind": "id", "msa": "ms", "nld": "nl", "pol": "pl", "ukr": "uk",
+        "pus": "ps", "snd": "sd", "nep": "ne", "fas": "fa", "swa": "sw",
+    }
+
+    @classmethod
+    def _normalize_language_code(cls, value: str) -> str:
+        """
+        Return a safe 2-letter ISO 639-1 code ('en', 'vi', 'ur', ...) suitable
+        for YouTube's defaultLanguage/defaultAudioLanguage, or '' if unknown.
+        """
+        code = re.sub(r"[^A-Za-z]", "", str(value or ""))[:3].lower()
+        if re.fullmatch(r"[a-z]{2}", code):
+            return code
+        if re.fullmatch(r"[a-z]{3}", code):
+            return cls._LANGUAGE_3_TO_2.get(code, "")
+        return ""
+
+    @classmethod
+    def resolve_content_language(cls, detected: str) -> str:
+        """
+        Decide the language tag applied to the upload (never the audio itself):
+          VIDEO_LANGUAGE=auto -> detected whisper language
+          VIDEO_LANGUAGE=en/vi/... -> forced code
+          VIDEO_LANGUAGE=off  -> no tag
+        """
+        mode = str(VIDEO_LANGUAGE or "auto").strip().lower()
+        if mode in ("auto", "", "detect"):
+            return cls._normalize_language_code(detected)
+        if mode in ("off", "none", "false", "0"):
+            return ""
+        return cls._normalize_language_code(mode)
+
     @staticmethod
     def generate_short_metadata(
         original_title: str,
@@ -266,6 +306,7 @@ class YouTubeUploader:
         title_prefix: Optional[str] = None,
         title_hashtags: str = "",
         smart_titles: Optional[bool] = None,
+        content_language: str = "",
     ) -> dict[str, Any]:
         from .hashtags import build_hashtags, make_catchy_title, make_description
 
@@ -309,6 +350,7 @@ class YouTubeUploader:
             "description": make_description(original_title, original_url, final_tags),
             "tags": capped,
             "categoryId": "24",
+            "content_language": YouTubeUploader.resolve_content_language(content_language),
         }
 
     def upload_short(
@@ -329,6 +371,7 @@ class YouTubeUploader:
         smart_titles: Optional[bool] = None,
         expected_channel: Optional[str] = None,
         expected_channel_id: Optional[str] = None,
+        content_language: str = "",
     ) -> Optional[str]:
         """Upload once. Non-upload sentinels never consume quota or mark success."""
         video_path = Path(video_path)
@@ -343,6 +386,7 @@ class YouTubeUploader:
             title_prefix=title_prefix,
             title_hashtags=title_hashtags,
             smart_titles=smart_titles,
+            content_language=content_language,
         )
 
         if not video_path.is_file() or video_path.stat().st_size <= 0:
@@ -417,6 +461,17 @@ class YouTubeUploader:
                 "selfDeclaredMadeForKids": False,
             },
         }
+        content_language = str(self.last_metadata.get("content_language") or "")
+        if content_language:
+            # Tag the CONTENT LANGUAGE so YouTube labels it correctly. This does
+            # not modify the audio - the source audio is uploaded untouched.
+            body["snippet"]["defaultLanguage"] = content_language
+            body["snippet"]["defaultAudioLanguage"] = content_language
+            logger.info(
+                "Upload content language: '%s' (auto-detected from source audio; "
+                "audio was NOT dubbed or replaced).",
+                content_language,
+            )
         try:
             media = MediaFileUpload(
                 str(video_path),
